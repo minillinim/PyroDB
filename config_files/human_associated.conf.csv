@@ -1,0 +1,45 @@
+:title:human_associated
+body_mass_index,body_mass_index,double,false,Enter a decimal number only.
+drug_usage,drug_usage,varchar(500),false,Free text - 500 characters.
+hiv_stat,hiv_stat,varchar(1),false,Free text - 1), characters.
+ihmc_ethnicity,ihmc_ethnicity,varchar(200),false,Free text - 200 characters.
+ihmc_occupation,ihmc_occupation,double,false,Enter a decimal number only.
+last_meal,last_meal,varchar(500),false,Free text - 500 characters.
+diet_last_six_month,diet_last_six_month,varchar(200 byte),false,Free text - 200 characters.
+medic_hist_perform,medic_hist_perform,varchar(1),false,Free text - 1), characters.
+pet_farm_animal,pet_farm_animal,varchar(300),false,Free text - 300 characters.
+pulse,pulse,double,false,Enter a decimal number only.
+smoker,smoker,varchar(1),false,Free text - 1), characters.
+travel_out_six_month,travel_out_six_month,varchar(300),false,Free text - 300 characters.
+twin_sibling,twin_sibling,varchar(1),false,Free text - 1), characters.
+weight_loss_3_month,weight_loss_3_month,double,false,Enter a decimal number only.
+nose_throat_disord,nose_throat_disord,varchar(500),false,Free text - 500 characters.
+pulmonary_disord,pulmonary_disord,varchar(500),false,Free text - 500 characters.
+study_complt_stat,study_complt_stat,double,false,Enter a decimal number only.
+amniotic_fluid_color,amniotic_fluid_color,varchar(100),false,Free text - 100 characters.
+gestation_state,gestation_state,varchar(200),false,Free text - 200 characters.
+foetal_health_stat,foetal_health_stat,varchar(200),false,Free text - 200 characters.
+maternal_health_stat,maternal_health_stat,varchar(200),false,Free text - 200 characters.
+blood_disord,blood_disord,varchar(200),false,Free text - 200 characters.
+gastrointest_disord,gastrointest_disord,varchar(200),false,Enter an integer number only.
+liver_disord,liver_disord,varchar(200),false,Free text - 200 characters.
+special_diet,special_diet,varchar(400),false,Free text - 400 characters.
+nose_mouth_teeth_throat_disord,nose_mouth_teeth_throat_disord,varchar(400),false,Free text - 400 characters.
+time_last_toothbrush,time_last_toothbrush,double,false,Enter a decimal number only.
+dermatology_disord,dermatology_disord,varchar(500),false,Free text - 500 characters.
+dominant_hand,dominant_hand,varchar(100),false,Free text - 100 characters.
+time_since_last_wash,time_since_last_wash,double,false,Enter a decimal number only.
+kidney_disord,kidney_disord,varchar(200),false,Free text - 200 characters.
+urine_collect_meth,urine_collect_meth,double,false,Enter a decimal number only.
+urogenit_tract_disor,urogenit_tract_disor,varchar(200),false,Free text - 200 characters.
+birth_control,birth_control,varchar(100),false,Free text - 100 characters.
+douche,douche,varchar(100),false,Free text - 100 characters.
+gynecologic_disord,gynecologic_disord,varchar(200),false,Free text - 200 characters.
+menarche,menarche,varchar(100),false,Free text - 100 characters.
+hrt,hrt,varchar(100),false,Free text - 100 characters.
+hysterectomy,hysterectomy,varchar(1),false,Free text - 1), characters.
+menopause,menopause,varchar(100),false,Free text - 100 characters.
+pregnancy,pregnancy,varchar(100),false,Free text - 100 characters.
+sexual_act,sexual_act,varchar(200),false,Free text - 200 characters.
+urogenit_disord,urogenit_disord,varchar(200),false,Free text - 200 characters.
+:end

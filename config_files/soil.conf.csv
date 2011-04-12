@@ -1,0 +1,49 @@
+:title:soil
+Current land use,cur_land_use,int(11),false,Enter an integer number only.
+Previous land use,previous_land_use,varchar(500),false,Free text - 500 characters.
+Previous land use method,previous_land_use_meth,varchar(500),false,Free text - 500 characters.
+Current vegetation,cur_vegetation,varchar(200),false,Free text - 200 characters.
+Current vegetation method,cur_vegetation_meth,varchar(200),false,Free text - 200 characters.
+Extreme events,extreme_event,varchar(500),false,Free text - 500 characters.
+Fire,fire,varchar(500),false,Free text - 500 characters.
+Flooding,flooding,varchar(500),false,Free text - 500 characters.
+Crop rotation,crop_rotation,varchar(200),false,Free text - 200 characters.
+Agrochemical addition,agrochem_addition,varchar(500),false,Free text - 500 characters.
+Tillage,tillage,varchar(200),false,Free text - 200 characters.
+Other,other,varchar(1000),false,Free text - 100 characters.
+Horizon,horizon,varchar(100),false,Free text - 100 characters.
+Horizon method,horizon_meth,varchar(200),false,Free text - 200 characters.
+Sieving,sieving,varchar(200),false,Free text - 200 characters.
+Soil water content,water_content_soil,double,false,Enter a decimal number only.
+Soil water content method,water_content_soil_meth,varchar(200),false,Free text - 200 characters.
+Storage conditions,store_cond,varchar(400),false,Free text - 400 characters.
+Link climate information,link_climate_info,varchar(500),false,Free text - 500 characters.
+Annual seasonal temperature,annual_season_temp,double,false,Enter a decimal number only.
+Annual seasonal precipitation,annual_season_precpt,double,false,Enter a decimal number only.
+FAO class,fao_class,varchar(200),false,Free text - 200 characters.
+Local class,local_class,varchar(200),false,Free text - 200 characters.
+Local class method,local_class_meth,varchar(200),false,Free text - 200 characters.
+Link class information,link_class_info,varchar(500),false,Free text - 500 characters.
+Soil type,soil_type,varchar(200),false,Free text - 200 characters.
+Soil type method,soil_type_meth,varchar(200),false,Free text - 200 characters.
+Slope gradient,slope_gradient,double,false,Enter a decimal number only.
+Slope aspect,slope_aspect,varchar(200),false,Free text - 200 characters.
+Profile position,profile_position,varchar(200),false,Free text - 200 characters.
+Drainage class,drainage_class,varchar(200),false,Free text - 200 characters.
+Texture,texture,varchar(300),false,Free text - 300 characters.
+Texture method,texture_meth,varchar(200),false,Free text - 200 characters.
+Ph method,ph_meth,varchar(200),false,Free text - 200 characters.
+Total organic carbon method,tot_org_c_meth,varchar(200),false,Free text - 200 characters.
+Total nitrogen method,tot_n_meth,varchar(200),false,Free text - 200 characters.
+Microbial biomass,microbial_biomass,varchar(200),false,Free text - 200 characters.
+Microbial biomass method,microbial_biomass_meth,varchar(200),false,Free text - 200 characters.
+Link addit analysis,link_addit_analys,varchar(500),false,Free text - 500 characters.
+Extreme salinity,extreme_salinity,double,false,Enter a decimal number only.
+Salinity method,salinity_meth,varchar(200),false,Free text - 200 characters.
+Heavy metals,heavy_metals,varchar(200),false,Free text - 200 characters.
+Heavy metals method,heavy_metals_meth,varchar(200),false,Free text - 200 characters.
+Aluminium saturation,al_sat,double,false,Enter a decimal number only.
+Aluminium saturation method,al_sat_meth,varchar(200),false,Free text - 200 characters.
+Sample weight DNA extracted,samp_weight_dna_ext,double,false,Enter a decimal number only.
+Pooled DNA extracts,pool_dna_extracts,int(11),false,Enter an integer number only.
+:end

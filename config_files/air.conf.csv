@@ -1,0 +1,14 @@
+:title:air
+Barometric pressure,barometric_press,double,false,Enter a decimal number only.
+Humidity,humidity,double,false,Enter a decimal number only.
+Wind direction,wind_direction,int(11),false,Enter an integer number only.
+Wind speed,wind_speed,double,false,Enter a decimal number only.
+Ventilation rate,ventilation_rate,double,false,Enter a decimal number only.
+Ventilation type,ventilation_type,varchar(500),false,Free text - 500 characters.
+Volatile organic composition,volatile_org_comp,varchar(500),false,Free text - 500 characters.
+Pollutants,pollutants,varchar(500),false,Free text - 500 characters.
+Resp particulate matter,resp_part_matter,varchar(200),Free text - 200 characters.
+Solar irradiance,solar_irradiance,double,false,Enter a decimal number only.
+Carbon dioxide,carb_dioxide,double,false,Enter a decimal number only.
+Carbon monoxide,carb_monoxide,double,false,Enter a decimal number only.
+:end

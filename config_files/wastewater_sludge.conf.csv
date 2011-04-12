@@ -1,0 +1,22 @@
+:title:wastewater_sludge
+Reactor type,reactor_type,varchar(200),false,Free text - 200 characters.
+Sewage type,sewage_type,varchar(200),false,Free text - 200 characters.
+Wastewater type,wastewater_type,varchar(200),false,Free text - 200 characters.
+Pre treatment,pre_treatment,varchar(300),false,Free text - 300 characters.
+Primary treatment,primary_treatment,varchar(300),false,Free text - 300 characters.
+Secondary treatment,secondary_treatment,varchar(300),false,Free text - 300 characters.
+Tertiary treatment,tertiary_treatment,varchar(300),false,Free text - 300 characters.
+Biochemical oxygen demand,biochem_oxygen_dem,double,false,Enter a decimal number only.
+Chemical oxygen demand,chem_oxygen_dem,double,false,Enter a decimal number only.
+Sludge retent time,sludge_retent_time,double,false,Enter a decimal number only.
+Efficiency percent,efficiency_percent,double,false,Enter a decimal number only.
+Industrial efficiency percent,indust_eff_percent,double,false,Enter a decimal number only.
+Suspended solids,suspend_solids,varchar(400),false,Free text - 400 characters.
+Emulsions,emulsions,varchar(200),false,Free text - 200 characters.
+Gaseous substances,gaseous_substances,varchar(200),false,Free text - 200 characters.
+Inorganic particles,inorg_particles,varchar(500),false,Free text - 500 characters.
+Organic particles,org_particles,varchar(500),false,Free text - 500 characters.
+Soluble inorganic matter,soluble_inorg_mat,double,false,Enter a decimal number only.
+Soluble organic matter,soluble_org_mat,double,false,Enter a decimal number only.
+Total phosphate,tot_phosphate,double,false,Enter a decimal number only.
+:end

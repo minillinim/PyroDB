@@ -1,0 +1,14 @@
+:title:water
+Atmospheric data,atmospheric_data,varchar(500),false,Free text - 500 characters.
+Dissolved inorganic nitrogen,diss_inorg_nitro,double,false,Enter a decimal number only.
+Dissolved inorganic phosphate,diss_inorg_phosp,double,false,Enter a decimal number only.
+Light intensity,lightEnter an integer number only.intensity,double,false,Enter a decimal number only.
+Photon flux,photon_flux,double,false,Enter a decimal number only.
+Primary prod,primary_prod,double,false,Enter a decimal number only.
+Soluble reaction phosphate,soluble_react_phosp,double,false,Enter a decimal number only.
+Suspended part matter,suspend_part_matter,double,false,Enter a decimal number only.
+Total depth of water column,tot_depth_water_col,double,false,Enter a decimal number only.
+Total inorganic nitrogen,tot_inorg_nitro,double,false,Enter a decimal number only.
+Total part carbon,tot_part_carb,double,false,Enter a decimal number only.
+Total phosphate,tot_phosp,double,false,Enter a decimal number only.
+:end

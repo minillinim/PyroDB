@@ -1,0 +1,49 @@
+:title:common
+Taxonomy id,taxon_id,int(11),false,Enter an integer number only.
+Common name,common_name,varchar(500),false,Free text - 500 characters.
+Altitude,altitude,varchar(50),false,Free text - 50) characters.
+Depth,depth,varchar(50),false,Free text - 50) characters.
+Elevation,elevation,double,false,Enter a decimal number only.
+Pressure,press,double,false,Enter a decimal number only.
+Temperature,temp,double,false,Enter a decimal number only.
+Density,density,double,false,Enter a decimal number only.
+Sample collection device,samp_collect_device,varchar(500),false,Free text - 500 characters.
+Sample material processing,samp_mat_process,varchar(500),false,Free text - 500 characters.
+Sample size,samp_size,varchar(300),false,Free text - 300 characters.
+Sample biomass,samp_biomass,varchar(400),false,Free text - 400 characters.
+Sample storage duration,samp_store_dur,varchar(200),false,Free text - 200 characters.
+Sample storage location,samp_store_loc,varchar(200),false,Free text - 200 characters.
+Sample storage temperature,samp_store_temp,double,false,Enter a decimal number only.
+Redox potential,redox_potential,double,false,Enter a decimal number only.
+Salinity,salinity,double,false,Enter a decimal number only.
+Alkalinity,alkalinity,double,false,Enter a decimal number only.
+Ph,ph,double,false,Enter a decimal number only.
+Turbidity,turbidity,double,false,Enter a decimal number only.
+Water content,water_content,double,false,Enter a decimal number only.
+Ammonium,ammonium,double,false,Enter a decimal number only.
+Bromine,bromide,double,false,Enter a decimal number only.
+Calcium,calcium,double,false,Enter a decimal number only.
+Chloride,chloride,double,false,Enter a decimal number only.
+Chlorophyll,chlorophyll,double,false,Enter a decimal number only.
+Magnesium,magnesium,double,false,Enter a decimal number only.
+Methane,methane,double,false,Enter a decimal number only.
+Nitrate,nitrate,double,false,Enter a decimal number only.
+Nitrite,nitrite,double,false,Enter a decimal number only.
+Nitrogen,nitro,double,false,Enter a decimal number only.
+Oxygen,oxygen,double,false,Enter a decimal number only.
+Phosphate,phosphate,double,false,Enter a decimal number only.
+Potassium,potassium,double,false,Enter a decimal number only.
+Silicate,silicate,double,false,Enter a decimal number only.
+Sulfate,sulfate,double,false,Enter a decimal number only.
+Sulfide,sulfide,double,false,Enter a decimal number only.
+Dissolved carbon dioxide,diss_carb_dioxide,double,false,Enter a decimal number only.
+Dissolved hydrodgen,diss_hydrogen,double,false,Enter a decimal number only.
+Dissolved organic carbon,diss_org_carbon,double,false,Enter a decimal number only.
+Dissolved oxygen,diss_oxygen,double,false,Enter a decimal number only.
+Organic carbon,org_carb,double,false,Enter a decimal number only.
+Organic nitrogen,org_nitro,double,false,Enter a decimal number only.
+Organic matter,org_matter,double,false,Enter a decimal number only.
+Total carbon,tot_carb,double,false,Enter a decimal number only.
+Total nitrogen,tot_nitro,double,false,Enter a decimal number only.
+Extra information,misc_param,varchar(4000),false,Free text - 400 characters.
+:end

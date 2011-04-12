@@ -1,0 +1,20 @@
+:title:host_associated_vertebrate
+Body Habtiat,body Habtiat,varchar(200),false,Free text - 200 characters.
+Body Site,body site,varchar(200),false,Free text - 200 characters.
+Body Product,BODY_PRODUCT,varchar(200),false,Free text - 200 characters.
+Blood pressure (diastolic),blood_press_diast,double,false,Enter a decimal number only.
+Blood pressure (systolic),blood_press_syst,double,false,Enter a decimal number only.
+Body Temperature,host_body_temp,double,false,Enter a decimal number only.
+Diet,diet,varchar(200),false,Free text - 200 characters.
+Family relationship,family_relationship,varchar(200),false,Free text - 200 characters.
+Medications,medications,varchar(200),false,Free text - 200 characters.
+Gravidity,gravidity,varchar(1),false,Free text - 1), characters.
+Gravidity due date,gravidity_due_date,varchar(200),false,Free text - 200 characters.
+Host growth conditions,host_growth_cond,varchar(500),false,Free text - 500 characters.
+Last meal,last_meal,varchar(500),false,Free text - 500 characters.
+Scientific name,scientific_name,varchar(500),false,Free text - 500 characters.
+Sex,sex,varchar(1),false,The sex of the host (M/F).
+Substrate,substrate,varchar(200),false,Free text - 200 characters.
+Time since last medication,time_since_last_medication,double,false,Enter a decimal number only.
+Date of birth,date_of_birth,varchar(50),false,Free text - 50 characters.
+:end

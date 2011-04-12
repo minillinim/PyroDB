@@ -1,0 +1,190 @@
+<?php
+// $Id$
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// pyro_db.module
+//
+// Author: Michael Imelfort 2011  -- pyrodb@mikeimelfort.com
+// 
+// HaCK drupal module for interfacing between a drupal website and the pyro data base
+// 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// inc files!
+//////////////////////////////////////////////////////////////////////////////////////////////////
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.samples.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.gaskets.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.jobs.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.inc');
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Module shite
+//////////////////////////////////////////////////////////////////////////////////////////////////
+function pyro_db_help($path, $arg) {
+  $output = '';  //declare your output variable
+  switch ($path) {
+    case "admin/help#pyro_db":
+      $output = '<p>'.  t("Interface to the pyrotag databse") .'</p>';
+      break;
+  }
+  return $output;
+} // function pyro_db_help
+
+function pyro_db_perm() {
+    return array('access pyro_db', 'create pyro_db', 'administer pyro_db');
+} // function pyro_db_perm
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+ // Hooks
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+function pyro_db_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+    //-----
+    // Client Job Hooks
+    // 
+    if($node->type == 'pdb_client_job') {
+        if($op == 'insert') 
+        {
+            global $user;
+            $nid = @$node->nid;
+            
+            // make the first sample
+            $fs_nid = _pyro_db_make_next_sample($user, $nid);
+            
+            // make the jobs body do nice things
+            _pyro_db_job_body(TRUE, $nid);
+            
+            // fix up the samples metadata fields
+            $meta_fields = _pyro_db_get_meta_fields();
+            $passing_array = array('nid' => $fs_nid);
+            
+            foreach($meta_fields as $header => $col_name) 
+            {
+                if($node->metadata_fields[$col_name] == 1)
+                {
+                    // add the sample to the "pdb_tables" as well as all the actual metadata storing tables
+                    $func = "_pyro_db_$col_name"."_addremove";
+                    $func($fs_nid, true);
+                    $func = "_pyro_db_$col_name"."_insert";
+                    $func($passing_array);
+                    
+                    // add the job to the "pdb_tables" table but give it no metadata to store
+                    $func = "_pyro_db_$col_name"."_addremove";
+                    $func($nid, true);
+                    
+                }
+            }
+            
+        }
+        elseif($op == 'load') 
+        {
+            _pyro_db_job_body(TRUE, $nid);
+        }
+        
+    }
+    elseif($node->type == 'pdb_client_sample') {
+        global $user;
+        $nid = @$node->nid;
+        
+        if($op == 'insert') {
+            _pyro_db_sample_body(TRUE, $nid);
+            
+            // set a default location -> set to the users client group address
+            global $user;
+            $loc_array = _pyro_db_get_location_by_uid($user->uid);
+            
+            // get the vid of this node
+            $result = db_query("SELECT n.vid FROM {node} n WHERE nid='$nid'");
+            $vid = 0;
+            while ($row = db_fetch_object($result)) 
+            {
+                $vid = $row->vid;
+                break;
+            }
+            @$loc_array['vid'] = $vid;
+            @$loc_array['nid'] = $nid;
+            
+            // set the generating string
+            $nid_string = (string)$nid;
+            @$loc_array['genStr'] = "cck:field_cs_location:".$nid_string;
+            
+            // write the new location to the location module tables
+            $lid = _pyro_db_set_new_location($loc_array);
+            
+            // write the new location to the regular sample table
+            db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_location_lid = '$lid' WHERE nid = '$nid'");
+            
+            // add an entry for the common fields
+            $passing_array = array('nid' => $nid);
+            _pyro_db_pdb_metadata_common_addremove($nid, true);
+            _pyro_db_pdb_metadata_common_insert($passing_array);
+
+        }
+        elseif($op == 'delete') {
+            // need to clear up all the tables for this sample
+            _pyro_db_sample_delete($nid);
+        }
+        
+    }
+    elseif($node->type == 'pdb_client_group') {
+        $nid = @$node->nid;
+        if($op == 'view') {
+            $view = views_get_view('gmap_loc_view');
+            @$node->content['viewsss'] = array(
+                '#weight' => 500,
+                '#value' => $view->execute_display('default', array($nid)),
+            );
+        }
+    }
+    elseif($node->type == 'pdb_gasket') {
+        $nid = @$node->nid;
+        if($op == 'insert') {
+            drupal_set_message("New gasket created. Click the \"edit\" tab to start adding jobs", 'status', TRUE);
+            _pyro_db_gasket_body(TRUE, $nid);
+        }
+        elseif($op == 'load') 
+        {
+            _pyro_db_gasket_body(TRUE, $nid);
+        }
+        
+    }    
+}
+
+function pyro_db_form_alter(&$form, $form_state, $form_id) {
+    //-----
+    // add here to modify the look of the edit pages
+    //
+    if($form_id == 'pdb_client_sample_node_form') 
+    {
+        // need to add the metadata editing fields
+        _pyro_db_sample_form_alter($form, $form_state, $form_id);
+    }
+    elseif($form_id == 'pdb_client_job_node_form') 
+    {
+        // need to select the metadata to use
+        _pyro_db_job_form_alter($form, $form_state, $form_id);
+    }
+    elseif($form_id == 'pdb_gasket_node_form') 
+    {
+        $form['#submit'][] = '_pyro_db_gasket_form_submit';
+        _pyro_db_gasket_add_form($form, $form_state, $form_id);
+        _pyro_db_gasket_remove_form($form, $form_state, $form_id);
+    }
+}
+
+function pyro_db_views_query_alter(&$view, &$query) {
+    // update the views so that only valid pyrotags will show!
+    if ($view->name == 'valid_primers_forward_by_chem' or $view->name == 'valid_primers_reverse_by_chem')
+    {
+        // get the nid
+        $this_nid = 0;
+        if (arg(0) == 'node' && is_numeric(arg(1))) 
+        {
+            $this_nid = arg(1);
+        }
+        $query->where[0]['args'][3] = _pyro_db_get_parent_job_chem($this_nid);
+    }
+
+}

@@ -1,0 +1,5 @@
+:title:sediment
+Particle class,particle_class,varchar(500),false,Free text - 500 characters.
+Porosity,porosity,double,false,Enter a decimal number only.
+Sediment type,sediment_type,varchar(500),false,Free text - 500 characters.
+:end

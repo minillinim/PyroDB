@@ -1,0 +1,5 @@
+; $Id$
+name = PyroTagDB Interface
+description = Interface for the pyrotag data entry  DB
+core = 6.x
+package = "PyroTagDB"
