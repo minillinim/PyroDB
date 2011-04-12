@@ -32,7 +32,8 @@ include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_common.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_water.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_wastewater_sludge.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_host.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_host_associated_vertebrate.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_human_associated.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_host_sample.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_soil.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_sediment.inc');

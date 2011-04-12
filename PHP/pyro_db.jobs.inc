@@ -24,6 +24,59 @@
 #############################################################################*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+// Active metafields
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+function _pyro_db_get_meta_fields() {
+    //-----
+    // update this array to add / remove a metadata field
+    //
+    return array(
+        'AIR' => 'pdb_metadata_air',
+        'WATER' => 'pdb_metadata_water',
+        'WASTE WATER SLUDGE' => 'pdb_metadata_wastewater_sludge',
+        'HOST SAMPLE' => 'pdb_metadata_host_sample',
+        'VERTEBRATES' => 'pdb_metadata_host_associated_vertebrate',
+        'HUMAN ASSOCIATED' => 'pdb_metadata_human_associated',
+        'SOIL' => 'pdb_metadata_soil',
+        'SEDIMENT' => 'pdb_metadata_sediment',
+    );
+}
+
+function _pyro_db_job_active_meta_fields($nid) {
+    //-----
+    // Work out which fields are active...
+    //
+    $ret_array = array();
+    $meta_fields = _pyro_db_get_meta_fields();
+    if(NULL == $nid)
+    {
+        // on the creation page
+        foreach($meta_fields as $key => $value)
+        {
+            $ret_array[$value] = 0;
+        }
+    }
+    else
+    {
+        // not on the creation page
+        $meta_fields = array_flip($meta_fields);
+        $query = "select * from {pdb_metadata_tables} pdb where nid='$nid'";
+        $result = db_query($query);
+        while ($row = db_fetch_object($result)) 
+        {    
+            foreach($row as $key => $value)
+            {
+                if(isset($meta_fields[$key]))
+                {
+                    $ret_array[$key] = $value;
+                }
+            }
+        }
+    }
+    return $ret_array;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////
 // Body
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -230,59 +283,6 @@ function _pyro_db_job_lock_job($job_node, $lockIt) {
             workflow_execute_transition($tmp_sample_node, 5);
         }
     }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Active metafields
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-function _pyro_db_get_meta_fields() {
-    //-----
-    // update this array to add / remove a metadata field
-    //
-    return array(
-    'AIR' => 'pdb_metadata_air',
-    'WATER' => 'pdb_metadata_water',
-    'WASTE WATER SLUDGE' => 'pdb_metadata_wastewater_sludge',
-    'HOST' => 'pdb_metadata_host',
-    'HOST SAMPLE' => 'pdb_metadata_host_sample',
-    'SOIL' => 'pdb_metadata_soil',
-    'SEDIMENT' => 'pdb_metadata_sediment',
-    );
-}
-
-function _pyro_db_job_active_meta_fields($nid) {
-    //-----
-    // Work out which fields are active...
-    //
-    $ret_array = array();
-    $meta_fields = _pyro_db_get_meta_fields();
-    if(NULL == $nid)
-    {
-        // on the creation page
-        foreach($meta_fields as $key => $value)
-        {
-            $ret_array[$value] = 0;
-        }
-    }
-    else
-    {
-        // not on the creation page
-        $meta_fields = array_flip($meta_fields);
-        $query = "select * from {pdb_metadata_tables} pdb where nid='$nid'";
-        $result = db_query($query);
-        while ($row = db_fetch_object($result)) 
-        {    
-            foreach($row as $key => $value)
-            {
-                if(isset($meta_fields[$key]))
-                {
-                    $ret_array[$key] = $value;
-                }
-            }
-        }
-    }
-    return $ret_array;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
