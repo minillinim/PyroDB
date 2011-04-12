@@ -41,8 +41,8 @@ BEGIN {
 }
 
 # get input params and print copyright
-printAtStart();
 my $options = checkParams();
+if(!exists $options->{'silent'}) { printAtStart(); }
 
 ######################################################################
 # CODE HERE
@@ -499,7 +499,7 @@ sub auto_form_elements {
 # TEMPLATE SUBS
 ######################################################################
 sub checkParams {
-    my @standard_options = ( "help|h+", "infile|i:s" );
+    my @standard_options = ( "help|h+", "infile|i:s", "silent|s+" );
     my %options;
 
     # Add any other command line options, and the code to handle them
@@ -561,9 +561,10 @@ __DATA__
 
 =head1 SYNOPSIS
 
-    pdb_autocode.pl  -infile|i STRING [-help|h]
+    pdb_autocode.pl  -infile|i STRING [-silent|s] [-help|h]
 
       -infile -i                   The file to parse
+      -silent -s		   Suppress all NON-NECESSARY screen noise
       [-help -h]                   Displays basic usage information
          
 =cut
