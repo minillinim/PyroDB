@@ -5,7 +5,7 @@ hiv_stat,hiv_stat,varchar(1),false,Free text - 1), characters.
 ihmc_ethnicity,ihmc_ethnicity,varchar(200),false,Free text - 200 characters.
 ihmc_occupation,ihmc_occupation,double,false,Enter a decimal number only.
 last_meal,last_meal,varchar(500),false,Free text - 500 characters.
-diet_last_six_month,diet_last_six_month,varchar(200 byte),false,Free text - 200 characters.
+diet_last_six_month,diet_last_six_month,varchar(200),false,Free text - 200 characters.
 medic_hist_perform,medic_hist_perform,varchar(1),false,Free text - 1), characters.
 pet_farm_animal,pet_farm_animal,varchar(300),false,Free text - 300 characters.
 pulse,pulse,double,false,Enter a decimal number only.
