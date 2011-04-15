@@ -1,22 +1,24 @@
 :title:wastewater_sludge
-Reactor type,reactor_type,varchar(200),false,Free text - 200 characters.
-Sewage type,sewage_type,varchar(200),false,Free text - 200 characters.
-Wastewater type,wastewater_type,varchar(200),false,Free text - 200 characters.
-Pre treatment,pre_treatment,varchar(300),false,Free text - 300 characters.
-Primary treatment,primary_treatment,varchar(300),false,Free text - 300 characters.
-Secondary treatment,secondary_treatment,varchar(300),false,Free text - 300 characters.
-Tertiary treatment,tertiary_treatment,varchar(300),false,Free text - 300 characters.
-Biochemical oxygen demand,biochem_oxygen_dem,double,false,Enter a decimal number only.
-Chemical oxygen demand,chem_oxygen_dem,double,false,Enter a decimal number only.
-Sludge retent time,sludge_retent_time,double,false,Enter a decimal number only.
-Efficiency percent,efficiency_percent,double,false,Enter a decimal number only.
-Industrial efficiency percent,indust_eff_percent,double,false,Enter a decimal number only.
-Suspended solids,suspend_solids,varchar(400),false,Free text - 400 characters.
-Emulsions,emulsions,varchar(200),false,Free text - 200 characters.
-Gaseous substances,gaseous_substances,varchar(200),false,Free text - 200 characters.
-Inorganic particles,inorg_particles,varchar(500),false,Free text - 500 characters.
-Organic particles,org_particles,varchar(500),false,Free text - 500 characters.
-Soluble inorganic matter,soluble_inorg_mat,double,false,Enter a decimal number only.
-Soluble organic matter,soluble_org_mat,double,false,Enter a decimal number only.
-Total phosphate,tot_phosphate,double,false,Enter a decimal number only.
+Reactor type,reactor_type,varchar(200),false, Anaerobic digesters can be designed and engineered to operate using a number of different process configurations: such as batch or continuous; mesophilic; high solid or low solid; and single stage or multistage. Free text - 200 characters.
+Sewage type,sewage_type,varchar(200),false, Sewage is the subset of wastewater that is contaminated with feces or urine. The type of sewage depends on the source e.g. domestic vs commercial vs industrial. Free text - 200 characters.
+Wastewater type,wastewater_type,varchar(200),false, Wastewater can come from many sources e.g. storm drains vs highway drainage. Free text - 200 characters.
+Pre treatment,pre_treatment,varchar(300),false, The process of pre-treatment removes materials that can be easily collected from the raw wastewater.
+Free text - 300 characters.
+Primary treatment type,primary_treatment,varchar(300),false, The process to produce both a generally homogeneous liquid capable of being treated biologically and a sludge that can be separately treated or processed. Free text - 300 characters.
+Secondary treatment type,secondary_treatment,varchar(300),false, The process for substantially degrading the biological content of the sewage. Free text - 300 characters.
+Tertiary treatment type,tertiary_treatment,varchar(300),false, The process providing a final treatment stage to raise the effluent quality before it is discharged to the receiving environment. Free text - 300 characters.
+Biochemical oxygen demand,biochem_oxygen_dem,double,false, A measure of the relative oxygen-depletion effect of a waste contaminant. Determines the amount of dissolved oxygen needed by aerobic organisms to break down organic material. Units are mg/L. Enter a decimal number only.
+Chemical oxygen demand,chem_oxygen_dem,double,false, A measure of the relative oxygen-depletion effect of a waste contaminant. Used to measure the amount of organic compounds present in water. Units are mg/L. Enter a decimal number only.
+Sludge retention time,sludge_retent_time,double,false, The time activated sludge remains in reactor. Units are hours. Enter a decimal number only.
+Efficiency percent,efficiency_percent,double,false, Percentage of volatile solids removed from the anaerobic digestion process. Enter a decimal number only.
+Industrial efficiency percent,indust_eff_percent,double,false, Percentage of industrial effluents received by wastewater treatment plant. Enter a decimal number only.
+Suspended solids,suspend_solids,varchar(400),false, Concentration of substances including a wide variety of material: such as silt; decaying plant and animal matter; etc; can include multiple substances. Units are mg/L. Free text - 400 characters.
+Emulsions,emulsions,varchar(200),false, Concentration of substances such as paints; adhesives; mayonnaise; hair colorants; emulsified oils; etc; can include multiple emulsion types. Units are mg/L. Free text - 200 characters.
+Gaseous substances,gaseous_substances,varchar(200),false, Concentration of substances such as hydrogen sulfide; carbon dioxide; methane; etc; can include multiple substances. Units are mg/L. Free text - 200 characters.
+Inorganic particles,inorg_particles,varchar(500),false, Concentration of particles such as sand; grit; metal particles; ceramics; etc; can include multiple particles. Units are mg/L. Free text - 500 characters.
+Organic particles,org_particles,varchar(500),false, Concentration of particles such as faeces; hairs; food; vomit; paper fibers; plant material; humus; etc.
+Units are mg/L. Free text - 500 characters.
+Soluble inorganic matter,soluble_inorg_mat,double,false, Concentration of substances such as ammonia; road-salt; sea-salt; cyanide; hydrogen sulfide; thiocyanates; thiosulfates; etc. Units are mg/L. Enter a decimal number only.
+Soluble organic matter,soluble_org_mat,double,false, Concentration of substances such as urea; fruit sugars; soluble proteins; drugs; pharmaceuticals; etc. Units are mg/L. Enter a decimal number only.
+Total phosphate,tot_phosphate,double,false, Concentration of phosphate. Units are mg/L. Enter a decimal number only.
 :end
