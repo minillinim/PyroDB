@@ -1,11 +1,11 @@
 :title:host_associated_vertebrate
 Body Habtiat,body Habtiat,varchar(200),false,Free text - 200 characters.
-Body Site,body site,varchar(200),false, Original body site where the sample was taken from.Free text - 200 characters.
+Body Site,body site,varchar(200),false, Original body site where the sample was taken from. Free text - 200 characters.
 Body Product,BODY_PRODUCT,varchar(200),false, Substance produced by the body e.g. mucus; stool etc. Free text - 200 characters.
 Blood pressure (diastolic),blood_press_diast,int(4),false, The minimum pressure during each heartbeat. Units are mmHg. Enter an integer number only.
 Blood pressure (systolic),blood_press_syst,int(4),false, The maximum pressure during each heartbeat. Units are mmHg. Enter an integer number only.
 Body Temperature,host_body_temp,double,false, Units are Celsius. Enter a decimal number only.
-Diet,diet,varchar(200),false, Type of diet depends on host e.g. for animals: omnivore; carnivore etc. and for humans: high fat; Mediterranean. Free text - 200 characters.
+Diet,diet,varchar(200),false, Type of diet depends on host e.g. for animals: omnivore | carnivore etc. and for humans: high fat | Mediterranean etc. Free text - 200 characters.
 Family relationship,family_relationship,varchar(200),false, Relationship to other hosts in the study. Free text - 200 characters.
 Medications,medications,varchar(200),false, List of currently used medications. Free text - 200 characters.
 Gravidity,gravidity,int(2),false, Total number of pregnancies. Enter an integer number only. 
