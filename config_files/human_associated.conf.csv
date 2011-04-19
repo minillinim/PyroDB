@@ -1,45 +1,45 @@
 :title:human_associated
-body_mass_index,body_mass_index,double,false,Enter a decimal number only.
-drug_usage,drug_usage,varchar(500),false,Free text - 500 characters.
-hiv_stat,hiv_stat,varchar(1),false,Free text - 1), characters.
-ihmc_ethnicity,ihmc_ethnicity,varchar(200),false,Free text - 200 characters.
-ihmc_occupation,ihmc_occupation,double,false,Enter a decimal number only.
-last_meal,last_meal,varchar(500),false,Free text - 500 characters.
-diet_last_six_month,diet_last_six_month,varchar(200),false,Free text - 200 characters.
-medic_hist_perform,medic_hist_perform,varchar(1),false,Free text - 1), characters.
-pet_farm_animal,pet_farm_animal,varchar(300),false,Free text - 300 characters.
-pulse,pulse,double,false,Enter a decimal number only.
-smoker,smoker,varchar(1),false,Free text - 1), characters.
-travel_out_six_month,travel_out_six_month,varchar(300),false,Free text - 300 characters.
-twin_sibling,twin_sibling,varchar(1),false,Free text - 1), characters.
-weight_loss_3_month,weight_loss_3_month,double,false,Enter a decimal number only.
-nose_throat_disord,nose_throat_disord,varchar(500),false,Free text - 500 characters.
-pulmonary_disord,pulmonary_disord,varchar(500),false,Free text - 500 characters.
-study_complt_stat,study_complt_stat,double,false,Enter a decimal number only.
-amniotic_fluid_color,amniotic_fluid_color,varchar(100),false,Free text - 100 characters.
-gestation_state,gestation_state,varchar(200),false,Free text - 200 characters.
-foetal_health_stat,foetal_health_stat,varchar(200),false,Free text - 200 characters.
-maternal_health_stat,maternal_health_stat,varchar(200),false,Free text - 200 characters.
-blood_disord,blood_disord,varchar(200),false,Free text - 200 characters.
-gastrointest_disord,gastrointest_disord,varchar(200),false,Enter an integer number only.
-liver_disord,liver_disord,varchar(200),false,Free text - 200 characters.
-special_diet,special_diet,varchar(400),false,Free text - 400 characters.
-nose_mouth_teeth_throat_disord,nose_mouth_teeth_throat_disord,varchar(400),false,Free text - 400 characters.
-time_last_toothbrush,time_last_toothbrush,double,false,Enter a decimal number only.
-dermatology_disord,dermatology_disord,varchar(500),false,Free text - 500 characters.
-dominant_hand,dominant_hand,varchar(100),false,Free text - 100 characters.
-time_since_last_wash,time_since_last_wash,double,false,Enter a decimal number only.
-kidney_disord,kidney_disord,varchar(200),false,Free text - 200 characters.
-urine_collect_meth,urine_collect_meth,double,false,Enter a decimal number only.
-urogenit_tract_disor,urogenit_tract_disor,varchar(200),false,Free text - 200 characters.
-birth_control,birth_control,varchar(100),false,Free text - 100 characters.
-douche,douche,varchar(100),false,Free text - 100 characters.
-gynecologic_disord,gynecologic_disord,varchar(200),false,Free text - 200 characters.
-menarche,menarche,varchar(100),false,Free text - 100 characters.
-hrt,hrt,varchar(100),false,Free text - 100 characters.
-hysterectomy,hysterectomy,varchar(1),false,Free text - 1), characters.
-menopause,menopause,varchar(100),false,Free text - 100 characters.
-pregnancy,pregnancy,varchar(100),false,Free text - 100 characters.
-sexual_act,sexual_act,varchar(200),false,Free text - 200 characters.
-urogenit_disord,urogenit_disord,varchar(200),false,Free text - 200 characters.
+Body mass index,body_mass_index,double,false, Body mass index, calculated as weight/(height)squared. Enter a decimal number only.
+Drug usage,drug_usage,varchar(500),false, Any drug used by subject and the frequency of usage; can include multiple drugs used. Provide drug name | usage frequency. Free text - 500 characters.
+HIV status,hiv_stat,varchar(1),false, HIV status of patient. Provide y or n. Free text - 1 character.
+IHMC ethnicity,ihmc_ethnicity,varchar(200),false, Ethnicity of the patient e.g. Caucasian |  Asian etc. Free text - 200 characters.
+Occupation,ihmc_occupation,varchar(200),false, Most frequent job performed by the patient. Free text - 200 caharacters. 
+Last meal,last_meal,varchar(500),false, Contents of last meal. Free text - 500 characters.
+Diet last six month,diet_last_six_month,varchar(200),false, Specification of major diet changes in the last 6 months. Free text - 200 characters.
+Medical history performed,medic_hist_perform,varchar(1),false, Whether full medical history was collected. True(T) or false(F). Free text - 1 character.
+Presence of pet or farm animals,pet_farm_animal,varchar(300),false, Specification of presence of pets or farm animals in the environment of subject. If yes the animals should be specified: can include multiple animals present. Free text - 300 characters.
+Pulse,pulse,int(3),false, Resting pulse measured as beats/minute. Enter an integer number only.
+Smoker,smoker,varchar(1),false, Smoker - Y or N. Free text - 1 character.
+Travel outside of country in last six months,travel_out_six_month,varchar(300),false, Specification of the countries traveled in the last six months - can include multiple travels. Free text - 300 characters.
+Twin sibling,twin_sibling,varchar(1),false, Presence of twin sibling. Provide Y or N. Free text - 1 character.
+Weight loss in last three months,weight_loss_3_month,varchar(100),false, Specification of weight loss in the last three months. If yes: specify amount. Provide either Y or N | amount. Free text - 100 characters.
+Lung/ nose-throat disorder,nose_throat_disord,varchar(500),false, History of nose-throat disorders. Can include multiple disorders.Free text - 500 characters.
+Pulmonary disorder,pulmonary_disord,varchar(500),false,History of pulmonary disorder. Can include multiple disorders.Free text - 500 characters.
+Study completion status,study_complt_stat,varchar(100),false, Specification of study completion status. If no the reason should be specified. Free text - 100 characters. 
+Amniotic fluid color,amniotic_fluid_color,varchar(100),false, Specification of the colour of the amniotic fluid sample. Free text - 100 characters.
+Gestation state,gestation_state,varchar(200),false, Specification of the gestation state. Free text - 200 characters.
+Foetal health status,foetal_health_stat,varchar(200),false, Specification of the health status of the fetus. Should also include abortion. Free text - 200 characters.
+Maternal health status,maternal_health_stat,varchar(200),false, Specification of the maternal health status. Free text - 200 characters.
+Blood disorder,blood_disord,varchar(200),false, History of blood disorders. Can include multiple disorders. Free text - 200 characters.
+Gastrointestinal  disorder,gastrointest_disord,varchar(200),false, History of gastrointestinal disorders. Can include multiple disorders.Free text - 200 characters. 
+Liver disorder,liver_disord,varchar(200),false, History of liver disorder. Can include multiple disorders. Free text - 200 characters.
+Special diet,special_diet,varchar(400),false, Specification of special diet. Can include multiple diets. Free text - 400 characters.
+Mouth and teeth disorder,nose_mouth_teeth_throat_disord,varchar(400),false, History of mouth and teeth disorder. Can include multiple disorders. Free text - 400 characters.
+Time since last toothbrushing,time_last_toothbrush,double,false, Time since last toothbrushing. Units are hours. Enter a decimal number only.
+Dermatology disorder,dermatology_disord,varchar(500),false, History of dermatology disorder. Can include multiple disorders. Free text - 500 characters.
+Dominant hand,dominant_hand,varchar(1),false, Which hand is dominant for the patient. Provide R or L. Free text - 1 characters.
+Time since last wash,time_since_last_wash,double,false, Time since last wash e.g. shower. Units are hours. Enter a decimal number only.
+kidney disorder,kidney_disord,varchar(200),false, History of kidney disorder. Can include multiple disorders. Free text - 200 characters.
+Urine collection method,urine_collect_meth,varchar(200),false, Method used to collect urine samples. Free text - 200 characters.
+Urogenital tract disorder,urogenit_tract_disor,varchar(200),false, History of urogenital tract disorders. Can include multiple disorders. Free text - 200 characters.
+Birth control,birth_control,varchar(100),false,Specification of birth control medication used.Free text - 100 characters.
+Douche,douche,varchar(100),false, Date of most recent douche. Free text - 100 characters.
+Gynecological disorder,gynecologic_disord,varchar(200),false, History of gynecological disorder. Can include multiple disorders. Free text - 200 characters.
+menarche,menarche,varchar(100),false, Date of most recent menstruation. Free text - 100 characters.
+HRT,hrt,varchar(100),false, Whether patient has received hormone replacement therapy. If yes - provide start date. Free text - 100 characters.
+Hysterectomy,hysterectomy,varchar(1),false, Specification of whether hysterectomy was performed. Provide Y or N. Free text - 1 character.
+Menopause,menopause,varchar(100),false, Provide date of onset of menopause. Free text - 100 characters.
+Pregnancy,pregnancy,varchar(100),false, Whether the patient is pregnant. If yes - provide expected due date of pregnancy.Free text - 100 characters.
+Sexual activity,sexual_act,varchar(200),false, Provide current sexual partner and frequency of sex. Free text - 200 characters.
+Urogenital disorder,urogenit_disord,varchar(200),false, History of urogenital disorder. Can include multiple disorders. Free text - 200 characters.
 :end
