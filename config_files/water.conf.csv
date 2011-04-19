@@ -1,14 +1,14 @@
 :title:water
-Atmospheric data,atmospheric_data,varchar(500),false,Free text - 500 characters.
-Dissolved inorganic nitrogen,diss_inorg_nitro,double,false,Enter a decimal number only.
-Dissolved inorganic phosphate,diss_inorg_phosp,double,false,Enter a decimal number only.
-Light intensity,lightEnter an integer number only.intensity,double,false,Enter a decimal number only.
-Photon flux,photon_flux,double,false,Enter a decimal number only.
-Primary prod,primary_prod,double,false,Enter a decimal number only.
-Soluble reaction phosphate,soluble_react_phosp,double,false,Enter a decimal number only.
-Suspended part matter,suspend_part_matter,double,false,Enter a decimal number only.
-Total depth of water column,tot_depth_water_col,double,false,Enter a decimal number only.
-Total inorganic nitrogen,tot_inorg_nitro,double,false,Enter a decimal number only.
-Total part carbon,tot_part_carb,double,false,Enter a decimal number only.
-Total phosphate,tot_phosp,double,false,Enter a decimal number only.
+Atmospheric data,atmospheric_data,varchar(500),false, Measurement of atmospheric data. Provide atmospheric data name | measurement value. Can include multiple data. Free text - 500 characters.
+Dissolved inorganic nitrogen,diss_inorg_nitro,double,false, Dissolved organic nitrogen concentration measured as; total dissolved nitrogen - NH4 - NO3 - NO2. Units are mg N/m^3 water. Enter a decimal number only.
+Dissolved inorganic phosphate,diss_inorg_phosp,double,false, Concentration of dissolved inorganic phosphorus. Units are mg P/m^3 water. Enter a decimal number only.
+Light intensity,lightEnter an integer number only.intensity,double,false, Measurement of light intensity. Enter a decimal number only.
+Photon flux,photon_flux,double,false, Measurement of photon flux. Enter a decimal number only.
+Primary production,primary_prod,double,false,Measurement of primary production. Enter a decimal number only.
+Soluble reactive phosphate,soluble_react_phosp,double,false, Concentration of soluble reactive phosphorus. Units are __. Enter a decimal number only.
+Suspended particulate matter,suspend_part_matter,double,false, Concentration of suspended particulate matter. Units are ___. Enter a decimal number only.
+Total depth of water column,tot_depth_water_col,int(11),false, Measurement of total depth of water column. Enter an integer number only.
+Total inorganic nitrogen,tot_inorg_nitro,double,false, Total inorganic nitrogen content. Units are mg N/m^3 water. Enter a decimal number only.
+Total particulate carbon,tot_part_carb,double,false, Total particulate carbon content. Units are mg C/m^3 water. Enter a decimal number only.
+Total phosphate,tot_phosp,double,false, Total phosphorus concentration, calculated by: total phosphorus = total dissolved phosphorus + particulate phosphorus. Can also be measured without filtering, reported as phosphorus. Units are mg P/m^3 water. Enter a decimal number only.
 :end
