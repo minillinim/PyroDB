@@ -10,5 +10,5 @@ Suspended particulate matter,suspend_part_matter,double,false, Concentration of 
 Total depth of water column,tot_depth_water_col,int(11),false, Measurement of total depth of water column. Enter an integer number only.
 Total inorganic nitrogen,tot_inorg_nitro,double,false, Total inorganic nitrogen content. Units are mg N/m^3 water. Enter a decimal number only.
 Total particulate carbon,tot_part_carb,double,false, Total particulate carbon content. Units are mg C/m^3 water. Enter a decimal number only.
-Total phosphate,tot_phosp,double,false, Total phosphorus concentration, calculated by: total phosphorus = total dissolved phosphorus + particulate phosphorus. Can also be measured without filtering, reported as phosphorus. Units are mg P/m^3 water. Enter a decimal number only.
+Total phosphate,tot_phosp,double,false, Total phosphorus concentration. Calculated by: total phosphorus = total dissolved phosphorus + particulate phosphorus. Units are mg P/m^3 water. Enter a decimal number only.
 :end
