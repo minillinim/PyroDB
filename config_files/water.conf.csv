@@ -11,4 +11,8 @@ Total depth of water column,tot_depth_water_col,int(11),false, Measurement of to
 Total inorganic nitrogen,tot_inorg_nitro,double,false, Total inorganic nitrogen content. Units are mg N/m^3 water. Enter a decimal number only.
 Total particulate carbon,tot_part_carb,double,false, Total particulate carbon content. Units are mg C/m^3 water. Enter a decimal number only.
 Total phosphate,tot_phosp,double,false, Total phosphorus concentration. Calculated by: total phosphorus = total dissolved phosphorus + particulate phosphorus. Units are mg P/m^3 water. Enter a decimal number only.
+Chlorophyll_A,CHLA_ug/L,false,Chlorophyll_A measurement in water sample. Units are ug/L. Enter a decimal number only.
+Dissolved organic carbon,DOC,double,false,Dissolved organic carbon content. Units are uM. Enter a decimal number only.
+Latitude,LAT,false, Latitude of water collection,varchar(20).
+Longitude,Long,false, Longitude of water collection, varchar(20). 
 :end
