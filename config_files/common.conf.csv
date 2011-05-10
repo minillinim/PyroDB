@@ -17,7 +17,7 @@ Sample storage duration units, samp_store_dur_units,varchar(20),false, Give the 
 Sample storage location,samp_store_loc,varchar(200),false, Description of the location the samples were stored prior to DNA extraction. Free text - 200 characters.
 Sample storage temperature,samp_store_temp,double,false, Temperature the sample were stored at prior to DNA extraction. Units are Celsius (C). Enter a decimal number only.
 Redox potential,redox_potential,double,false,Measured relative to a hydrogen cell: indicating oxidation or reduction potential. Units are volts (V). Enter a decimal number only.
-Salinity,salinity,double,false,Salinity of sample. Measurement of total salt content. Units are micrograms per centimetre cubed (ug/cm^3)Enter a decimal number only.
+Salinity,salinity,double,false,Salinity of sample. Measurement of total salt content.Varchar (20).Enter a decimal number only.
 Alkalinity,alkalinity,double,false, The ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate. Enter a decimal number only.
 Ph,ph,double,false, A measure of the acidity or basicity of an aqueous solution. Enter a decimal number only.
 Turbidity,turbidity,double,false, The cloudiness or haziness of a fluid caused by suspended solids. Units are Nephelometric turbidity units (NTU). Enter a decimal number only.
