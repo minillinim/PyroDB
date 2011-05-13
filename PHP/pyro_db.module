@@ -96,6 +96,10 @@ function pyro_db_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
         {
             _pyro_db_job_body(TRUE, $nid);
         }
+        elseif($op == 'delete') {
+            // need to clear up all the tables for this job
+            _pyro_db_job_delete($nid);
+        }
         
     }
     elseif($node->type == 'pdb_client_sample') {

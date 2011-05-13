@@ -279,7 +279,6 @@ function _pyro_db_job_lock_job($job_node, $lockIt) {
         foreach ($all_samples as $this_sample)
         {
             $tmp_sample_node = node_load($this_sample);
-            drupal_set_message($tmp_sample_node->title, 'status', true);
             // State 6 is the locked state for a sample
             workflow_execute_transition($tmp_sample_node, 6);
         }
@@ -364,4 +363,16 @@ function _pyro_db_job_get_gasket($nid) {
         return $ret_array;
     }
     return $ret_array;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+function _pyro_db_job_delete($nid) {
+    //-----
+    // called just before a job is deleted
+    //
+    // remove this guy from the tables table
+    db_query("DELETE FROM {pdb_metadata_tables}  where nid='".$nid."'");
 }

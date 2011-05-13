@@ -601,6 +601,20 @@ function _pyro_db_sample_set_mid($gs_nid, $mid, $samp_nid) {
 
 function _pyro_db_sample_unset_mid($samp_nid) {
     db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '' WHERE nid = '$samp_nid'");
+    
+    // we need to decrement the number used for this gasket.
+    // get the gasket nid
+    $result = db_query("SELECT pgm.gasket_id FROM {pdb_gasket_mids} pgm WHERE sample_id = '$samp_nid'"); 
+    while ($row = db_fetch_object($result)) {
+        $result2 = db_query("SELECT ctpg.field_gas_num_samps_value FROM {content_type_pdb_gasket} ctpg  WHERE nid = '$row->gasket_id'"); 
+        while ($row2 = db_fetch_object($result2)) {
+            $updated_num = $row2->field_gas_num_samps_value - 1;
+            db_query("UPDATE {content_type_pdb_gasket} SET field_gas_num_samps_value = '$updated_num'  WHERE nid = '$row->gasket_id'");
+            break;
+        }
+        break;
+    }
+    # now delete away...
     db_query("DELETE FROM {pdb_gasket_mids} WHERE sample_id = '$samp_nid'");
     $tmp_sample_node = node_load($samp_nid);
     drupal_set_message("MID removed from Sample: " . $tmp_sample_node->title, 'status', true );

@@ -92,7 +92,8 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
     // Use this for removing the jobs
     $nid = $form['nid']['#value'];
     $used = 0;
-    $max = 0;
+    // max will fail to be stored in the db when the form first loads. So we need to bootstrap it here...
+    $max = $form['field_gas_max_samples']['0']['#default_value']['value'];
     $result = db_query("SELECT gas.field_gas_num_samps_value,  gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
     if($row = db_fetch_object($result)) 
     {
@@ -111,7 +112,7 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
     );
 
     // get all the jobs which belong to no gasket
-    $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n LEFT JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='0'");
+    $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n INNER JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='0' OR cj_plus_node.field_cj_gasket_nid is NULL");
     while ($row = db_fetch_object($result)) 
     {
         // get the number of samples that this guy has
@@ -164,7 +165,8 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
     
     // get the total amount used so far
     $used = 0;
-    $max = 0;
+    // max will fail to be stored in the db when the form first loads. So we need to bootstrap it here...
+    $max = $form['field_gas_max_samples']['0']['#default_value']['value'];
     $result = db_query("SELECT gas.field_gas_num_samps_value,  gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
     if($row = db_fetch_object($result)) 
     {
@@ -176,33 +178,28 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
     {
         foreach ( $form_state['values']['pdb_assigned_jobs'] as $key => $value)
         {
-            $tmp_used = -1;
             if($value)
             {
                 $rem_job_nid = $form['pdb_assigned_jobs'][$key]['#id'];
                 if("edit-pdb-assigned-jobs-submit" != $rem_job_nid) {
-                    $tmp_used = _pyro_db_gasket_do_remove($max, $used, $nid, $rem_job_nid);
+                    $form_state['values']['field_gas_num_samps'][0]['value'] =- _pyro_db_gasket_do_remove($nid, $rem_job_nid);
                 }
             }
-            if($tmp_used != -1) {  $used = $tmp_used; }
         }
     }
     if(is_array($form_state['values']['pdb_non_assigned_jobs']))
     {
         foreach ( $form_state['values']['pdb_non_assigned_jobs'] as $key => $value)
         {
-            $tmp_used = -1;
             if($value)
             {
                 $new_job_nid = $form['pdb_non_assigned_jobs'][$key]['#id'];
                 if("edit-pdb-non-assigned-jobs-submit" != $new_job_nid) {
-                    $tmp_used = _pyro_db_gasket_do_add($max, $used, $nid, $new_job_nid);
+                    $form_state['values']['field_gas_num_samps'][0]['value'] = _pyro_db_gasket_do_add($max, $used, $nid, $new_job_nid);
                 }
             }
-            if($tmp_used != -1) {  $used = $tmp_used; }
         }
     }
-    $form_state['values']['field_gas_num_samps'][0]['value'] = $used;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,11 +283,14 @@ function _pyro_db_gasket_unset_mids($job_nid, $nid) {
     //-----
     // un-assign MIDs for all samples for the current job
     //
+    $num_freed = 0;
     $sample_list = _pyro_db_job_get_all_samples($job_nid);
     foreach ($sample_list as $current_sample)
     {
         _pyro_db_sample_unset_mid($current_sample);
+        $num_freed++;
     }
+    return $num_freed;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,25 +327,24 @@ function _pyro_db_gasket_do_add($max, $used, $gs_nid, $job_nid) {
     return -1;
 }
 
-function _pyro_db_gasket_do_remove($max, $used, $gs_nid, $job_nid) {
+function _pyro_db_gasket_do_remove($gs_nid, $job_nid) {
     //-----
     // remove a job from a gasket and do all that entails
-    //
+    // This function will call a function which is responsible for freeing
+    // the MIDS and for decrementing the count. The function is: _pyro_db_sample_unset_mid
+    // Do not change this behaviour. This is becuase and admin delete of a sample must fix the gasker used count!
+    // this function returns the number freed
     $tmp_job_node = node_load($job_nid);
     $tmp_gs_node = node_load($gs_nid);
-    $num_samples = count(_pyro_db_job_get_all_samples($job_nid));
     
     drupal_set_message("Removed: ".$tmp_job_node->title." from ".$tmp_gs_node->title, 'status', TRUE);
     db_query("UPDATE {content_type_pdb_client_job} ctpcj set ctpcj.field_cj_gasket_nid = '0' WHERE ctpcj.nid = '$job_nid'");
     
-    // unset the MIDs
-    _pyro_db_gasket_unset_mids($job_nid, $gs_nid);
+    // unset the MIDs 
+    $num_freed = _pyro_db_gasket_unset_mids($job_nid, $gs_nid);
     
     // unlock the jobs and sample for editing
     _pyro_db_job_lock_job($tmp_job_node, false);
     
-    // update the sample count
-    $new_count = $used - $num_samples;
-    if($new_count < 0) { $new_count = 0; } // who knows...
-    return $new_count;
+    return $num_freed;
 }
