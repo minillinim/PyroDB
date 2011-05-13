@@ -49,12 +49,28 @@ if(!exists $options->{'silent'}) { printAtStart(); }
 ######################################################################
 
 # globals
+# Each line looks like this:
+# human_skin  dermatology_disord  dermatology disorder    history of dermatology disorders; can include multiple disorders    X   disorder name   {text}  m
+# we can split on tab and then get all the info we need:
+#
+# Field: -> description
+# 0         metadata_type
+# 1         db field name
+# 2         fancy name
+# 3         description
+# 4         required?
+# 5         expected input
+# 6         format
+# 7         number expected
+
 my $global_title = '';
 my @global_fields = ();            # db names
-my @global_types = ();             # data types
 my @global_fancies = ();           # display names
 my @global_descriptions = ();      # descriptions for the input form
 my @global_requireds = ();         # if this field is required
+my @global_expecteds = ();         # if this field is required
+my @global_formats = ();           # strict format expected
+my @global_nums = ();              # number of entries we're expecting
 my $global_name = '';              # edit form group name
 
 open my $in_fh, "<", $options->{'infile'};
@@ -106,26 +122,55 @@ sub parseInput {
     my $nl_count = 0;
     while(<$in_fh>)
     {
-        #print lc($_);
         chomp $_;
-        if($_ =~ /^:/)
+
+        my @line_bits = split /\t/, $_;
+        $global_name = uc($line_bits[0]);
+        $global_title = "pdb_metadata_".$line_bits[0];
+        
+        # fix the formats field
+        my $inp_format = $line_bits[6];
+        $inp_format =~ s/\} \{/\};\{/;
+        $inp_format =~ s/; /;/;
+        # first we see if we have any '[' chars in the format
+        my $bracket_count = $inp_format =~ tr/[//;
+        if(0 != $bracket_count)
         {
-            # comment or EOF
-            my @com_line = split /:/, $_;
-            last if($com_line[1] eq "end");
-            if($com_line[1] eq "title")
+            # count the number of '|' chars in the string
+            my $bar_count = ($inp_format =~ tr/|//);
+            my @splitz = split /\|/, $inp_format;
+            $inp_format = "";
+            my $counter = 0;
+            foreach my $bit (@splitz)
             {
-                $global_name = uc($com_line[2]);
-                $global_title = "pdb_metadata_".$com_line[2];
+                $inp_format .= $bit;
+                if($counter < $bar_count) { $inp_format .= " = $counter, "; }
+                $counter++;
             }
-            next;
+            $counter--;
+            my $rep_str = " = $counter";
+            $inp_format =~ s/]/$rep_str]/;
         }
-        my @line_bits = split /,/, $_;
-        push @global_fancies, $line_bits[0];
+        
+        # fix the fancies, description and expecteds fields
+        $line_bits[2] = ucfirst($line_bits[2]);
+        $line_bits[3] = ucfirst($line_bits[3]);
+        $line_bits[5] = ucfirst($line_bits[5]);
+        
         push @global_fields, $line_bits[1];
-        push @global_types, $line_bits[2];
-        push @global_requireds, $line_bits[3];
-        push @global_descriptions, $line_bits[4];
+        push @global_fancies, $line_bits[2];
+        push @global_descriptions, $line_bits[3];
+        if($line_bits[4] eq "M")
+        {
+            push @global_requireds, "true";
+        }
+        else
+        {
+            push @global_requireds, "false";
+        }
+        push @global_expecteds, $line_bits[5];
+        push @global_formats, $inp_format;
+        push @global_nums, $line_bits[7];
     }    
 }
 
@@ -136,7 +181,7 @@ sub auto_sql_line {
     my $counter = 0;
     foreach my $key (@global_fields)
     {
-        print ", `$key` $global_types[$counter]";
+        print ", `$key` varchar(200)";
         $counter++;
     }
     print ", PRIMARY KEY (`nid`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8;\n";
@@ -185,7 +230,7 @@ sub auto_insert {
     my $counter = 0;
     foreach my $key (@global_fields)
     {
-        print $out_fh "  // $key => $global_types[$counter]\n";
+        print $out_fh "  // $key => varchar(200)\n";
         $counter++;
     }
     print $out_fh "  // \n";
@@ -225,22 +270,13 @@ sub auto_types {
     my $counter = 0;
     foreach my $key (@global_fields)
     {
-        my $type = '%d';
-        if($global_types[$counter] =~ /^varchar/) {
-            $type = '%s';
-        }
-        if($global_types[$counter] =~ /^double/) {
-            $type = '%f';
-        }
-        if($global_types[$counter] =~ /^char/) {
-            $type = '%c';
-        }
-        print $out_fh "        '$key' => '$type',\n";
+        print $out_fh "        '$key' => '\%s',\n";
         $counter++;
     }
     print $out_fh "    );\n";
     print $out_fh "}\n\n";
 }
+
 ######################
 # UPDATE
 ######################
@@ -261,7 +297,7 @@ sub auto_update {
     my $counter = 0;
     foreach my $key (@global_fields)
     {
-        print $out_fh "  // $key => $global_types[$counter]\n";
+        print $out_fh "  // $key => varchar(200)\n";
         $counter++;
     }
     print $out_fh "  // \n";
@@ -418,21 +454,47 @@ sub auto_form_component {
     my $counter = 0;
     foreach my $key (@global_fields)
     {
-        # set the description (if any)
-        my $description = '';
-        if('_' ne $global_descriptions[$counter])
-        {$description = $global_descriptions[$counter]; }
+        # set the description
+        my $description = "<strong>Description:&nbsp;&nbsp;&nbsp;</strong>$global_descriptions[$counter]<br>";
+        $description .= "<strong>Expected value:&nbsp;&nbsp;&nbsp;</strong>$global_expecteds[$counter]<br>";
+        $description .= "<strong>Format:&nbsp;&nbsp;&nbsp;</strong>$global_formats[$counter]";
+        if($global_formats[$counter] =~ /timestamp/)
+        {
+            $description .= "&nbsp;&nbsp;&nbsp; [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss](+-[hh]:[mm] if has offset from UTC)&nbsp;&nbsp;EX: 2007-04-05T22:30:15+10";
+        }
+        elsif($global_formats[$counter] =~ /interval/)
+        {
+            $description .= "&nbsp;&nbsp;&nbsp; [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]+-[hh]:[mm]/[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]+-[hh]:[mm]<br>(+-[hh]:[mm] if has offset from UTC)&nbsp;&nbsp;EX: 2007-03-01T13:00:00+10/2008-05-11T15:30:00+10";
+        }
+        elsif($global_formats[$counter] =~ /duration/ || $global_formats[$counter] =~ /period/)
+        {
+            $description .= "<br>P[n]Y[n]M[n]DT[n]H[n]M[n]S > P3Y6M4DT12H30M5S<br>";
+            $description .= "o P is the duration designator (historically called \"period\") placed at the start of the duration representation.<br>";
+            $description .= "o Y is the year designator that follows the value for the number of years.<br>";
+            $description .= "o M is the month designator that follows the value for the number of months.<br>";
+            $description .= "o W is the week designator that follows the value for the number of weeks.<br>";
+            $description .= "o D is the day designator that follows the value for the number of days.<br>";
+            $description .= "o T is the time designator that precedes the time components of the representation.<br>";
+            $description .= "o H is the hour designator that follows the value for the number of hours.<br>";
+            $description .= "o M is the minute designator that follows the value for the number of minutes.<br>";
+            $description .= "o S is the second designator that follows the value for the number of seconds.";
+        }
+        
+        $description .= "<br>";
         
         # set the size
-        my $size = 5;
-        my $maxsize = 5;
+        my $size = 80;
+        my $maxsize = 200;
         my $type = 'textfield';
-        if($global_types[$counter] =~ /^varchar/) {
-            $size = 80;
+        if($global_nums[$counter] eq "m") {
             $type = 'textarea';
-            $maxsize = $global_types[$counter];
-            $maxsize =~ s/varchar\((.*)\)/$1/;
+            $description .= "Multiple values are OK, one entry per line";
         }
+        else
+        {
+            $description .= "Please enter only one value";
+        }
+        
         print $out_fh auto_form_elements($key, $type, $global_fancies[$counter], '', '',  $description, $size, $maxsize, $global_requireds[$counter]);
         $counter++;
     }
