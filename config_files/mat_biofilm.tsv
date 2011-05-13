@@ -1,4 +1,4 @@
-mat_biofilm	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
+mat_biofilm	alt	altitude	The altitude of the sample is the vertical distance between Earth\'s surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
 mat_biofilm	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	M	measurement value	{float} m	1
 mat_biofilm	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	M	measurement value	{float} {unit}	1
 mat_biofilm	alkalinity	alkalinity	alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate	X	measurement value	{float} {unit}	1

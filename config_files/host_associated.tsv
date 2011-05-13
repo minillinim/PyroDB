@@ -1,4 +1,4 @@
-host_associated	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
+host_associated	alt	altitude	The altitude of the sample is the vertical distance between Earth\'s surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
 host_associated	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	C	measurement value	{float} m	1
 host_associated	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	C	measurement value	{float} {unit}	1
 host_associated	host_common_name	host common name	common name of the host, e.g. human	X	common name	{text}	1

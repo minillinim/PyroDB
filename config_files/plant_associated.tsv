@@ -1,4 +1,4 @@
-plant_associated	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
+plant_associated	alt	altitude	The altitude of the sample is the vertical distance between Earth\'s surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
 plant_associated	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	C	measurement value	{float} m	1
 plant_associated	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	C	measurement value	{float} {unit}	1
 plant_associated	age	age	age of host at the time of sampling; relevant scale depends on species and study, e.g. could be seconds for amoebae or centuries for trees	X	value	{float} {unit}	1
@@ -45,7 +45,7 @@ plant_associated	samp_store_dur	sample storage duration	duration for which sampl
 plant_associated	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
 plant_associated	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
 plant_associated	season_environment	seasonal environment	treatment involving an exposure to a particular season (e.g. winter, summer, rabi, rainy etc.)	X	seasonal environment name;treatment duration;interval;experimental duration	{text};{period};{interval};{period}	m
-plant_associated	standing_water_regm	standing water regimen	treatment involving an exposure to standing water during a plant's life span, types can be flood water or standing water; can include multiple regimens	X	standing water type;treatment duration;interval;experimental duration	{text};{period};{interval};{period}	m
+plant_associated	standing_water_regm	standing water regimen	treatment involving an exposure to standing water during a plant\'s life span, types can be flood water or standing water; can include multiple regimens	X	standing water type;treatment duration;interval;experimental duration	{text};{period};{interval};{period}	m
 plant_associated	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
 plant_associated	tiss_cult_growth_med	tissue culture growth media	description of plant tissue culture growth media used	X	PMID,DOI,url or free text	{PMID|DOI|URL}	1
 plant_associated	tot_mass	total mass	total mass of the host at collection, the unit depends on host	X	measurement value	{float} {unit}	1
