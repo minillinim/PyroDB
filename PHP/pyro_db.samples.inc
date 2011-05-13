@@ -29,14 +29,20 @@ putenv("TZ=Australia/Brisbane");
 // Includes for each table
 //////////////////////////////////////////////////////////////////////////////////////////////////
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_air.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_common.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_water.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_wastewater_sludge.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_host_associated_vertebrate.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_host_associated.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_human_associated.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_host_sample.inc');
-include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_soil.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_human_gut.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_human_oral.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_human_skin.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_human_vaginal.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_mat_biofilm.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_miscellaneous.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_plant_associated.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_sediment.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_soil.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_wastewater_sludge.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_water.inc');
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Body
@@ -53,20 +59,20 @@ function _pyro_db_sample_body($isSave, $nid) {
     }
     else
     {
-        # print the common fields
+        # print the miscellaneous fields
         _pyro_db_fields_as_table($nid);
 
         # print any custom metadata
         echo "<br><h1>METADATA</h1><hr>";
-        _pyro_db_pdb_metadata_common_view($nid);
+        _pyro_db_pdb_metadata_miscellaneous_view($nid);
         $result = db_query("SELECT * FROM {pdb_metadata_tables}  where nid='".$nid."'");
         while ($row = db_fetch_object($result)) {
             foreach ($row as $key => $value)
             {
                 if(1 == $value)
                 {
-                    # already done the common fields
-                    if('pdb_metadata_common' != $key)
+                    # already done the miscellaneous fields
+                    if('pdb_metadata_miscellaneous' != $key)
                     {
                         # make the funciton name
                         $func = "_pyro_db_".$key."_view";
@@ -81,7 +87,7 @@ function _pyro_db_sample_body($isSave, $nid) {
         // called when a node is being viewed
         $ret_str = '';
 
-        // if the node is unloacked then we can clone!
+        // if the node is unlocked then we can clone!
         $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
         while ($row = db_fetch_object($result)) {
             if($row->sid == 5)
@@ -265,15 +271,15 @@ function _pyro_db_sample_form_alter(&$form, $form_state, $form_id) {
     // Add metadata fileds to the sample edit form
     //
     $nid = $form['nid']['#value'];
-    _pyro_db_pdb_metadata_common_form_alter(&$form, $form_state);
+    _pyro_db_pdb_metadata_miscellaneous_form_alter(&$form, $form_state);
     $result = db_query("SELECT * FROM {pdb_metadata_tables}  where nid='".$nid."'");
     while ($row = db_fetch_object($result)) {
         foreach ($row as $key => $value)
         {
             if(1 == $value)
             {
-                # already done the common fields
-                if('pdb_metadata_common' != $key)
+                # already done the miscellaneous fields
+                if('pdb_metadata_miscellaneous' != $key)
                 {
                     # make the function name
                     $func = "_pyro_db_".$key."_form_alter";

@@ -33,13 +33,18 @@ function _pyro_db_get_meta_fields() {
     //
     return array(
         'AIR' => 'pdb_metadata_air',
-        'WATER' => 'pdb_metadata_water',
-        'WASTE WATER SLUDGE' => 'pdb_metadata_wastewater_sludge',
-        'HOST SAMPLE' => 'pdb_metadata_host_sample',
-        'VERTEBRATES' => 'pdb_metadata_host_associated_vertebrate',
+        'HOST ASSOCIATED' => 'pdb_metadata_host_associated',
         'HUMAN ASSOCIATED' => 'pdb_metadata_human_associated',
-        'SOIL' => 'pdb_metadata_soil',
+        'HUMAN GUT' => 'pdb_metadata_human_gut',
+        'HUMAN ORAL' => 'pdb_metadata_human_oral',
+        'HUMAN SKIN' => 'pdb_metadata_human_skin',
+        'HUMAN VAGINAL' => 'pdb_metadata_human_vaginal',
+        'MAT BIOFILM' => 'pdb_metadata_mat_biofilm',
+        'PLANT ASSOCIATED' => 'pdb_metadata_plant_associated',
         'SEDIMENT' => 'pdb_metadata_sediment',
+        'SOIL' => 'pdb_metadata_soil',
+        'WASTE WATER SLUDGE' => 'pdb_metadata_wastewater_sludge',
+        'WATER' => 'pdb_metadata_water',
     );
 }
 
@@ -109,7 +114,7 @@ function _pyro_db_job_form_alter(&$form, $form_state, $form_id) {
         '#type' => 'fieldset',
         '#collapsible' => TRUE,
         '#collapsed' => FALSE, 
-        '#weight' => 0, 
+        '#weight' => 100, 
         '#tree' => TRUE, 
     );
     
@@ -126,24 +131,29 @@ function _pyro_db_job_form_alter(&$form, $form_state, $form_id) {
         );
     }
     
-    if(NULL != $nid)
-    {
-        $form['lock_job'] = array(
-            '#title' => 'Update this value ONLY when you have finsihed entering information for this job and ALL it\'s samples',
-            '#type' => 'fieldset',
-            '#collapsible' => TRUE,
-            '#collapsed' => TRUE, 
-            '#weight' => 100, 
-            '#tree' => TRUE, 
-        );
-        
-        $form['lock_job']['self_lock'] = array(
-            '#title' => "I'm done!",
-            '#description' => t('Check this box when you have finished adding information to this job and ALL of your samples. After the job has been locked you will no longer be able to edit any of the information, MIDs can be assigned to the samples and sequencing can commence. This can NOT be undone'),
-            '#type' => 'checkbox',
-            '#default_value' => 0,
-        );
+    // if the node is unlocked then we can lock it!
+    $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
+    while ($row = db_fetch_object($result)) {
+        if($row->sid == 2)
+        {
+            $form['lock_job'] = array(
+                '#title' => 'Update this value ONLY when you have finsihed adding all samples to this job',
+                '#type' => 'fieldset',
+                '#collapsible' => TRUE,
+                '#collapsed' => TRUE, 
+                '#weight' => 102, 
+                '#tree' => TRUE, 
+            );
+            
+            $form['lock_job']['self_lock'] = array(
+                '#title' => "I'm done!",
+                '#description' => t('Check this box when you have finished adding ALL of your samples. After the job has been locked you will no longer be able to add or remove samples. You will be able edit the information. If you continue MIDs can be assigned to the samples and sequencing can commence. This can NOT be undone'),
+                '#type' => 'checkbox',
+                '#default_value' => 0,
+            );
+        }
     }
+    
     $form['#validate'][] = '_pyro_db_job_validate';
     $form['#submit'][] = '_pyro_db_job_submit';
     $form['buttons']['submit']['#submit'][] = '_pyro_db_job_redirect_handler';
@@ -262,24 +272,29 @@ function _pyro_db_job_lock_job($job_node, $lockIt) {
     if($lockIt)
     {
         // do the job
+        // State 3 is the locked state for a job
         workflow_execute_transition($job_node, 3);
         // do the samples
         $all_samples = _pyro_db_job_get_all_samples($job_node->nid);
         foreach ($all_samples as $this_sample)
         {
             $tmp_sample_node = node_load($this_sample);
+            drupal_set_message($tmp_sample_node->title, 'status', true);
+            // State 6 is the locked state for a sample
             workflow_execute_transition($tmp_sample_node, 6);
         }
     }
     else
     {
         // do the job
+        // State 2 is the open state for a job
         workflow_execute_transition($job_node, 2);
         // do the samples
         $all_samples = _pyro_db_job_get_all_samples($job_node->nid);
         foreach ($all_samples as $this_sample)
         {
             $tmp_sample_node = node_load($this_sample);
+            // State 5 is the open state for a sample
             workflow_execute_transition($tmp_sample_node, 5);
         }
     }

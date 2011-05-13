@@ -128,7 +128,7 @@ function _pyro_db_myJobsPage($gasket)
         }
     }
 
-    $query = "SELECT n.nid FROM {node} n INNER JOIN {users} u ON n.uid = u.uid INNER JOIN {content_type_pdb_client_job} ctpcj ON n.nid = ctpcj.nid WHERE (n.type in ('pdb_client_job'))";
+    $query = "SELECT ctpcj.field_cj_uid_value AS UNID, n.nid FROM {node} n INNER JOIN {users} u ON n.uid = u.uid INNER JOIN {content_type_pdb_client_job} ctpcj ON n.nid = ctpcj.nid WHERE (n.type in ('pdb_client_job'))";
     if(!$is_admin) { $query .= " AND (u.uid = ".$user->uid.")"; }
     if('' != $gasket) { $query .= " AND (ctpcj.field_cj_gasket_nid = '$gasket')"; }
     $query .= " ORDER BY n.changed DESC";
@@ -153,7 +153,7 @@ function _pyro_db_myJobsPage_render($query, $isAdmin)
         $current_job_id = $row->nid;
         $path = drupal_get_path_alias("node/$current_job_id");
         $tmp_job_node = node_load($current_job_id);
-        $job_header = "Job: <a href=\"?q=$path\">".$tmp_job_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $job_header = "Job: <a href=\"?q=$path\">".$tmp_job_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp; UID: ".$row->UNID."&nbsp;&nbsp;&nbsp;&nbsp;";
         
         if($isAdmin)
         {
