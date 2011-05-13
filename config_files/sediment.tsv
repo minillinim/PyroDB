@@ -1,0 +1,67 @@
+sediment	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	-	measurement value	{float} m	1
+sediment	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	M	measurement value	{float} m	1
+sediment	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	M	measurement value	{float} {unit}	1
+sediment	alkalinity	alkalinity	alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate	X	measurement value	{float} {unit}	1
+sediment	alkyl_diethers	alkyl diethers	concentration of alkyl diethers 	X	measurement value	{float} {unit}	1
+sediment	aminopept_act	aminopeptidase activity	measurement of aminopeptidase activity	X	measurement value	{float} {unit}	1
+sediment	ammonium	ammonium	concentration of ammonium	X	measurement value	{float} {unit}	1
+sediment	bacteria_carb_prod	bacterial carbon production	measurement of bacterial carbon production	X	measurement value	{float} {unit}	1
+sediment	biomass	biomass	amount of biomass; should include the name for the part of biomass measured, e.g. microbial, total. can include multiple measurements	X	biomass type;measurement value	{text};{float} {unit}	m
+sediment	bishomohopanol	bishomohopanol	concentration of bishomohopanol 	X	measurement value	{float} {unit}	1
+sediment	bromide	bromide	concentration of bromide 	X	measurement value	{float} {unit}	1
+sediment	calcium	calcium	concentration of calcium	X	measurement value	{float} {unit}	1
+sediment	carb_nitro_ratio	carbon/nitrogen ratio	ratio of amount or concentrations of carbon to nitrogen	X	measurement value	{float} {unit}	1
+sediment	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+sediment	chloride	chloride	concentration of chloride 	X	measurement value	{float} {unit}	1
+sediment	chlorophyll	chlorophyll	concentration of chlorophyll	X	measurement value	{float} {unit}	1
+sediment	density	density	density of sample	X	measurement value	{float} {unit}	1
+sediment	diether_lipids	diether lipids	concentration of diether lipids; can include multiple types of diether lipids	X	diether lipid name;measurement value	{text};{float} {unit}	m
+sediment	diss_carb_dioxide	dissolved carbon dioxide	concentration of dissolved carbon dioxide	X	measurement value	{float} {unit}	1
+sediment	diss_hydrogen	dissolved hydrogen	concentration of dissolved hydrogen	X	measurement value	{float} {unit}	1
+sediment	diss_inorg_carb	dissolved inorganic carbon	dissolved inorganic carbon concentration	X	measurement value	{float} {unit}	1
+sediment	diss_org_carb	dissolved organic carbon	concentration of dissolved organic carbon	X	measurement value	{float} {unit}	1
+sediment	diss_org_nitro	dissolved organic nitrogen	dissolved organic nitrogen concentration measured as; total dissolved nitrogen - NH4 - NO3 - NO2	X	measurement value	{float} {unit}	1
+sediment	diss_oxygen	dissolved oxygen	concentration of dissolved oxygen	X	measurement value	{float} {unit}	1
+sediment	glucosidase_act	glucosidase activity	measurement of glucosidase activity	X	measurement value	{float} {unit}	1
+sediment	magnesium	magnesium	concentration of magnesium	X	measurement value	{float} {unit}	1
+sediment	mean_frict_vel	mean friction velocity	measurement of mean friction velocity	X	measurement value	{float} {unit}	1
+sediment	mean_peak_frict_vel	mean peak friction velocity	measurement of mean peak friction velocity	X	measurement value	{float} {unit}	1
+sediment	methane	methane	methane (gas) amount or concentration at the time of sampling	X	measurement value	{float} {unit}	1
+sediment	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m
+sediment	n_alkanes	n-alkanes	concentration of n-alkanes; can include multiple n-alkanes	X	n-alkane name;measurement value	{text};{float} {unit}	m
+sediment	nitrate	nitrate	concentration of nitrate	X	measurement value	{float} {unit}	1
+sediment	nitrite	nitrite	concentration of nitrite	X	measurement value	{float} {unit}	1
+sediment	nitro	nitrogen	concentration of nitrogen (total)	X	measurement value	{float} {unit}	1
+sediment	org_carb	organic carbon	concentration of organic carbon	X	measurement value	{float} {unit}	1
+sediment	org_matter	organic matter	concentration of organic matter 	X	measurement value	{float} {unit}	1
+sediment	org_nitro	organic nitrogen	concentration of organic nitrogen	X	measurement value	{float} {unit}	1
+sediment	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+sediment	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+sediment	particle_class	particle classification	particles are classified, based on their size, into six general categories:clay, silt, sand, gravel, cobbles, and boulders; should include amount of particle preceded by the name of the particle type; can include multiple values	X	particle name;measurement value	{text};{float} {unit}	m
+sediment	part_org_carb	particulate organic carbon	concentration of particulate organic carbon	X	measurement value	{float} {unit}	1
+sediment	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+sediment	petroleum_hydrocarb	petroleum hydrocarbon	concentration of petroleum hydrocarbon	X	measurement value	{float} {unit}	1
+sediment	ph	pH	pH measurement	X	measurement value	{float} {unit}	1
+sediment	phaeopigments	phaeopigments	concentration of phaeopigments; can include multiple phaeopigments	X	phaeopigment name;measurement value	{text};{float} {unit}	m
+sediment	phosphate	phosphate	concentration of phosphate	X	measurement value	{float} {unit}	1
+sediment	phosplipid_fatt_acid	phospholipid fatty acid	concentration of phospholipid fatty acids; can include multiple values	X	phospholipid fatty acid name;measurement value	{text};{float} {unit}	m
+sediment	porosity	porosity	porosity of deposited sediment is volume of voids divided by the total volume of sample	X	measurement value	{float} {unit}	1
+sediment	potassium	potassium	concentration of potassium 	X	measurement value	{float} {unit}	1
+sediment	pressure	pressure	pressure to which the sample is subject, in atmospheres	X	measurement value	{float} {unit}	1
+sediment	redox_potential	redox potential	redox potential, measured relative to a hydrogen cell, indicating oxidation or reduction potential	X	measurement value	{float} {unit}	1
+sediment	salinity	salinity	salinity measurement	X	measurement value	{float} {unit}	1
+sediment	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+sediment	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+sediment	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+sediment	sediment_type	sediment type	information about the sediment type based on major constituents	X	enumeration	[biogenous|cosmogenous|hydrogenous|lithogenous]	1
+sediment	silicate	silicate	concentration of silicate	X	measurement value	{float} {unit}	1
+sediment	sodium	sodium	sodium concentration	X	measurement value	{float} {unit}	1
+sediment	sulfate	sulfate	concentration of sulfate	X	measurement value	{float} {unit}	1
+sediment	sulfide	sulfide	concentration of sulfide	X	measurement value	{float} {unit}	1
+sediment	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+sediment	tidal_stage	tidal stage	stage of tide	X	enumeration	[low|high]	1
+sediment	tot_carb	total carbon	total carbon content	X	measurement value	{float} {unit}	1
+sediment	tot_nitro	total nitrogen	total nitrogen concentration, calculated by: total nitrogen = total dissolved nitrogen + particulate nitrogen. Can also be measured without filtering, reported as nitrogen	X	measurement value	{float} {unit}	1
+sediment	tot_org_carb	total organic carbon	Definition for soil: total organic C content of the soil units of g C/kg soil. Definition otherwise: total organic carbon content	X	measurement value	{float} {unit}	1
+sediment	turbidity	turbidity	turbidity measurement	X	measurement value	{float} {unit}	1
+sediment	water_content	water content	water content measurement	X	measurement value	{float} {unit}	1

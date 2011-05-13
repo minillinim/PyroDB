@@ -1,0 +1,37 @@
+wastewater_sludge	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	C	measurement value	{float} m	1
+wastewater_sludge	alkalinity	alkalinity	alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate	X	measurement value	{float} {unit}	1
+wastewater_sludge	biochem_oxygen_dem	biochemical oxygen demand	a measure of the relative oxygen-depletion effect of a waste contaminant	X	measurement value	{float} {unit}	1
+wastewater_sludge	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+wastewater_sludge	chem_oxygen_dem	chemical oxygen demand	a measure of the relative oxygen-depletion effect of a waste contaminant	X	measurement value	{float} {unit}	1
+wastewater_sludge	efficiency_percent	efficiency percent	percentage of volatile solids removed from the anaerobic digestor	X	measurement value	{float} {unit}	1
+wastewater_sludge	emulsions	emulsions	amount or concentration of substances such as paints, adhesives, mayonnaise, hair colorants, emulsified oils, etc.; can include multiple emulsion types	X	emulsion name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	gaseous_substances	gaseous substances	amount or concentration of substances such as hydrogen sulfide, carbon dioxide, methane, etc.; can include multiple substances	X	gaseous substance name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	indust_eff_percent	industrial effluent percent	percentage of industrial effluents received by wastewater treatment plant	X	measurement value	{float} {unit}	1
+wastewater_sludge	inorg_particles	inorganic particles	concentration of particles such as sand, grit, metal particles, ceramics, etc.; can include multiple particles	X	inorganic particle name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	nitrate	nitrate	concentration of nitrate	X	measurement value	{float} {unit}	1
+wastewater_sludge	org_particles	organic particles	concentration of particles such as faeces, hairs, food, vomit, paper fibers, plant material, humus, etc.	X	particle name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+wastewater_sludge	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+wastewater_sludge	ph	pH	pH measurement	X	measurement value	{float} {unit}	1
+wastewater_sludge	phosphate	phosphate	concentration of phosphate	X	measurement value	{float} {unit}	1
+wastewater_sludge	pre_treatment	pre-treatment	the process of pre-treatment removes materials that can be easily collected from the raw wastewater	X	pre-treatment type	{text}	1
+wastewater_sludge	primary_treatment	primary treatment	the process to produce both a generally homogeneous liquid capable of being treated biologically and a sludge that can be separately treated or processed	X	primary treatment type	{text}	1
+wastewater_sludge	reactor_type	reactor type	anaerobic digesters can be designed and engineered to operate using a number of different process configurations, as batch or continuous, mesophilic, high solid or low solid, and single stage or multistage	X	reactor type name	{text}	1
+wastewater_sludge	samp_salinity	sample salinity	salinity of sample, i.e. measure of total salt concentration	X	measurement value	{float} {unit}	1
+wastewater_sludge	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+wastewater_sludge	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+wastewater_sludge	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+wastewater_sludge	secondary_treatment	secondary treatment	the process for substantially degrading the biological content of the sewage 	X	secondary treatment type	{text}	1
+wastewater_sludge	sewage_type	sewage type	type of wastewater treatment plant as municipial or industrial	X	sewage type name	{text}	1
+wastewater_sludge	sludge_retent_time	sludge retention time	the time activated sludge remains in reactor	X	measurement value	{float} {unit}	1
+wastewater_sludge	sodium	sodium	sodium concentration	X	measurement value	{float} {unit}	1
+wastewater_sludge	soluble_inorg_mat	soluble inorganic material	concentration of substances such as ammonia, road-salt, sea-salt, cyanide, hydrogen sulfide, thiocyanates, thiosulfates, etc.	X	soluble inorganic material name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	soluble_org_mat	soluble organic material	concentration of substances such as urea, fruit sugars, soluble proteins, drugs, pharmaceuticals, etc.	X	soluble organic material name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	suspend_solids	suspended solids	concentration of substances including a wide variety of material, such as silt, decaying plant and animal matter, etc,; can include multiple substances	X	suspended solid name;measurement value	{text};{float} {unit}	m
+wastewater_sludge	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+wastewater_sludge	tertiary_treatment	tertiary treatment	the process providing a final treatment stage to raise the effluent quality before it is discharged to the receiving environment	X	tertiary treatment type	{text}	1
+wastewater_sludge	tot_nitro	total nitrogen	total nitrogen concentration, calculated by: total nitrogen = total dissolved nitrogen + particulate nitrogen. Can also be measured without filtering, reported as nitrogen	X	measurement value	{float} {unit}	1
+wastewater_sludge	tot_phosphate	total phosphate	total amount or concentration of phosphate	X	measurement value	{float} {unit}	1
+wastewater_sludge	wastewater_type	wastewater type	the origin of wastewater such as human waste, rainfall, storm drains, etc.	X	wastewater type name	{text}	1

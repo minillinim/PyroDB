@@ -1,0 +1,41 @@
+host_associated	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
+host_associated	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	C	measurement value	{float} m	1
+host_associated	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	C	measurement value	{float} {unit}	1
+host_associated	host_common_name	host common name	common name of the host, e.g. human	X	common name	{text}	1
+host_associated	host_taxid	host taxid	NCBI taxon id of the host, e.g. 9606	X	NCBI taxon identifier	{integer}	1
+host_associated	host_subject_id	host subject id	a unique identifier by which each subject can be referred to, de-identified, e.g. #131	X	unique identifier	{text}	1
+host_associated	age	age	age of host at the time of sampling; relevant scale depends on species and study, e.g. could be seconds for amoebae or centuries for trees	X	value	{float} {unit}	1
+host_associated	life_stage	life stage	description of life stage of host	X	stage	{text}	1
+host_associated	sex	sex	physical sex of the host	X	enumeration	[male|female|neuter|hermaphrodite|not determined]	1
+host_associated	disease_stat	disease status	list of diseases with which the host has been diagnosed; can include multiple diagnoses. the value of the field depends on host; for humans the terms should be chosen from DO (Disease Ontology), other hosts are free text. For DO terms, please see http://gemina.svn.sourceforge.net/viewvc/gemina/trunk/Gemina/ontologies/gemina_symptom.obo?view=log	X	disease name or DO	{term}	m
+host_associated	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+host_associated	body_habitat	body habitat	original body habitat where the sample was obtained from	X	body habitat name	{text}	1
+host_associated	body_site	body site	name of body site where the sample was obtained fromhttp://bioportal.bioontology.org/visualize/44507	X	body site name	{text}	1
+host_associated	body_product	body product	substance produced by the body, e.g. stool, mucus, where the sample was obtained from	X	body product name	{text}	1
+host_associated	tot_mass	total mass	total mass of the host at collection, the unit depends on host	X	measurement value	{float} {unit}	1
+host_associated	height_or_length	height or length	measurement of height or length	X	measurement value	{float} {unit}	1
+host_associated	diet	diet	type of diet depending on the host, for animals omnivore, herbivore etc., for humans high-fat, meditteranean etc.; can include multiple diet types	X	diet type	{text}	m
+host_associated	last_meal	last meal	content of last meal and time since feeding; can include multiple values	X	content;time interval	{text};{period}	m
+host_associated	host_growth_cond	host growth conditions	literature reference giving growth conditions of the host	X	PMID,DOI,url or free text	{PMID|DOI|URL}	1
+host_associated	substrate	substrate	the growth substrate of the host 	X	substrate name	{text}	1
+host_associated	family_relationship	family relationship	relationships to other hosts in the same study; can include multiple relationships	X	relationship type;arbitrary identifier	{text};{text}	m
+host_associated	infra_specific_name	infra_specific_name	taxonomic information about the host below subspecies level	X	name	{text}	1
+host_associated	infra_specific_rank	infra_specific_rank	taxonomic rank information about the host below subspecies level, such as variety, form, rank etc.	X	rank	{text}	1
+host_associated	genotype	genotype	observed genotype	X	genotype	{text}	1
+host_associated	phenotype	phenotype	phenotype of host. For Phenotypic quality Ontology (PATO) (v1.269) terms, please see http://bioportal.bioontology.org/visualize/44601	X	PATO	{term}	1
+host_associated	host_body_temp	host body temperature	core body temperature of the host when sample was collected	X	measurement value	{float} {unit}	1
+host_associated	dry_mass	dry mass	measurement of dry mass	X	measurement value	{float} {unit}	1
+host_associated	blood_press_diast	blood pressure diastolic	resting diastolic blood pressure, measured as mm mercury	X	measurement value	{float} {unit}	1
+host_associated	blood_press_syst	blood pressure systolic	resting systolic blood pressure, measured as mm mercury	X	measurement value	{float} {unit}	1
+host_associated	host_color	host color	the color of host	X	color	{text}	1
+host_associated	host_shape	host shape	morphological shape of host 	X	shape	{text}	1
+host_associated	gravidity	gravidity	whether or not subject is gravid, and if yes date due or date post-conception, specifying which is used	X	gravidity status;timestamp	{boolean};{timestamp}	1
+host_associated	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+host_associated	samp_salinity	sample salinity	salinity of sample, i.e. measure of total salt concentration	X	measurement value	{float} {unit}	1
+host_associated	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+host_associated	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+host_associated	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+host_associated	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+host_associated	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+host_associated	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+host_associated	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m

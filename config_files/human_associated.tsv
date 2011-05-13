@@ -1,0 +1,49 @@
+human_associated	host_subject_id	host subject id	a unique identifier by which each subject can be referred to, de-identified, e.g. #131	X	unique identifier	{text}	1
+human_associated	age	age	age of host at the time of sampling; relevant scale depends on species and study, e.g. could be seconds for amoebae or centuries for trees	X	value	{float} {unit}	1
+human_associated	sex	sex	physical sex of the host	X	enumeration	[male|female|neuter|hermaphrodite|not determined]	1
+human_associated	disease_stat	disease status	list of diseases with which the host has been diagnosed; can include multiple diagnoses. the value of the field depends on host; for humans the terms should be chosen from DO (Disease Ontology), other hosts are free text. For DO terms, please see http://gemina.svn.sourceforge.net/viewvc/gemina/trunk/Gemina/ontologies/gemina_symptom.obo?view=log	X	disease name or DO	{term}	m
+human_associated	ihmc_medication_code	IHMC medication code	can include multiple medication codes	X	IHMC code	{integer}	m
+human_associated	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+human_associated	body_site	body site	name of body site where the sample was obtained from. For Foundational Model of Anatomy Ontology (FMA) (v3.1) terms, please see http://bioportal.bioontology.org/visualize/44507	X	FMA	{term}	1
+human_associated	body_product	body product	substance produced by the body, e.g. stool, mucus, where the sample was obtained from. For Foundational Model of Anatomy Ontology (FMA) (v3.1) terms, please see http://bioportal.bioontology.org/visualize/44507	X	FMA	{term}	1
+human_associated	tot_mass	total mass	total mass of the host at collection, the unit depends on host	X	measurement value	{float} {unit}	1
+human_associated	height	height	the height of subject	X	measurement value	{float} {unit}	1
+human_associated	diet	diet	type of diet depending on the host, for animals omnivore, herbivore etc., for humans high-fat, meditteranean etc.; can include multiple diet types	X	diet type	{text}	m
+human_associated	last_meal	last meal	content of last meal and time since feeding; can include multiple values	X	content;time interval	{text};{period}	m
+human_associated	family_relationship	family relationship	relationships to other hosts in the same study; can include multiple relationships	X	relationship type;arbitrary identifier	{text};{text}	m
+human_associated	genotype	genotype	observed genotype	X	genotype	{text}	1
+human_associated	phenotype	phenotype	phenotype of host. For Phenotypic quality Ontology (PATO) (v1.269) terms, please see http://bioportal.bioontology.org/visualize/44601	X	PATO	{term}	1
+human_associated	host_body_temp	host body temperature	core body temperature of the host when sample was collected	X	measurement value	{float} {unit}	1
+human_associated	smoker	smoker	specification of smoking status	X	smoking status	{boolean}	1
+human_associated	hiv_stat	HIV status	HIV status of subject, if yes HAART initiation status should also be indicated as [YES or NO]	X	HIV status;HAART initiation status	{boolean};{boolean}	1
+human_associated	drug_usage	drug usage	any drug used by subject and the frequency of usage; can include multiple drugs used	X	drug name;frequency	{text};{integer}/[year|month|week|day|hour]	m
+human_associated	body_mass_index	body-mass index	body mass index, calculated as weight/(height)squared	X	measurement value	{float} {unit}	1
+human_associated	diet_last_six_month	major diet change in last six months	specification of major diet changes in the last six months, if yes the change should be specified	X	diet change;current diet	{boolean};{text}	1
+human_associated	weight_loss_3_month	weight loss in last three months	specification of weight loss in the last three months, if yes should be further specified to include amount of weight loss	X	weight loss specification;measurement value	{boolean};{float} {unit}	1
+human_associated	ihmc_ethnicity	IHMC ethnicity	ethnicity of the subject	X	IHMC code or free text	{integer|text}	1
+human_associated	occupation	occupation	most frequent job performed by subject	X	IHMC code	{integer}	1
+human_associated	pet_farm_animal	presence of pets or farm animals	specification of presence of pets or farm animals in the environment of subject, if yes the animals should be specified; can include multiple animals present	X	presence status;type of animal or pet	{boolean};{text}	m
+human_associated	travel_out_six_month	travel outside the country in last six months	specification of the countries travelled in the last six months; can include multiple travels	X	country name	{text}	m
+human_associated	twin_sibling	twin sibling presence	specification of twin sibling presence	X	presence status	{boolean}	1
+human_associated	medic_hist_perform	medical history performed	whether full medical history was collected	X	true or false	{boolean}	1
+human_associated	study_complt_stat	study completion status	specification of study completion status, if no the reason should be specified	X	YES or NO due to (1)adverse event (2) non-compliance (3) lost to follow up (4)other-specify	{boolean};[adverse event|non-compliance|lost to follow up|other-specify]	1
+human_associated	pulmonary_disord	lung/pulmonary disorder	history of pulmonary disorders; can include multiple disorders	X	disorder name	{text}	m
+human_associated	nose_throat_disord	lung/nose-throat disorder	history of nose-throat disorders; can include multiple disorders	X	disorder name	{text}	m
+human_associated	blood_blood_disord	blood/blood disorder	history of blood disorders; can include multiple disorders	X	disorder name	{text}	m
+human_associated	pulse	pulse	resting pulse, measured as beats per minute	X	measurement value	{float} {unit}	1
+human_associated	gestation_state	amniotic fluid/gestation state	specification of the gestation state	X	gestation state	{text}	1
+human_associated	maternal_health_stat	amniotic fluid/maternal health status	specification of the maternal health status	X	health status	{text}	1
+human_associated	foetal_health_stat	amniotic fluid/foetal health status	specification of foetal health status, should also include abortion	X	health status	{text}	1
+human_associated	amniotic_fluid_color	amniotic fluid/color	specification of the color of the amniotic fluid sample	X	color	{text}	1
+human_associated	kidney_disord	urine/kidney disorder	history of kidney disorders; can include multiple disorders	X	disorder name	{text}	m
+human_associated	urogenit_tract_disor	urine/urogenital tract disorder	history of urogenitaltract disorders; can include multiple disorders	X	disorder name	{text}	m
+human_associated	urine_collect_meth	urine/collection method	specification of urine collection method	X	enumeration	[clean catch|catheter]	1
+human_associated	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+human_associated	samp_salinity	sample salinity	salinity of sample, i.e. measure of total salt concentration	X	measurement value	{float} {unit}	1
+human_associated	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+human_associated	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+human_associated	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+human_associated	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+human_associated	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+human_associated	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+human_associated	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m

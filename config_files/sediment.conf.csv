@@ -1,5 +1,0 @@
-:title:sediment
-Particle class,particle_class,varchar(500),false, Refers to the diametre of the individual grains of sediment. Units are in mm. Free text - 500 characters.
-Porosity,porosity,double,false, The fraction of void space in the material. Enter a decimal number only.
-Sediment type,sediment_type,varchar(500),false, The type of sediment e.g. gravel | sand | clay. Free text - 500 characters.
-:end

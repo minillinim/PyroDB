@@ -1,0 +1,26 @@
+air	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	M	measurement value	{float} m	1
+air	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	C	measurement value	{float} {unit}	1
+air	barometric_press	barometric pressure	force per unit area exerted against a surface by the weight of air above that surface	X	measurement value	{float} {unit}	1
+air	carb_dioxide	carbon dioxide	carbon dioxide (gas) amount or concentration at the time of sampling	X	measurement value	{float} {unit}	1
+air	carb_monoxide	carbon monoxide	carbon monoxide (gas) amount or concentration at the time of sampling	X	measurement value	{float} {unit}	1
+air	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+air	humidity	humidity	amount of water vapour in the air, at the time of sampling	X	measurement value	{float} {unit}	1
+air	methane	methane	methane (gas) amount or concentration at the time of sampling	X	measurement value	{float} {unit}	1
+air	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m
+air	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+air	oxygen	oxygen	oxygen (gas) amount or concentration at the time of sampling	X	measurement value	{float} {unit}	1
+air	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+air	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+air	pollutants	pollutants	pollutant types and, amount or concentrations measured at the time of sampling; can report multiple pollutants by entering numeric values preceded by name of pollutant	X	pollutant name;measurement value	{text};{float} {unit}	m
+air	resp_part_matter	respirable particulate matter	concentration of substances that remain suspended in the air, and comprise mixtures of organic and inorganic substances (PM10 and PM2.5); can report multiple PM's by entering numeric values preceded by name of PM	X	particulate matter name;measurement value	{text};{float} {unit}	m
+air	samp_salinity	sample salinity	salinity of sample, i.e. measure of total salt concentration	X	measurement value	{float} {unit}	1
+air	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+air	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+air	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+air	solar_irradiance	solar irradiance	the amount of solar energy that arrives at a specific area of a surface during a specific time interval	X	measurement value	{float} {unit}	1
+air	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+air	ventilation_rate	ventilation rate	ventilation rate of the system in the sampled premises	X	measurement value	{float} {unit}	1
+air	ventilation_type	ventilation type	ventilation system used in the sampled premises	X	ventilation type name	{text}	1
+air	volatile_org_comp	volatile organic compounds	concentration of carbon-based chemicals that easily evaporate at room temperature; can report multiple volatile organic compounds by entering numeric values preceded by name of compound	X	volatile organic compound name;measurement value	{text};{float} {unit}	m
+air	wind_direction	wind direction	wind direction is the direction from which a wind originates	X	wind direction name	{text}	1
+air	wind_speed	wind speed	speed of wind measured at the time of sampling	X	measurement value	{float} {unit}	1

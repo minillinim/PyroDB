@@ -1,0 +1,74 @@
+water	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	-	measurement value	{float} m	1
+water	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	M	measurement value	{float} m	1
+water	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	C	measurement value	{float} {unit}	1
+water	alkalinity	alkalinity	alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate	X	measurement value	{float} {unit}	1
+water	alkyl_diethers	alkyl diethers	concentration of alkyl diethers 	X	measurement value	{float} {unit}	1
+water	aminopept_act	aminopeptidase activity	measurement of aminopeptidase activity	X	measurement value	{float} {unit}	1
+water	ammonium	ammonium	concentration of ammonium	X	measurement value	{float} {unit}	1
+water	atmospheric_data	atmospheric data	measurement of atmospheric data; can include multiple data	X	atmospheric data name;measurement value	{text};{float} {unit}	m
+water	bacteria_carb_prod	bacterial carbon production	measurement of bacterial carbon production	X	measurement value	{float} {unit}	1
+water	biomass	biomass	amount of biomass; should include the name for the part of biomass measured, e.g. microbial, total. can include multiple measurements	X	biomass type;measurement value	{text};{float} {unit}	m
+water	bishomohopanol	bishomohopanol	concentration of bishomohopanol 	X	measurement value	{float} {unit}	1
+water	bromide	bromide	concentration of bromide 	X	measurement value	{float} {unit}	1
+water	calcium	calcium	concentration of calcium	X	measurement value	{float} {unit}	1
+water	carb_nitro_ratio	carbon/nitrogen ratio	ratio of amount or concentrations of carbon to nitrogen	X	measurement value	{float} {unit}	1
+water	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+water	chloride	chloride	concentration of chloride 	X	measurement value	{float} {unit}	1
+water	chlorophyll	chlorophyll	concentration of chlorophyll	X	measurement value	{float} {unit}	1
+water	current	current	measurement of current 	X	measurement value	{float} {unit}	1
+water	density	density	density of sample	X	measurement value	{float} {unit}	1
+water	diether_lipids	diether lipids	concentration of diether lipids; can include multiple types of diether lipids	X	diether lipid name;measurement value	{text};{float} {unit}	m
+water	diss_carb_dioxide	dissolved carbon dioxide	concentration of dissolved carbon dioxide	X	measurement value	{float} {unit}	1
+water	diss_hydrogen	dissolved hydrogen	concentration of dissolved hydrogen	X	measurement value	{float} {unit}	1
+water	diss_inorg_carb	dissolved inorganic carbon	dissolved inorganic carbon concentration	X	measurement value	{float} {unit}	1
+water	diss_inorg_nitro	dissolved inorganic nitrogen	concentration of dissolved inorganic nitrogen 	X	measurement value	{float} {unit}	1
+water	diss_inorg_phosp	dissolved inorganic phosphorus	concentration of dissolved inorganic phosphorus 	X	measurement value	{float} {unit}	1
+water	diss_org_carb	dissolved organic carbon	concentration of dissolved organic carbon	X	measurement value	{float} {unit}	1
+water	diss_org_nitro	dissolved organic nitrogen	dissolved organic nitrogen concentration measured as; total dissolved nitrogen - NH4 - NO3 - NO2	X	measurement value	{float} {unit}	1
+water	diss_oxygen	dissolved oxygen	concentration of dissolved oxygen	X	measurement value	{float} {unit}	1
+water	glucosidase_act	glucosidase activity	measurement of glucosidase activity	X	measurement value	{float} {unit}	1
+water	light_intensity	light intensity	measurement of light intensity	X	measurement value	{float} {unit}	1
+water	magnesium	magnesium	concentration of magnesium	X	measurement value	{float} {unit}	1
+water	mean_frict_vel	mean friction velocity	measurement of mean friction velocity	X	measurement value	{float} {unit}	1
+water	mean_peak_frict_vel	mean peak friction velocity	measurement of mean peak friction velocity	X	measurement value	{float} {unit}	1
+water	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m
+water	n_alkanes	n-alkanes	concentration of n-alkanes; can include multiple n-alkanes	X	n-alkane name;measurement value	{text};{float} {unit}	m
+water	nitrate	nitrate	concentration of nitrate	X	measurement value	{float} {unit}	1
+water	nitrite	nitrite	concentration of nitrite	X	measurement value	{float} {unit}	1
+water	nitro	nitrogen	concentration of nitrogen (total)	X	measurement value	{float} {unit}	1
+water	org_carb	organic carbon	concentration of organic carbon	X	measurement value	{float} {unit}	1
+water	org_matter	organic matter	concentration of organic matter 	X	measurement value	{float} {unit}	1
+water	org_nitro	organic nitrogen	concentration of organic nitrogen	X	measurement value	{float} {unit}	1
+water	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+water	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+water	part_org_carb	particulate organic carbon	concentration of particulate organic carbon	X	measurement value	{float} {unit}	1
+water	part_org_nitro	particulate organic nitrogen	concentration of particulate organic nitrogen	X	measurement value	{float} {unit}	1
+water	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+water	petroleum_hydrocarb	petroleum hydrocarbon	concentration of petroleum hydrocarbon	X	measurement value	{float} {unit}	1
+water	ph	pH	pH measurement	X	measurement value	{float} {unit}	1
+water	phaeopigments	phaeopigments	concentration of phaeopigments; can include multiple phaeopigments	X	phaeopigment name;measurement value	{text};{float} {unit}	m
+water	phosphate	phosphate	concentration of phosphate	X	measurement value	{float} {unit}	1
+water	phosplipid_fatt_acid	phospholipid fatty acid	concentration of phospholipid fatty acids; can include multiple values	X	phospholipid fatty acid name;measurement value	{text};{float} {unit}	m
+water	photon_flux	photon flux	measurement of photon flux	X	measurement value	{float} {unit}	1
+water	potassium	potassium	concentration of potassium 	X	measurement value	{float} {unit}	1
+water	pressure	pressure	pressure to which the sample is subject, in atmospheres	X	measurement value	{float} {unit}	1
+water	primary_prod	primary production	measurement of primary production 	X	measurement value	{float} {unit}	1
+water	redox_potential	redox potential	redox potential, measured relative to a hydrogen cell, indicating oxidation or reduction potential	X	measurement value	{float} {unit}	1
+water	salinity	salinity	salinity measurement	X	measurement value	{float} {unit}	1
+water	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+water	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+water	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+water	silicate	silicate	concentration of silicate	X	measurement value	{float} {unit}	1
+water	sodium	sodium	sodium concentration	X	measurement value	{float} {unit}	1
+water	soluble_react_phosp	soluble reactive phosphorus	concentration of soluble reactive phosphorus	X	measurement value	{float} {unit}	1
+water	sulfate	sulfate	concentration of sulfate	X	measurement value	{float} {unit}	1
+water	sulfide	sulfide	concentration of sulfide	X	measurement value	{float} {unit}	1
+water	suspend_part_matter	suspended particulate matter	concentration of suspended particulate matter	X	measurement value	{float} {unit}	1
+water	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+water	tidal_stage	tidal stage	stage of tide	X	enumeration	[low|high]	1
+water	tot_depth_water_col	total depth of water column	measurement of total depth of water column	X	measurement value	{float} {unit}	1
+water	tot_diss_nitro	total dissolved nitrogen	total dissolved nitrogen concentration, reported as nitrogen, measured by: total dissolved nitrogen = NH4 + NO3NO2 + dissolved organic nitrogen	X	measurement value	{float} {unit}	1
+water	tot_inorg_nitro	total inorganic nitrogen	total inorganic nitrogen content	X	measurement value	{float} {unit}	1
+water	tot_nitro	total nitrogen	total nitrogen concentration, calculated by: total nitrogen = total dissolved nitrogen + particulate nitrogen. Can also be measured without filtering, reported as nitrogen	X	measurement value	{float} {unit}	1
+water	tot_part_carb	total particulate carbon	total particulate carbon content	X	measurement value	{float} {unit}	1
+water	tot_phosp	total phosphorus	total phosphorus concentration, calculated by: total phosphorus = total dissolved phosphorus + particulate phosphorus. Can also be measured without filtering, reported as phosphorus	X	measurement value	{float} {unit}	1

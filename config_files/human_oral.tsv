@@ -1,0 +1,32 @@
+human_oral	nose_mouth_teeth_throat_disord	nose/mouth/teeth/throat disorder	history of nose/mouth/teeth/throat disorders; can include multiple disorders	X	disorder name	{text}	m
+human_oral	time_last_toothbrush	time since last toothbrushing	specification of the time since last toothbrushing	X	timestamp	{timestamp}	1
+human_oral	host_subject_id	host subject id	a unique identifier by which each subject can be referred to, de-identified, e.g. #131	X	unique identifier	{text}	1
+human_oral	age	age	age of host at the time of sampling; relevant scale depends on species and study, e.g. could be seconds for amoebae or centuries for trees	X	value	{float} {unit}	1
+human_oral	sex	sex	physical sex of the host	X	enumeration	[male|female|neuter|hermaphrodite|not determined]	1
+human_oral	disease_stat	disease status	list of diseases with which the host has been diagnosed; can include multiple diagnoses. the value of the field depends on host; for humans the terms should be chosen from DO (Disease Ontology), other hosts are free text. For DO terms, please see http://gemina.svn.sourceforge.net/viewvc/gemina/trunk/Gemina/ontologies/gemina_symptom.obo?view=log	X	disease name or DO	{term}	m
+human_oral	ihmc_medication_code	IHMC medication code	can include multiple medication codes	X	IHMC code	{integer}	m
+human_oral	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+human_oral	body_site	body site	name of body site where the sample was obtained from. For Foundational Model of Anatomy Ontology (FMA) (v3.1) terms, please see http://bioportal.bioontology.org/visualize/44507	X	FMA	{term}	1
+human_oral	body_product	body product	substance produced by the body, e.g. stool, mucus, where the sample was obtained from. For Foundational Model of Anatomy Ontology (FMA) (v3.1) terms, please see http://bioportal.bioontology.org/visualize/44507	X	FMA	{term}	1
+human_oral	tot_mass	total mass	total mass of the host at collection, the unit depends on host	X	measurement value	{float} {unit}	1
+human_oral	height	height	the height of subject	X	measurement value	{float} {unit}	1
+human_oral	diet	diet	type of diet depending on the host, for animals omnivore, herbivore etc., for humans high-fat, meditteranean etc.; can include multiple diet types	X	diet type	{text}	m
+human_oral	last_meal	last meal	content of last meal and time since feeding; can include multiple values	X	content;time interval	{text};{period}	m
+human_oral	family_relationship	family relationship	relationships to other hosts in the same study; can include multiple relationships	X	relationship type;arbitrary identifier	{text};{text}	m
+human_oral	genotype	genotype	observed genotype	X	genotype	{text}	1
+human_oral	phenotype	phenotype	phenotype of host. For Phenotypic quality Ontology (PATO) (v1.269) terms, please see http://bioportal.bioontology.org/visualize/44601	X	PATO	{term}	1
+human_oral	host_body_temp	host body temperature	core body temperature of the host when sample was collected	X	measurement value	{float} {unit}	1
+human_oral	body_mass_index	body-mass index	body mass index, calculated as weight/(height)squared	X	measurement value	{float} {unit}	1
+human_oral	ihmc_ethnicity	IHMC ethnicity	ethnicity of the subject	X	IHMC code or free text	{integer|text}	1
+human_oral	occupation	occupation	most frequent job performed by subject	X	IHMC code	{integer}	1
+human_oral	medic_hist_perform	medical history performed	whether full medical history was collected	X	true or false	{boolean}	1
+human_oral	pulse	pulse	resting pulse, measured as beats per minute	X	measurement value	{float} {unit}	1
+human_oral	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+human_oral	samp_salinity	sample salinity	salinity of sample, i.e. measure of total salt concentration	X	measurement value	{float} {unit}	1
+human_oral	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+human_oral	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
+human_oral	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+human_oral	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+human_oral	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+human_oral	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+human_oral	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m

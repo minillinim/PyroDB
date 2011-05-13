@@ -1,0 +1,54 @@
+soil	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
+soil	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	M	measurement value	{float} m	1
+soil	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	M	measurement value	{float} {unit}	1
+soil	cur_land_use	current land use	present state of sample site	X	enumeration	[cities|farmstead|industrial areas|roads/railroads|rock|sand|gravel|mudflats|salt flats|badlands|permanent snow or ice|saline seeps|mines/quarries|oil waste areas|small grains|row crops|vegetable crops|horticultural plants (e.g. tulips)|marshlands (grass,sedges,rushes)|tundra (mosses,lichens)|rangeland|pastureland (grasslands used for livestock grazing)|hayland|meadows (grasses,alfalfa,fescue,bromegrass,timothy)|shrub land (e.g. mesquite,sage-brush,creosote bush,shrub oak,eucalyptus)|successional shrub land (tree saplings,hazels,sumacs,chokecherry,shrub dogwoods,blackberries)|shrub crops (blueberries,nursery ornamentals,filberts)|vine crops (grapes)|conifers (e.g. pine,spruce,fir,cypress)|hardwoods (e.g. oak,hickory,elm,aspen)|intermixed hardwood and conifers|tropical (e.g. mangrove,palms)|rainforest (evergreen forest receiving >406 cm annual rainfall)|swamp (permanent or semi-permanent water body dominated by woody plants)|crop trees (nuts,fruit,christmas trees,nursery trees)]	1
+soil	cur_vegetation	current vegetation	vegetation classification from one or more standard classification systems, or agricultural crop	X	current vegetation type	{text}	1
+soil	cur_vegetation_meth	current vegetation method	reference or method used in vegetation classification 	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	previous_land_use	history/previous land use	previous land use and dates	X	land use name;date	{text};{timestamp}	1
+soil	previous_land_use_meth	history/previous land use method	reference or method used in determining previous land use and dates	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	crop_rotation	history/crop rotation	whether or not crop is rotated, and if yes, rotation schedule	X	crop rotation status;schedule	{boolean};Rn/{timestamp}/{period}	1
+soil	agrochem_addition	history/agrochemical additions	addition of fertilizers, pesticides, etc. - amount and time of applications	X	agrochemical name;agrochemical amount;timestamp	{text};{float} {unit};{timestamp}	m
+soil	tillage	history/tillage	note method(s) used for tilling	X	enumeration	[drill|cutting disc|ridge till|strip tillage|zonal tillage|chisel|tined|mouldboard|disc plough]	m
+soil	fire	history/fire	historical and/or physical evidence of fire	X	date	{timestamp}	1
+soil	flooding	history/flooding	historical and/or physical evidence of flooding	X	date	{timestamp}	1
+soil	extreme_event	history/extreme events	unusual physical events that may have affected microbial populations	X	date	{timestamp}	1
+soil	other	other	additional relevant information	X	text	{text}	1
+soil	horizon	horizon	specific layer in the land area which measures parallel to the soil surface and possesses physical characteristics which differ from the layers above and beneath	X	enumeration	[O horizon|A horizon|E horizon|B horizon|C horizon|R layer|Permafrost]	1
+soil	horizon_meth	horizon method	reference or method used in determining the horizon	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	sieving	composite design/sieving (if any)	collection design of pooled samples and/or sieve size and amount of sample sieved 	X	design name and/or size;amount	{{text}|{float} {unit}};{float} {unit}	1
+soil	water_content_soil	water content of soil	water content (g/g or cm3/cm3)	X	measurement value	{float} [g/g|cm3/cm3]	1
+soil	water_content_soil_meth	water content of soil method	reference or method used in determining the water content of soil	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	samp_weight_dna_ext	sample weight for DNA extraction	weight (g) of soil processed	X	measurement value	{float} g	1
+soil	pool_dna_extracts	pooling of DNA extracts (if done)	were multiple DNA extractions mixed? how many?	X	pooling status;measurement value	{boolean};{float} {unit}	1
+soil	store_cond	storage conditions (fresh/frozen/other)	explain how and for how long the soil sample was stored before DNA extraction.	X	storage condition type;duration	{text};{period}	1
+soil	link_climate_info	link to climate information	link to climate resource	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	annual_season_temp	mean annual and seasonal temperature	mean annual and seasonal temperature (oC)	X	measurement value	{float} {unit}	1
+soil	annual_season_precpt	mean annual and seasonal precipitation	mean annual and seasonal precipitation (mm)	X	measurement value	{float} {unit}	1
+soil	link_class_info	link to classification information	link to digitized soil maps or other soil classification information	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	fao_class	soil_taxonomic/FAO classification	soil classification from the FAO World Reference Database for Soil Resources	X	enumeration	{term}	1
+soil	local_class	soil_taxonomic/local classification	soil classification based on local soil classification system	X	local classification name	{text}	1
+soil	local_class_meth	soil_taxonomic/local classification method	reference or method used in determining the local soil classification 	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	soil_type	soil type	soil series name or other lower-level classification	X	soil type name	{text}	1
+soil	soil_type_meth	soil type method	reference or method used in determining soil series name or other lower-level classification	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	slope_gradient	slope gradient	commonly called â€œslope.â€  The angle between ground surface and a horizontal line (in percent).  This is the direction that overland water would flow.  This measure is usually taken with a hand level meter or clinometer. 	X	measurement value	{float} {unit}	1
+soil	slope_aspect	slope aspect	the direction a slope faces. While looking down a slope use a compass to record the direction you are facing (direction or degrees); e.g., NW or 315Â°.  This measure provides an indication of sun and wind exposure that will influence soil temperature and evapotranspiration.	X	measurement value	{float} {unit}	1
+soil	profile_position	profile position	cross-sectional position in the hillslope where sample was collected.sample area position in relation to surrounding areas	X	enumeration	[summit|shoulder|backslope|footslope|toeslope]	1
+soil	drainage_class	drainage classification	drainage classification from a standard system such as the USDA system	X	enumeration	[very poorly|poorly|somewhat poorly|moderately well|well|excessively drained]	1
+soil	texture	texture	the relative proportion of different grain sizes of mineral particles in a soil, as described using a standard system; express as % sand (50 um to 2 mm), silt (2 um to 50 um), and clay (<2 um) with textural name (e.g., silty clay loam) optional.	X	measurement value	{float} {unit}	1
+soil	texture_meth	texture method	reference or method used in determining soil texture	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	ph	pH	pH measurement	X	measurement value	{float} {unit}	1
+soil	ph_meth	pH method	reference or method used in determining pH	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	tot_org_carb	total organic carbon	Definition for soil: total organic C content of the soil units of g C/kg soil. Definition otherwise: total organic carbon content	X	measurement value	{float} {unit}	1
+soil	tot_org_c_meth	total organic C method	reference or method used in determining total organic C	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	tot_n	total N	total nitrogen content of the soil Units of g N/kg soil	X	measurement value	{float} {unit}	1
+soil	tot_n_meth	total N method	reference or method used in determining the total N	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	microbial_biomass	microbial biomass	the part of the organic matter in the soil that constitutes living microorganisms smaller than 5-10 Âµm. IF you keep this, you would need to have correction factors used for conversion to the final units, which should be mg C (or N)/kg soil).	X	measurement value	{float} {unit}	1
+soil	microbial_biomass_meth	microbial biomass method	reference or method used in determining microbial biomass	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	link_addit_analys	links to additional analysis		X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	extreme_salinity	extreme_unusual_properties/salinity	measured salinity 	X	measurement value	{float} {unit}	1
+soil	salinity_meth	extreme_unusual_properties/salinity method	reference or method used in determining salinity	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	heavy_metals	extreme_unusual_properties/heavy metals	heavy metals present and concentrationsany drug used by subject and the frequency of usage; can include multiple heavy metals and concentrations	X	heavy metal name;measurement value	{text};{float} {unit}	m
+soil	heavy_metals_meth	extreme_unusual_properties/heavy metals method	reference or method used in determining heavy metals	X	PMID,DOI or url	{PMID|DOI|URL}	1
+soil	al_sat	extreme_unusual_properties/Al saturation	aluminum saturation (esp. for tropical soils)	X	measurement value	{float} {unit}	1
+soil	al_sat_meth	extreme_unusual_properties/Al saturation method	reference or method used in determining Al saturation	X	PMID,DOI or URL	{PMID|DOI|URL}	1
+soil	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m

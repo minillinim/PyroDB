@@ -1,0 +1,43 @@
+miscellaneous	alt	altitude	The altitude of the sample is the vertical distance between Earth's surface above Sea Level and the sampled position in the air.	C	measurement value	{float} m	1
+miscellaneous	depth	depth	Depth is defined as the vertical distance below surface, e.g. for sediment or soil samples depth is measured from sediment or soil surface, respectivly. Depth can be reported as an interval for subsurface samples.	C	measurement value	{float} m	1
+miscellaneous	elev	elevation	The elevation of the sampling site as measured by the vertical distance from mean sea level.	C	measurement value	{float} {unit}	1
+miscellaneous	alkalinity	alkalinity	alkalinity, the ability of a solution to neutralize acids to the equivalence point of carbonate or bicarbonate	X	measurement value	{float} {unit}	1
+miscellaneous	ammonium	ammonium	concentration of ammonium	X	measurement value	{float} {unit}	1
+miscellaneous	biomass	biomass	amount of biomass; should include the name for the part of biomass measured, e.g. microbial, total. can include multiple measurements	X	biomass type;measurement value	{text};{float} {unit}	m
+miscellaneous	bromide	bromide	concentration of bromide 	X	measurement value	{float} {unit}	1
+miscellaneous	calcium	calcium	concentration of calcium	X	measurement value	{float} {unit}	1
+miscellaneous	chem_administration	chemical administration	list of chemical compounds administered to the host or site where sampling occurred, and when (e.g. antibiotics, N fertilizer, air filter); can include multiple compounds. For Chemical Entities of Biological Interest ontology (CHEBI) (v1.72), please see http://bioportal.bioontology.org/visualize/44603	X	CHEBI;timestamp	{term}; {timestamp}	m
+miscellaneous	chloride	chloride	concentration of chloride 	X	measurement value	{float} {unit}	1
+miscellaneous	chlorophyll	chlorophyll	concentration of chlorophyll	X	measurement value	{float} {unit}	1
+miscellaneous	current	current	measurement of current 	X	measurement value	{float} {unit}	1
+miscellaneous	density	density	density of sample	X	measurement value	{float} {unit}	1
+miscellaneous	diether_lipids	diether lipids	concentration of diether lipids; can include multiple types of diether lipids	X	diether lipid name;measurement value	{text};{float} {unit}	m
+miscellaneous	diss_carb_dioxide	dissolved carbon dioxide	concentration of dissolved carbon dioxide	X	measurement value	{float} {unit}	1
+miscellaneous	diss_hydrogen	dissolved hydrogen	concentration of dissolved hydrogen	X	measurement value	{float} {unit}	1
+miscellaneous	diss_inorg_carb	dissolved inorganic carbon	dissolved inorganic carbon concentration	X	measurement value	{float} {unit}	1
+miscellaneous	diss_org_nitro	dissolved organic nitrogen	dissolved organic nitrogen concentration measured as; total dissolved nitrogen - NH4 - NO3 - NO2	X	measurement value	{float} {unit}	1
+miscellaneous	diss_oxygen	dissolved oxygen	concentration of dissolved oxygen	X	measurement value	{float} {unit}	1
+miscellaneous	misc_param	miscellaneous parameter	any other measurement performed or parameter collected, that is not listed here	X	parameter name;measurement value	{text};{float} {unit}	m
+miscellaneous	nitrate	nitrate	concentration of nitrate	X	measurement value	{float} {unit}	1
+miscellaneous	nitrite	nitrite	concentration of nitrite	X	measurement value	{float} {unit}	1
+miscellaneous	nitro	nitrogen	concentration of nitrogen (total)	X	measurement value	{float} {unit}	1
+miscellaneous	org_carb	organic carbon	concentration of organic carbon	X	measurement value	{float} {unit}	1
+miscellaneous	org_matter	organic matter	concentration of organic matter 	X	measurement value	{float} {unit}	1
+miscellaneous	org_nitro	organic nitrogen	concentration of organic nitrogen	X	measurement value	{float} {unit}	1
+miscellaneous	organism_count	organism count	total count of any organism per gram or volume of sample,should include name of organism followed by count; can include multiple organism counts	X	organism name;measurement value	{text};{float} {unit}	m
+miscellaneous	oxy_stat_samp	oxygenation status of sample	oxygenation status of sample	X	enumeration	[aerobic|anaerobic]	1
+miscellaneous	perturbation	perturbation	type of perturbation, e.g. chemical administration, physical disturbance, etc., coupled with time that perturbation occurred; can include multiple perturbation types	X	perturbation type name;time interval	{text};{interval}	m
+miscellaneous	ph	pH	pH measurement	X	measurement value	{float} {unit}	1
+miscellaneous	phosphate	phosphate	concentration of phosphate	X	measurement value	{float} {unit}	1
+miscellaneous	phosplipid_fatt_acid	phospholipid fatty acid	concentration of phospholipid fatty acids; can include multiple values	X	phospholipid fatty acid name;measurement value	{text};{float} {unit}	m
+miscellaneous	potassium	potassium	concentration of potassium 	X	measurement value	{float} {unit}	1
+miscellaneous	pressure	pressure	pressure to which the sample is subject, in atmospheres	X	measurement value	{float} {unit}	1
+miscellaneous	salinity	salinity	salinity measurement	X	measurement value	{float} {unit}	1
+miscellaneous	samp_store_dur	sample storage duration	duration for which sample was stored	X	time interval	{interval}	1
+miscellaneous	samp_store_loc	sample storage location	location at which sample was stored, usually name of a specific freezer/room	X	location name	{text}	1
+miscellaneous	samp_store_temp	sample storage temperature	temperature at which sample was stored, e.g. -80	X	measurement value	{float} {unit}	1
+miscellaneous	silicate	silicate	concentration of silicate	X	measurement value	{float} {unit}	1
+miscellaneous	sodium	sodium	sodium concentration	X	measurement value	{float} {unit}	1
+miscellaneous	sulfate	sulfate	concentration of sulfate	X	measurement value	{float} {unit}	1
+miscellaneous	sulfide	sulfide	concentration of sulfide	X	measurement value	{float} {unit}	1
+miscellaneous	temp	temperature	temperature of the sample at time of sampling	X	measurement value	{float} {unit}	1
