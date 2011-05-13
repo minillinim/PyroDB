@@ -1,3 +1,7 @@
 Contained in these folders are config scripts and coding scripts which are used to implement the pyrodb. Eventually this will all for a module for drupal which will be released into the wild.
 
+Changes:
+
+May 13th 2011. Fixed the config files to reflect the new MIMARK standards
+
 For now it's pretty experimental...
