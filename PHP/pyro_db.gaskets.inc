@@ -40,9 +40,12 @@ function _pyro_db_gasket_body($isSave, $nid) {
     }
     else
     {
+        // generate a warning if there are any smaple nids with no MID
+        _pyro_db_gasket_genrate_unset_warning($nid);
+        
         // select all the jobs assigned to this gasket...
-        echo "<br><h1>SAMPLE COUNT</h1><hr>";
-        $result = db_query("SELECT gas.field_gas_num_samps_value,  gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
+        echo "<br><h1>GASKET INFORMATION</h1><hr>";
+        $result = db_query("SELECT gas.field_gas_num_samps_value, gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
         $nun_dun = true;
         $header = array('Type', 'Count');
         $rows = array();
@@ -73,6 +76,8 @@ function _pyro_db_gasket_body($isSave, $nid) {
             $rows[] = array( array('data' => $row->node_title, 'width' => '35%') , $samp_str);
             $nun_dun = false;
         }
+        
+        
         if($nun_dun) 
         {
             echo "No jobs assigned...<br>";
@@ -101,20 +106,26 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
         $used = $row->field_gas_num_samps_value;
     }
     
-    $form['pdb_non_assigned_jobs'] = array(
-        '#title' => 'Check these boxes to add jobs to the gasket',
-        '#type' => 'fieldset',
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE, 
-        '#weight' => 0, 
-        '#tree' => TRUE, 
-        '#description' => t("There is a limit of $max samples available for each gasket. So far $used places have been used. This leaves ".($max - $used)." available"),
-    );
-
     // get all the jobs which belong to no gasket
     $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n INNER JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='0' OR cj_plus_node.field_cj_gasket_nid is NULL");
+    $first_run = true;
+    $found_some_jobs = false;
     while ($row = db_fetch_object($result)) 
     {
+        if(true == $first_run)
+        {
+            $form['pdb_non_assigned_jobs'] = array(
+                '#title' => 'Check these boxes to add jobs to the gasket',
+                '#type' => 'fieldset',
+                '#collapsible' => TRUE,
+                '#collapsed' => FALSE, 
+                '#weight' => 0, 
+                '#tree' => TRUE, 
+                '#description' => t("There is a limit of $max samples available for each gasket. So far $used places have been used. This leaves ".($max - $used)." available"),
+            );           
+            $found_some_jobs= true;
+            $first_run = false;
+        }
         // get the number of samples that this guy has
         $nid = $row->nid;
         $num_samples = count(_pyro_db_job_get_all_samples($nid));
@@ -125,6 +136,14 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
             '#default_value' => 0,
             '#num_samples' => $num_samples,
         );
+    }   
+    if(false == $found_some_jobs)
+    {
+        $form['pdb_non_assigned_jobs'] = array(
+            '#title' => 'There are currently no jobs which can be added to this gasket',
+            '#type' => 'fieldset',
+            '#weight' => 1, 
+        );  
     }
 }
 
@@ -132,19 +151,25 @@ function _pyro_db_gasket_remove_form(&$form, $form_state, $form_id) {
     // Use this for removing the jobs
     $nid = $form['nid']['#value'];
     
-    $form['pdb_assigned_jobs'] = array(
-        '#title' => 'Check these boxes to remove these jobs from the gasket. All MIDs for all samples will be reset!',
-        '#type' => 'fieldset',
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE, 
-        '#weight' => 1, 
-        '#tree' => TRUE, 
-    );
-
     // get all the jobs which belong to this gasket
     $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n LEFT JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='$nid'");
+    $first_run = true;
+    $found_some_jobs = false;
     while ($row = db_fetch_object($result)) 
     {
+        if(true == $first_run)
+        {
+            $form['pdb_assigned_jobs'] = array(
+                '#title' => 'Check these boxes to remove these jobs from the gasket. All MIDs for all samples will be reset!',
+                '#type' => 'fieldset',
+                '#collapsible' => TRUE,
+                '#collapsed' => TRUE, 
+                '#weight' => 1, 
+                '#tree' => TRUE, 
+            );
+            $found_some_jobs= true;
+            $first_run = false;
+        }
         $nid = $row->nid;
         $num_samples = count(_pyro_db_job_get_all_samples($nid));
         $form['pdb_assigned_jobs'][$row->node_title] = array(
@@ -153,6 +178,16 @@ function _pyro_db_gasket_remove_form(&$form, $form_state, $form_id) {
             '#id' => t($nid),
             '#default_value' => 0,
             '#num_samples' => $num_samples,
+        );
+        $found_some_jobs= true;
+    }
+    
+    if(false == $found_some_jobs)
+    {
+        $form['pdb_assigned_jobs'] = array(
+            '#title' => 'This gasket currently has no jobs that can be removed',
+            '#type' => 'fieldset',
+            '#weight' => 1, 
         );
     }
 }
@@ -182,9 +217,14 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
             {
                 $rem_job_nid = $form['pdb_assigned_jobs'][$key]['#id'];
                 if("edit-pdb-assigned-jobs-submit" != $rem_job_nid) {
-                    $form_state['values']['field_gas_num_samps'][0]['value'] =- _pyro_db_gasket_do_remove($nid, $rem_job_nid);
+                    _pyro_db_gasket_do_remove($nid, $rem_job_nid);
                 }
             }
+        }
+        $result = db_query("SELECT gas.field_gas_num_samps_value,  gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
+        if($row = db_fetch_object($result)) 
+        {
+            $form_state['values']['field_gas_num_samps'][0]['value'] = $row->field_gas_num_samps_value;
         }
     }
     if(is_array($form_state['values']['pdb_non_assigned_jobs']))
@@ -220,11 +260,11 @@ function _pyro_db_gasket_available_MIDS($mid_length, $nid) {
     // get all mids of the specified length
     if($mid_length == -1)
     {
-        $query = "SELECT ctpm.field_454_mid_sequence_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active'";
+        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' ORDER BY ctpm.field_454_mid_id_value ASC";
     }
     else
     {
-        $query = "SELECT ctpm.field_454_mid_sequence_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND ctpm.field_454_mid_length_value = '$mid_length'";
+        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND ctpm.field_454_mid_length_value = '$mid_length' ORDER BY ctpm.field_454_mid_id_value ASC";
     }
     $all_result = db_query($query);
     while ($valid_mid = db_fetch_object($all_result)) 
@@ -283,16 +323,38 @@ function _pyro_db_gasket_unset_mids($job_nid, $nid) {
     //-----
     // un-assign MIDs for all samples for the current job
     //
-    $num_freed = 0;
     $sample_list = _pyro_db_job_get_all_samples($job_nid);
     foreach ($sample_list as $current_sample)
     {
         _pyro_db_sample_unset_mid($current_sample);
-        $num_freed++;
     }
-    return $num_freed;
 }
 
+function _pyro_db_is_unset_mids($nid) {
+    //-----
+    // Compile a list of any unset mids
+    //
+    $ret_array = array();
+    $result = db_query("SELECT pgm.sample_id from {pdb_gasket_mids} pgm WHERE gasket_id = '$nid' AND mid = ''");
+    while ($row = db_fetch_object($result)) {
+        $ret_array[$row->sample_id] = 1;
+    }
+    return $ret_array;
+}
+
+function _pyro_db_gasket_genrate_unset_warning($nid) {
+    //-----
+    // if the mid_array is non-empty, generate a drupal-esque 
+    // warning
+    //
+    $mid_array = _pyro_db_is_unset_mids($nid);
+    $gas_node = node_load($nid);
+    foreach($mid_array as $samp_nid => $flag)
+    {
+        $samp_node = node_load($samp_nid);
+        drupal_set_message("Gasket: ".$gas_node->title." has sample: ".$samp_node->title." with unset MID!", 'warning', TRUE);
+    }
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Add remove jobs
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +395,6 @@ function _pyro_db_gasket_do_remove($gs_nid, $job_nid) {
     // This function will call a function which is responsible for freeing
     // the MIDS and for decrementing the count. The function is: _pyro_db_sample_unset_mid
     // Do not change this behaviour. This is becuase and admin delete of a sample must fix the gasker used count!
-    // this function returns the number freed
     $tmp_job_node = node_load($job_nid);
     $tmp_gs_node = node_load($gs_nid);
     
@@ -341,10 +402,37 @@ function _pyro_db_gasket_do_remove($gs_nid, $job_nid) {
     db_query("UPDATE {content_type_pdb_client_job} ctpcj set ctpcj.field_cj_gasket_nid = '0' WHERE ctpcj.nid = '$job_nid'");
     
     // unset the MIDs 
-    $num_freed = _pyro_db_gasket_unset_mids($job_nid, $gs_nid);
+    _pyro_db_gasket_unset_mids($job_nid, $gs_nid);
     
     // unlock the jobs and sample for editing
     _pyro_db_job_lock_job($tmp_job_node, false);
-    
-    return $num_freed;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Workflows
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+function _pyro_db_gasket_is_locked($nid) {
+    //-----
+    // Is this gasket locked?
+    // state 8 is open, state 9 is locked!
+    //
+    $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE nid = '$nid'");
+    while ($row = db_fetch_object($result)) {
+        if($row->sid = 8) { return false; }
+        elseif ($row->sid = 9) { return true; }
+    }
+    return false;
+}
+
+function _pyro_db_gasket_can_lock($nid) {
+    //-----
+    // Check and see if there are any unset MIDS
+    // prevent locking if so!
+    //
+    $result = db_query("SELECT pgm.sample_id from {pdb_gasket_mids} pgm WHERE gasket_id = '$nid' AND mid = ''");
+    while ($row = db_fetch_object($result)) {
+        return false;
+    }
+    return true;
 }

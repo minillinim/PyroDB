@@ -271,6 +271,7 @@ function _pyro_db_sample_form_alter(&$form, $form_state, $form_id) {
     // Add metadata fileds to the sample edit form
     //
     $nid = $form['nid']['#value'];
+
     _pyro_db_pdb_metadata_miscellaneous_form_alter(&$form, $form_state);
     $result = db_query("SELECT * FROM {pdb_metadata_tables}  where nid='".$nid."'");
     while ($row = db_fetch_object($result)) {
@@ -320,13 +321,22 @@ function _pyro_db_sample_submit($form, &$form_state) {
     // Update the sample with any changes to the metadata
     //     
     $nid = $form['nid']['#value'];
+    
+    // MID
+    $current_mid = _pyro_db_sample_get_current_mid($nid);
+    $form_mid = $form_state['values']['field_cs_mid'][0]['value'];
+    if(!($form_mid === $current_mid))
+    {
+        _pyro_db_sample_update_mid($form_mid, $nid);
+    }
+    
+    // metadata
     $result = db_query("SELECT * FROM {pdb_metadata_tables}  where nid='".$nid."'");
     while ($row = db_fetch_object($result)) {
         foreach ($row as $key => $value)
         {
             if(1 == $value)
             {
-                
                 # make the function name
                 $func = "_pyro_db_".$key."_form_submit";
                 # call the function
@@ -596,10 +606,25 @@ function _pyro_db_sample_set_mid($gs_nid, $mid, $samp_nid) {
     db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid' WHERE nid = '$samp_nid'");
     db_query("INSERT INTO {pdb_gasket_mids} (gasket_id, mid, sample_id) VALUES ('$gs_nid', '$mid', '$samp_nid')");
     $tmp_sample_node = node_load($samp_nid);
-    drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: $mid", 'status', true );
+    drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: '$mid'", 'status', true );
 }
 
+function _pyro_db_sample_update_mid($mid, $samp_nid) {
+    db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid' WHERE nid = '$samp_nid'");
+    db_query("UPDATE {pdb_gasket_mids} pgm set pgm.mid = '$mid' where sample_id = '$samp_nid'");
+    $tmp_sample_node = node_load($samp_nid);
+    drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: '$mid'", 'status', true );
+}
 function _pyro_db_sample_unset_mid($samp_nid) {
+    //-----
+    // Unset the MID and fix the sample count for the gasket
+    //
+    $mid = '';
+    $result = db_query("SELECT ctpcs.field_cs_mid_value FROM {content_type_pdb_client_sample} ctpcs WHERE nid = '$samp_nid'");
+    while ($row = db_fetch_object($result)) {
+        $mid = $row->field_cs_mid_value;
+    }
+    
     db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '' WHERE nid = '$samp_nid'");
     
     // we need to decrement the number used for this gasket.
@@ -617,9 +642,25 @@ function _pyro_db_sample_unset_mid($samp_nid) {
     # now delete away...
     db_query("DELETE FROM {pdb_gasket_mids} WHERE sample_id = '$samp_nid'");
     $tmp_sample_node = node_load($samp_nid);
-    drupal_set_message("MID removed from Sample: " . $tmp_sample_node->title, 'status', true );
+    drupal_set_message("MID '$mid' removed from Sample: " . $tmp_sample_node->title, 'status', true );
 }
 
+function _pyro_db_sample_get_current_mid($samp_nid) {
+    //-----
+    // wrapper to get the current mid for this sample
+    // returns '' is no mid set.
+    //
+    $result = db_query("SELECT ctpcs.field_cs_mid_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_mid_value)
+        {
+            return $row->field_cs_mid_value;
+        }
+    }
+    return '';
+
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 //////////////////////////////////////////////////////////////////////////////////////////////////
