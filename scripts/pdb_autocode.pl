@@ -435,7 +435,7 @@ sub auto_clone {
 # FORM COMPONENT
 ######################
 sub auto_form_component {
-    print $out_fh "function _pyro_db_".$global_title."_form_alter(&\$form, \$form_state)\n";
+    print $out_fh "function _pyro_db_".$global_title."_form_alter(&\$form, \$form_state, &\$rep_array)\n";
     print $out_fh "{\n";
     print $out_fh "    \$form['".$global_title."'] = array(\n";
     print $out_fh "        '#type' => 'fieldset',\n";
@@ -495,7 +495,7 @@ sub auto_form_component {
             $description .= "Please enter only one value";
         }
         
-        print $out_fh auto_form_elements($key, $type, $global_fancies[$counter], '', '',  $description, $size, $maxsize, $global_requireds[$counter]);
+        print $out_fh auto_form_elements($key, $type, $global_fancies[$counter], '', '',  $description, $size, $maxsize, $global_requireds[$counter], "\$rep_array");
         $counter++;
     }
     print $out_fh "}\n\n";
@@ -540,8 +540,10 @@ sub auto_form_elements {
     #
     # Creates form elements
     #
-    my ($id, $type, $title, $default_value, $value, $description, $size, $maxlength, $required) = @_;
+    my ($id, $type, $title, $default_value, $value, $description, $size, $maxlength, $required, $visible) = @_;
     my $ret_string = "    if(NULL != \$get_array['$id']) { \$default_value = \$get_array['$id']; } else { \$default_value = ''; }\n";
+    $ret_string .= "    \$access = true;\n";
+    $ret_string .= "    if(\$rep_array[\"$title\"] == 1) { \$access = false; } else { \$rep_array[\"$title\"] = 1; }\n";
     $ret_string .= "    \$form['".$global_title."']['$id'] = array(\n";
     $ret_string .= "        '#type' => '$type',\n";
     $ret_string .= "        '#title' => t('$title'),\n";
@@ -550,6 +552,7 @@ sub auto_form_elements {
     $ret_string .= "        '#size' => $size,\n";
     $ret_string .= "        '#maxlength' => $maxlength,\n";
     $ret_string .= "        '#required' => $required,\n";
+    $ret_string .= "        '#access' => \$access,\n";
     $ret_string .= "    );\n\n";
     return $ret_string;
 }
