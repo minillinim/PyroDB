@@ -45,6 +45,7 @@ function _pyro_db_get_meta_fields() {
         'SOIL' => 'pdb_metadata_soil',
         'WASTE WATER SLUDGE' => 'pdb_metadata_wastewater_sludge',
         'WATER' => 'pdb_metadata_water',
+        'MISCELLANEOUS ENVIRONMENT' => 'pdb_metadata_miscellaneous',
     );
 }
 
@@ -81,6 +82,7 @@ function _pyro_db_job_active_meta_fields($nid) {
     }
     return $ret_array;
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Body
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,15 +175,111 @@ function _pyro_db_job_submit($form, &$form_state) {
     $nid = $form_state['values']['nid'];
     if(NULL != $nid)
     {
-        // not in creation. node_hook will hanle all the creation stuff
+        // not in creation. node_hook will handle all the creation stuff
         $active_fields = _pyro_db_job_active_meta_fields($nid);
         $flipped_meta_fields = array_flip(_pyro_db_get_meta_fields());
         $sample_nids = _pyro_db_job_get_all_samples($nid);
+        
+        // are there any remaining active fields which 
+        // contain the string human but are not the generic human associated?
+        $hu_states = array();
+        
+        // is the user trying to remove the human associated field?
+        $try_del_ha = false;
+        
+        // go through the form elems
         foreach ($form_state['values']['metadata_fields'] as $key => $value)
         {
-            if(($value == 1) && ($active_fields[$key] == 0))
+            if($value == 1)
             {
-                // added one
+                // this is an active field!
+                // is this a human associated meta field?
+                if(_pyro_db_sample_is_human_meta($key) && $key != "pdb_metadata_human_associated" )
+                {
+                    $hu_states[$key] = true;
+                }
+                    
+                if($active_fields[$key] == 0)
+                {
+                    // added one
+                    drupal_set_message("Added $flipped_meta_fields[$key] to ALL samples", 'status', true);
+                    foreach($sample_nids as $s_nid)
+                    {
+                        // add the sample to the "pdb_tables" as well as all the actual metadata storing tables
+                        $func = "_pyro_db_$key"."_addremove";
+                        $func($s_nid, true);
+                        
+                        $passing_array = array('nid' => $s_nid);
+                        $func = "_pyro_db_$key"."_insert";
+                        $func($passing_array);
+                        
+                        // Fix the job node too
+                        $func = "_pyro_db_$key"."_addremove";
+                        $func($nid, true);
+                    }
+                }
+            }
+            elseif(($value == 0) && ($active_fields[$key] == 1))
+            {
+                // removed one
+                // check to see if the user is trying to remove ha here...
+                if($key == "pdb_metadata_human_associated")
+                {
+                    // yes!
+                    $try_del_ha = true;
+                }
+                else
+                {
+                    // is this a human associated meta field?
+                    if(_pyro_db_sample_is_human_meta($key))
+                    {
+                        $hu_states[$key] = false;
+                    }
+                    
+                    drupal_set_message("Removed $flipped_meta_fields[$key] from ALL samples and deleted any entered data", 'status', true);
+                    foreach($sample_nids as $s_nid)
+                    {
+                        // remove the sample to the "pdb_tables" as well as all the actual metadata storing tables
+                        $func = "_pyro_db_$key"."_addremove";
+                        $func($s_nid, false);
+                        
+                        $func = "_pyro_db_$key"."_delete";
+                        $func($s_nid);
+                        
+                        // Fix the job node too
+                        $func = "_pyro_db_$key"."_addremove";
+                        $func($nid, false);
+                    }
+                }
+            }
+        }
+        
+        // reload the list of active fields
+        $active_fields = _pyro_db_job_active_meta_fields($nid);
+        
+        // check if there are still any active human fields
+        $active_hu_exists = false;
+        {
+            foreach($hu_states as $key => $value)
+            {
+                if($value) { $active_hu_exists = true; }
+            }
+        }
+        
+        // now see if we need to use this information
+        $key = "pdb_metadata_human_associated";
+        if($active_hu_exists)
+        {
+            if($try_del_ha)
+            {
+                // user is trying to delete ha while these still exist other fields
+                // this is a no no
+                drupal_set_message("Could not remove HUMAN ASSOCIATED METADATA while other human associated fields exist", 'warning', true);
+            }
+            
+            if($active_fields[$key] == 0)
+            {
+                // user has included some human associated field but has not included  the generic one.
                 drupal_set_message("Added $flipped_meta_fields[$key] to ALL samples", 'status', true);
                 foreach($sample_nids as $s_nid)
                 {
@@ -198,9 +296,13 @@ function _pyro_db_job_submit($form, &$form_state) {
                     $func($nid, true);
                 }
             }
-            elseif(($value == 0) && ($active_fields[$key] == 1))
+        }
+        else
+        {
+            // no human associated tables exist
+            // if the user is trying to remove one, let them
+            if($try_del_ha)
             {
-                // removed one
                 drupal_set_message("Removed $flipped_meta_fields[$key] from ALL samples and deleted any entered data", 'status', true);
                 foreach($sample_nids as $s_nid)
                 {

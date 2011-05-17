@@ -63,26 +63,25 @@ function _pyro_db_sample_body($isSave, $nid) {
         _pyro_db_fields_as_table($nid);
 
         # print any custom metadata
+        $metadata_exists = false;
         echo "<br><h1>METADATA</h1><hr>";
-        _pyro_db_pdb_metadata_miscellaneous_view($nid);
         $result = db_query("SELECT * FROM {pdb_metadata_tables}  where nid='".$nid."'");
         while ($row = db_fetch_object($result)) {
             foreach ($row as $key => $value)
             {
                 if(1 == $value)
                 {
-                    # already done the miscellaneous fields
-                    if('pdb_metadata_miscellaneous' != $key)
-                    {
-                        # make the funciton name
-                        $func = "_pyro_db_".$key."_view";
-                        # call the function
-                        $func($nid);
-                    }
+                    # make the funciton name
+                    $func = "_pyro_db_".$key."_view";
+                    # call the function
+                    $func($nid);
+                    $metadata_exists = true;
                 }
             }
             break;
         }
+
+        if(!$metadata_exists) { drupal_set_message("WARNING: No metadata fields selected for this sample", 'warning', true); }
 
         // called when a node is being viewed
         $ret_str = '';
@@ -266,33 +265,88 @@ function _pyro_db_get_fields() {
 // Edit form
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+function _pyro_db_sample_is_human_meta($key) {
+    //-----
+    // check to see if the key contains the substring "human"
+    //
+    $pos = strpos($key,"human");
+
+    if($pos === false) 
+    {
+        return false;
+    }
+    else 
+    {
+        return true;
+    }
+}
+
 function _pyro_db_sample_form_alter(&$form, $form_state, $form_id) {
     //
     // Add metadata fileds to the sample edit form
-    //
+    // Stop editing of primers when state is locked
     $nid = $form['nid']['#value'];
 
-    _pyro_db_pdb_metadata_miscellaneous_form_alter(&$form, $form_state);
+    // restrict primer changes when sample is locked
+    if(_pyro_db_sample_is_locked($nid))
+    {
+        $form['field_cs_forward_primer']['#access'] = false;
+        $form['field_cs_reverse_primer']['#access'] = false;
+    }
+    
+    // restrict MID changes when Gasket is locked.
+    if(_pyro_db_sample_gasket_is_locked($nid))
+    {
+        $form['field_cs_mid']['#access'] = false;
+    }
+    
+    // add metadata
+    // we need to make sure that we get this human business right
+    // push all the keys to an aray and checkkk it out!
+    
+    $key_array = array();
+    $hu_array = array();
+    $do_human = false;
+    $metadata_exists = false;
+    
     $result = db_query("SELECT * FROM {pdb_metadata_tables}  where nid='".$nid."'");
     while ($row = db_fetch_object($result)) {
         foreach ($row as $key => $value)
         {
             if(1 == $value)
             {
-                # already done the miscellaneous fields
-                if('pdb_metadata_miscellaneous' != $key)
-                {
-                    # make the function name
-                    $func = "_pyro_db_".$key."_form_alter";
-                    # call the function
-                    $func($form, $form_state);
-                }
+                if(_pyro_db_sample_is_human_meta($key)) { $do_human = true; }
+                $key_array[] = $key;
+                $metadata_exists = true;
             }
         }
         break;
     }
+    
+    // now we make the metadata inputs!
+    // do human if we need to!
+    if($do_human)
+    {
+        _pyro_db_pdb_metadata_human_associated_form_alter($form, $form_state, $hu_array);
+    }
+    
+    foreach ($key_array as $ordererer => $db_table)
+    {
+        if('pdb_metadata_human_associated' != $db_table)
+        {
+            # make the function name
+            $func = "_pyro_db_".$db_table."_form_alter";
+            
+            # call the function (pass different rep arrays for human and other)
+            if(_pyro_db_sample_is_human_meta($key)) { $func($form, $form_state, $hu_array); }
+            else { $tmp_A = array(); $func($form, $form_state, $tmp_A); }
+        }
+    }
+    
     $form['#validate'][] = '_pyro_db_sample_validate';
     $form['#submit'][] = '_pyro_db_sample_submit';
+    
+    if(!$metadata_exists) { drupal_set_message("WARNING: No metadata fields selected for this sample", 'warning', true); }
 }
 
 function _pyro_db_sample_validate($form, &$form_state) {
@@ -461,8 +515,7 @@ function _pyro_db_clone_sample_validate($form, &$form_state) {
     // nothing much to do here...
 }
 
-function _pyro_db_clone_sample_guts($src_nid, $dst_nid)
-{
+function _pyro_db_clone_sample_guts($src_nid, $dst_nid) {
     // get all the content in the src node and make this the content of the dst node
     // this needs to be updated whenever a new field is added
     $clone_values = _pyro_db_get_non_null_cck_fields($src_nid);
@@ -615,6 +668,7 @@ function _pyro_db_sample_update_mid($mid, $samp_nid) {
     $tmp_sample_node = node_load($samp_nid);
     drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: '$mid'", 'status', true );
 }
+
 function _pyro_db_sample_unset_mid($samp_nid) {
     //-----
     // Unset the MID and fix the sample count for the gasket
@@ -659,8 +713,8 @@ function _pyro_db_sample_get_current_mid($samp_nid) {
         }
     }
     return '';
-
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -732,4 +786,32 @@ function _pyro_db_sample_delete($nid) {
     // remove this guy from the tables table
     db_query("DELETE FROM {pdb_metadata_tables}  where nid='".$nid."'");
 
+}
+
+function _pyro_db_sample_is_locked($nid) {
+    //-----
+    // Is this sample locked?
+    // state 5 is open, state 6 is locked!
+    //
+    $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE nid = '$nid'");
+    while ($row = db_fetch_object($result)) {
+        if($row->sid == 5) { return false; }
+        elseif ($row->sid == 6) { return true; }
+    }
+    return false;
+}
+
+function _pyro_db_sample_gasket_is_locked($nid) {
+    //-----
+    // Is this samples' gasket locked?
+    //
+    $result = db_query("SELECT pgm.gasket_id FROM {pdb_gasket_mids} pgm WHERE sample_id = '$nid'"); 
+    while ($row = db_fetch_object($result)) {
+        $result2 = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE nid = '$row->gasket_id'");
+        while ($row2 = db_fetch_object($result2)) {
+            if($row2->sid == 8) { return false; }
+            elseif ($row2->sid == 9) { return true; }
+        }
+    }
+    return false;
 }

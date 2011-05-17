@@ -66,14 +66,23 @@ function _pyro_db_gasket_body($isSave, $nid) {
         
         while ($row = db_fetch_object($result)) 
         {
+            $num_samples = 0;
             $samples = _pyro_db_job_get_all_samples($row->nid);
             $samp_str = "";
             foreach ($samples as $current_sample)
             {
+                $sample_link = _pyro_db_gasket_get_link($current_sample);
                 $tmp_sample_node = node_load($current_sample);
-                $samp_str .= $tmp_sample_node->title."<br>";
+                $samp_str .= "<a href=\"?q=$sample_link\">".$tmp_sample_node->title."</a><br>";
+                $num_samples++;
             }
-            $rows[] = array( array('data' => $row->node_title, 'width' => '35%') , $samp_str);
+            
+            $job_link = _pyro_db_gasket_get_link($row->nid);
+            $job_string = "<strong>Title:</strong>&nbsp;&nbsp;&nbsp;<a href=\"?q=$job_link\">".$row->node_title."</a><br>";
+
+            $job_string .= "<strong># Samples:</strong>&nbsp;&nbsp;&nbsp;$num_samples";
+            
+            $rows[] = array( array('data' => $job_string, 'width' => '35%') , $samp_str);
             $nun_dun = false;
         }
         
@@ -89,6 +98,17 @@ function _pyro_db_gasket_body($isSave, $nid) {
     }
 }
 
+function _pyro_db_gasket_get_link($nid) {
+    //-----
+    // return the url of the given nid
+    //
+    $link_query = db_query("SELECT complete_menu.link_path AS path FROM {nodehierarchy_menu_links} nml LEFT JOIN {menu_links} complete_menu ON nml.mlid = complete_menu.mlid WHERE nml.nid = '$nid'");
+    while ($link_row = db_fetch_object($link_query)) 
+    {
+        return $link_row->path;
+    }
+    return '';
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Edit form
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,6 +375,7 @@ function _pyro_db_gasket_genrate_unset_warning($nid) {
         drupal_set_message("Gasket: ".$gas_node->title." has sample: ".$samp_node->title." with unset MID!", 'warning', TRUE);
     }
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Add remove jobs
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -419,8 +440,8 @@ function _pyro_db_gasket_is_locked($nid) {
     //
     $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE nid = '$nid'");
     while ($row = db_fetch_object($result)) {
-        if($row->sid = 8) { return false; }
-        elseif ($row->sid = 9) { return true; }
+        if($row->sid == 8) { return false; }
+        elseif ($row->sid == 9) { return true; }
     }
     return false;
 }
