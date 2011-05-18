@@ -258,6 +258,24 @@ function _pyro_db_get_fields() {
         'field_cs_mid_value' => array('name' => 'MID', 'active' => true, 'type' => '%s',),
         'field_cs_env_feature_value' => array('name' => 'Environmental Feature', 'active' => true, 'type' => '%s',),
         'field_cs_env_matter_value' => array('name' => 'Environmental Matter', 'active' => true, 'type' => '%s',),
+        'field_cs_sub_insdc_value' => array('name' => 'Submitted to insdc', 'active' => true, 'type' => '%s',),
+        'field_cs_investigation_type_value' => array('name' => 'Investigation Type', 'active' => true, 'type' => '%s',),
+        'field_cs_experimental_factor_value' => array('name' => 'Experimental Factor', 'active' => true, 'type' => '%s',),
+        'field_cs_biome_value' => array('name' => 'Environment (biome)', 'active' => true, 'type' => '%s',),
+        'field_cs_subspecf_gen_lin_value' => array('name' => 'Subspecific Genetic Lineage', 'active' => true, 'type' => '%s',),
+        'field_cs_extrachrom_elements_value' => array('name' => 'Extrachromosomal Elements', 'active' => true, 'type' => '%s',),
+        'field_cs_source_mat_id_value' => array('name' => 'Source Material Identifiers', 'active' => true, 'type' => '%s',),
+        'field_cs_biotic_relationship_value' => array('name' => 'Observed Biotic Relationship', 'active' => true, 'type' => '%s',),
+        'field_cs_trophic_level_value' => array('name' => 'Trophic Level', 'active' => true, 'type' => '%s',),
+        'field_cs_rel_to_oxygen_value' => array('name' => 'Relationship to Oxygen', 'active' => true, 'type' => '%s',),
+        'field_cs_isol_growth_condt_value' => array('name' => 'Isolation and Growth Condition', 'active' => true, 'type' => '%s',),
+        'field_cs_samp_collect_device_value' => array('name' => 'Sample Collection Device or Method', 'active' => true, 'type' => '%s',),
+        'field_cs_samp_mat_proces_value' => array('name' => 'Sample Material Processing', 'active' => true, 'type' => '%s',),
+        'field_cs_samp_size_value' => array('name' => 'Amount or Size of Sample Collected', 'active' => true, 'type' => '%s',),
+        'field_cs_nucl_acid_ext_value' => array('name' => 'Nucleic Acid Extraction', 'active' => true, 'type' => '%s',),
+        'field_cs_nucl_acid_amp_value'  => array('name' => 'Nucleic Acid Amplification', 'active' => true, 'type' => '%s',),
+        'field_cs_id_value' => array('name' => 'Unique ID', 'active' => true, 'type' => '%s',),
+        
     );
 }
 
