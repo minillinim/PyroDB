@@ -159,6 +159,12 @@ function _pyro_db_job_form_alter(&$form, $form_state, $form_id) {
     $form['#validate'][] = '_pyro_db_job_validate';
     $form['#submit'][] = '_pyro_db_job_submit';
     $form['buttons']['submit']['#submit'][] = '_pyro_db_job_redirect_handler';
+    
+    // if the gasket is locked, do not allow deleting
+    if(_pyro_db_job_gasket_is_locked($nid))
+    {
+        unset($form['buttons']['delete']);
+    }
 }
 
 function _pyro_db_job_validate($form, &$form_state) {
@@ -399,6 +405,21 @@ function _pyro_db_job_lock_job($job_node, $lockIt) {
             workflow_execute_transition($tmp_sample_node, 5);
         }
     }
+}
+
+function _pyro_db_job_gasket_is_locked($nid) {
+    //-----
+    // Is this job's gasket locked?
+    //
+    $result = db_query("SELECT ctpcj.field_cj_gasket_nid FROM {content_type_pdb_client_job} ctpcj WHERE ctpcj.nid = '$nid'"); 
+    while ($row = db_fetch_object($result)) {
+        $result2 = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE nid = '$row->field_cj_gasket_nid'");
+        while ($row2 = db_fetch_object($result2)) {
+            if($row2->sid == 8) { return false; }
+            elseif ($row2->sid == 9) { return true; }
+        }
+    }
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

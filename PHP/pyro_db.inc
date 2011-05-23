@@ -28,8 +28,7 @@
 // Displaying jobs
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-function _pyro_db_display_myjobs()
-{
+function _pyro_db_display_myjobs() {
     echo "<div id=\"pdb_wrapper_div\" style=\"visibility:visible; position:relative;\" >\n";
     echo drupal_get_form('_pyro_db_myjobs_form');
     echo "</div><!-- pdb_wrapper_div -->\n";
@@ -91,12 +90,10 @@ function _pyro_db_myjobs_form($form_state) {
     return $form;
 }
 
-
 function _pyro_db_myjobs_validate($form, &$form_state){}
 
 
-function _pyro_db_myjobs_submit($form, &$form_state)
-{
+function _pyro_db_myjobs_submit($form, &$form_state) {
     //-----
     // when yo submit bra!
     //

@@ -365,6 +365,12 @@ function _pyro_db_sample_form_alter(&$form, $form_state, $form_id) {
     $form['#submit'][] = '_pyro_db_sample_submit';
     
     if(!$metadata_exists) { drupal_set_message("WARNING: No metadata fields selected for this sample", 'warning', true); }
+    
+    // if the gasket is locked, do not allow deleting
+    if(_pyro_db_sample_gasket_is_locked($nid))
+    {
+        unset($form['buttons']['delete']);
+    }    
 }
 
 function _pyro_db_sample_validate($form, &$form_state) {
@@ -604,20 +610,19 @@ function _pyro_db_get_client_group_nid($uid) {
     $profile_node = content_profile_load('profile', $uid);
     $nid = $profile_node->nid;
     $result = db_query("SELECT ctp.field_user_cg_nid FROM {content_type_profile} ctp WHERE nid='$nid'");
-    $cg_nid = 0;
     while ($row = db_fetch_object($result)) 
     {
-        $cg_nid = $row->field_user_cg_nid;
-        break;
+        return $row->field_user_cg_nid;
     }
-    return $cg_nid;
+    
+    return 0;
 }
 
-function _pyro_db_get_location_by_cgid($cg_id) {
+function _pyro_db_get_location_by_cgid($cg_nid) {
     //-----
     // get an array of location information via a client group id
     //
-    $result = db_query("SELECT ctpcg.field_cg_address_lid FROM {content_type_pdb_client_group} ctpcg WHERE field_cg_address_lid='$cg_id'");
+    $result = db_query("SELECT ctpcg.field_cg_address_lid FROM {content_type_pdb_client_group} ctpcg WHERE nid='$cg_nid'");
     while ($row = db_fetch_object($result)) 
     {
         return _pyro_db_get_location_by_lid($row->field_cg_address_lid);

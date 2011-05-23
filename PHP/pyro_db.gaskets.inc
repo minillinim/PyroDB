@@ -109,6 +109,7 @@ function _pyro_db_gasket_get_link($nid) {
     }
     return '';
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Edit form
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +234,7 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
     {
         foreach ( $form_state['values']['pdb_assigned_jobs'] as $key => $value)
         {
-            if($value)
+            if($value == 1)
             {
                 $rem_job_nid = $form['pdb_assigned_jobs'][$key]['#id'];
                 if("edit-pdb-assigned-jobs-submit" != $rem_job_nid) {
@@ -249,15 +250,20 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
     }
     if(is_array($form_state['values']['pdb_non_assigned_jobs']))
     {
+        $num_added = 0;
         foreach ( $form_state['values']['pdb_non_assigned_jobs'] as $key => $value)
         {
-            if($value)
+            if($value == 1)
             {
                 $new_job_nid = $form['pdb_non_assigned_jobs'][$key]['#id'];
                 if("edit-pdb-non-assigned-jobs-submit" != $new_job_nid) {
-                    $form_state['values']['field_gas_num_samps'][0]['value'] = _pyro_db_gasket_do_add($max, $used, $nid, $new_job_nid);
+                    $num_added += _pyro_db_gasket_do_add($max, $used, $nid, $new_job_nid);
                 }
             }
+        }
+        if(0 != $num_added)
+        {
+            $form_state['values']['field_gas_num_samps'][0]['value'] = ($used + $num_added);
         }
     }
 }
@@ -388,7 +394,9 @@ function _pyro_db_gasket_do_add($max, $used, $gs_nid, $job_nid) {
     $job_title = $tmp_job_node->title;
     $tmp_gs_node = node_load($gs_nid);
     $num_samples = count(_pyro_db_job_get_all_samples($job_nid));
-    if($num_samples > ($max - $used)) { drupal_set_message("Adding $job_title to gasket may make gasket too dense. There is a limit of $max samples per gasket and adding this job would mean that this gasket has ".($used + $num_samples)." samples", 'warning', TRUE);}
+    if($num_samples > ($max - $used)) {
+        drupal_set_message("Adding $job_title to gasket may make gasket too dense. There is a limit of $max samples per gasket and adding this job would mean that this gasket has ".($used + $num_samples)." samples", 'warning', TRUE);
+    }
     
     if(_pyro_db_gasket_set_mids($job_nid, -1, $gs_nid))
     {
@@ -400,7 +408,7 @@ function _pyro_db_gasket_do_add($max, $used, $gs_nid, $job_nid) {
         _pyro_db_job_lock_job($tmp_job_node, true);
         
         // update the sample count
-        $num_samples += $used;
+        //$num_samples += $used;
         return $num_samples;
     }
     else
