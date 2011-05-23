@@ -207,8 +207,13 @@ function _pyro_db_get_non_null_cck_fields($nid) {
         foreach($tmp_array as $key => $value) {
             if($active_fields[$key]['active'])
             {
-                if(NULL != $value) {
-                    $ret_array[$key] = $value;
+                // do not clone the unique ID
+                if($key != "field_cs_id_value")
+                {
+                    drupal_set_message($key, 'status', true);
+                    if(NULL != $value) {
+                        $ret_array[$key] = $value;
+                    }
                 }
             }
         }

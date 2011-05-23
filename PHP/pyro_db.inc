@@ -90,8 +90,7 @@ function _pyro_db_myjobs_form($form_state) {
     return $form;
 }
 
-function _pyro_db_myjobs_validate($form, &$form_state){}
-
+function _pyro_db_myjobs_validate($form, &$form_state) {}
 
 function _pyro_db_myjobs_submit($form, &$form_state) {
     //-----
@@ -107,8 +106,7 @@ function _pyro_db_myjobs_submit($form, &$form_state) {
     }
 }
 
-function _pyro_db_myJobsPage($gasket)
-{
+function _pyro_db_myJobsPage($gasket) {
     //-----
     // the "MyJobs" page
     //
@@ -133,8 +131,7 @@ function _pyro_db_myJobsPage($gasket)
     return _pyro_db_myJobsPage_render($query, $is_admin);
 }
 
-function _pyro_db_myJobsPage_render($query, $isAdmin)
-{
+function _pyro_db_myJobsPage_render($query, $isAdmin) {
     //-----
     // the "MyJobs" page
     //
@@ -185,8 +182,7 @@ function _pyro_db_myJobsPage_render($query, $isAdmin)
     return $big_ret_string;
 }
 
-function _pyro_db_get_gaskets()
-{
+function _pyro_db_get_gaskets() {
     //-----
     // return nids for all gaskets
     //

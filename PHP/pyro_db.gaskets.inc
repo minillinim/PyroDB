@@ -117,6 +117,7 @@ function _pyro_db_gasket_get_link($nid) {
 function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
     // Use this for removing the jobs
     $nid = $form['nid']['#value'];
+    if($nid == 0) { return; }
     $used = 0;
     // max will fail to be stored in the db when the form first loads. So we need to bootstrap it here...
     $max = $form['field_gas_max_samples']['0']['#default_value']['value'];
@@ -171,6 +172,7 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
 function _pyro_db_gasket_remove_form(&$form, $form_state, $form_id) {
     // Use this for removing the jobs
     $nid = $form['nid']['#value'];
+    if($nid == 0) { return; }
     
     // get all the jobs which belong to this gasket
     $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n LEFT JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='$nid'");
