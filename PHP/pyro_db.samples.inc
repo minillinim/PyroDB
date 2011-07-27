@@ -683,14 +683,30 @@ function _pyro_db_get_location_by_sample_nid($nid) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 function _pyro_db_sample_set_mid($gs_nid, $mid, $samp_nid) {
-    db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid' WHERE nid = '$samp_nid'");
+    $mid_well = _pyro_db_get_wl_from_mid_value($mid);
+    if('' != $mid_well)
+    {
+        db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid', ctpcs.field_cs_wl_value = '$mid_well' WHERE nid = '$samp_nid'");
+    }
+    else
+    {
+        db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid' WHERE nid = '$samp_nid'");
+    }
     db_query("INSERT INTO {pdb_gasket_mids} (gasket_id, mid, sample_id) VALUES ('$gs_nid', '$mid', '$samp_nid')");
     $tmp_sample_node = node_load($samp_nid);
     drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: '$mid'", 'status', true );
 }
 
 function _pyro_db_sample_update_mid($mid, $samp_nid) {
-    db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid' WHERE nid = '$samp_nid'");
+    $mid_well = _pyro_db_get_wl_from_mid_value($mid);
+    if('' != $mid_well)
+    {
+        db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid', ctpcs.field_cs_wl_value = '$mid_well'  WHERE nid = '$samp_nid'");
+    }
+    else
+    {
+        db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid' WHERE nid = '$samp_nid'");
+    }
     db_query("UPDATE {pdb_gasket_mids} pgm set pgm.mid = '$mid' where sample_id = '$samp_nid'");
     $tmp_sample_node = node_load($samp_nid);
     drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: '$mid'", 'status', true );
@@ -706,7 +722,7 @@ function _pyro_db_sample_unset_mid($samp_nid) {
         $mid = $row->field_cs_mid_value;
     }
     
-    db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '' WHERE nid = '$samp_nid'");
+    db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '', ctpcs.field_cs_wl_value='' WHERE nid = '$samp_nid'");
     
     // we need to decrement the number used for this gasket.
     // get the gasket nid
@@ -740,6 +756,39 @@ function _pyro_db_sample_get_current_mid($samp_nid) {
         }
     }
     return '';
+}
+
+function _pyro_db_sample_get_current_wl($samp_nid) {
+    //-----
+    // wrapper to get the current mid well location for this sample
+    // returns '' is no mid set.
+    //
+    $result = db_query("SELECT ctpcs.field_cs_mid_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_mid_value)
+        {
+            return _pyro_db_get_wl_from_mid_value($row->field_cs_mid_value);
+        }
+    }
+    
+    return '';
+}
+
+function _pyro_db_sample_get_UID($samp_nid) {
+    //-----
+    // wrapper to get the current mid well location for this sample
+    // returns '' is no mid set.
+    //
+    $result = db_query("SELECT ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_id_value)
+        {
+            return $row->field_cs_id_value;
+        }
+    }
+    return 'X!X!X';
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

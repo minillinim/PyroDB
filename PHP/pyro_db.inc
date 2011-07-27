@@ -123,7 +123,7 @@ function _pyro_db_myJobsPage($gasket) {
         }
     }
 
-    $query = "SELECT ctpcj.field_cj_uid_value AS UNID, n.nid FROM {node} n INNER JOIN {users} u ON n.uid = u.uid INNER JOIN {content_type_pdb_client_job} ctpcj ON n.nid = ctpcj.nid WHERE (n.type in ('pdb_client_job'))";
+    $query = "SELECT ctpcj.field_cj_uid_value AS UNID, n.created, n.nid FROM {node} n INNER JOIN {users} u ON n.uid = u.uid INNER JOIN {content_type_pdb_client_job} ctpcj ON n.nid = ctpcj.nid WHERE (n.type in ('pdb_client_job'))";
     if(!$is_admin) { $query .= " AND (u.uid = ".$user->uid.")"; }
     if('' != $gasket) { $query .= " AND (ctpcj.field_cj_gasket_nid = '$gasket')"; }
     $query .= " ORDER BY n.changed DESC";
@@ -149,6 +149,9 @@ function _pyro_db_myJobsPage_render($query, $isAdmin) {
         $tmp_job_node = node_load($current_job_id);
         $job_header = "Job: <a href=\"?q=$path\">".$tmp_job_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp; UID: ".$row->UNID."&nbsp;&nbsp;&nbsp;&nbsp;";
         
+        $format = 'D - d M Y';
+        $time = date($format, $row->created);
+        
         if($isAdmin)
         {
             // now the user info
@@ -156,7 +159,7 @@ function _pyro_db_myJobsPage_render($query, $isAdmin) {
             $group_nid = _pyro_db_get_client_group_nid($tmp_user->uid);
             $group_node = node_load($group_nid);
             
-            $usr_str = "Created by: <a href=\"?q=user/".$tmp_user->uid."\">".$tmp_user->name."</a>&nbsp;&nbsp;&nbsp;&nbsp;From group: <a href=\"?q=node/$group_nid\">".$group_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+            $usr_str = "Created by: <a href=\"?q=user/".$tmp_user->uid."\">".$tmp_user->name."</a>&nbsp;&nbsp; On: $time <br>From group: <a href=\"?q=node/$group_nid\">".$group_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
             $gas_info = _pyro_db_job_get_gasket($current_job_id);
             $gas_str = "";
             if(0 != count($gas_info))
@@ -196,6 +199,38 @@ function _pyro_db_get_gaskets() {
         $counter++;
     }
     return $ret_array;
+}
+
+function _pyro_db_get_wl_from_mid_value($mid_value) {
+    //-----
+    // wrapper to get the current well location for a given MID this sample
+    // returns '' if no wl set.
+    //
+    $result = db_query("SELECT ctpm.field_454_mid_wl_value FROM {content_type_pyrotag_mid} ctpm where ctpm.field_454_mid_sequence_value='$mid_value'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_454_mid_wl_value)
+        {
+            return $row->field_454_mid_wl_value;
+        }
+    }
+    return '';
+}
+
+function _pyro_db_get_wl_from_mid_id($mid_id) {
+    //-----
+    // wrapper to get the current well location for a given MID this sample
+    // returns '' if no wl set.
+    //
+    $result = db_query("SELECT ctpm.field_454_mid_wl_value FROM {content_type_pyrotag_mid} ctpm where ctpm.nid='$mid_id'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_454_mid_wl_value)
+        {
+            return $row->field_454_mid_wl_value;
+        }
+    }
+    return '';
 }
 
 function _pyro_db_drupe_alert($message) { drupal_set_message($message , 'status', true); }
