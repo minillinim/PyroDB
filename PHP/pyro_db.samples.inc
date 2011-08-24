@@ -92,6 +92,7 @@ function _pyro_db_sample_body($isSave, $nid) {
             if($row->sid == 5)
             {
                 echo "<br><h1>CLONE SAMPLE</h1><hr>";
+                echo "Note: There are only 96 samples on each gasket. If your job requires more samples than this, you'll need to make 2 (or more) jobs.<br>";
                 print drupal_get_form('_pyro_db_cloneform', $nid);      
             }
         }
@@ -138,6 +139,7 @@ function _pyro_db_fields_as_table($nid) {
         elseif($key == 'field_cs_forward_primer_nid') { $value = _pyro_db_sample_get_primer_string($chem, '454', 'forward', $nn_fields['field_cs_mid_value'], $nid, $value, 'sample page'); }
         elseif($key == 'field_cs_reverse_primer_nid') { $value = _pyro_db_sample_get_primer_string($chem, '454', 'reverse', $nn_fields['field_cs_mid_value'], $nid, $value, 'sample page'); }
         elseif($key == 'field_cs_mid_value') { if('' == $value or $value == NULL) { $value = " MID UNSET"; } }
+        elseif($key == 'field_cs_wl_value') { if('' == $value or $value == NULL) { $value = " UNSET"; } }
         $rows[] = array( array('data' => '<B>'.$fancy_names[$key]['name'].'</B>', 'width' => '35%') , $value);
     }
     $view = views_get_view('gmap_loc_view');
@@ -279,7 +281,6 @@ function _pyro_db_get_fields() {
         'field_cs_nucl_acid_ext_value' => array('name' => 'Nucleic Acid Extraction', 'active' => true, 'type' => '%s',),
         'field_cs_nucl_acid_amp_value'  => array('name' => 'Nucleic Acid Amplification', 'active' => true, 'type' => '%s',),
         'field_cs_id_value' => array('name' => 'Unique ID', 'active' => true, 'type' => '%s',),
-        
     );
 }
 
@@ -481,26 +482,34 @@ function _pyro_db_get_parent_job_chem($nid) {
 
 function _pyro_db_cloneform($form_state, $nid) {
   // Access log settings:
-  $form['#submit'][] = '_pyro_db_clone_sample_submit';
-  $form['#validate'][] = '_pyro_db_clone_sample_validate';
   
-  $form['nid'] = array(
-  '#type' => 'hidden',
-  '#value' => $nid,
-  );
+  $job_nid = _pyro_db_get_parent_job_nid($nid);
+  $num_samples = _pyro_db_job_get_num_of_samples($job_nid);
+  $remaining_samples = 96 - $num_samples;
   
-  $clone_opts = drupal_map_assoc(range(1,100));
-  $form['num_clones'] = array(
-    '#type' => 'select',
-    '#options' => $clone_opts,
-    '#title' => t('Clone this Sample'),
-    '#size' => 1,
-    '#description' => t('Enter the number of clones you wish to make'),
-  );
-  
-  $form['submit'] = array('#type' => 'submit', '#value' => t('Clone!'));
-  
-  return $form;
+  if($remaining_samples > 0)
+  {  
+      $form['#submit'][] = '_pyro_db_clone_sample_submit';
+      $form['#validate'][] = '_pyro_db_clone_sample_validate';
+      
+      $form['nid'] = array(
+      '#type' => 'hidden',
+      '#value' => $nid,
+      );
+      $clone_opts = drupal_map_assoc(range(1,$remaining_samples));
+      $form['num_clones'] = array(
+        '#type' => 'select',
+        '#options' => $clone_opts,
+        '#title' => t('Clone this Sample'),
+        '#size' => 1,
+        '#description' => t('Enter the number of clones you wish to make'),
+      );
+      
+      $form['submit'] = array('#type' => 'submit', '#value' => t('Clone!'));
+      
+      return $form;
+  }
+  return array();
 }
 
 function _pyro_db_clone_sample_submit($form, &$form_state) {
@@ -758,6 +767,25 @@ function _pyro_db_sample_get_current_mid($samp_nid) {
     return '';
 }
 
+function _pyro_db_sample_get_current_mid_id($samp_nid) {
+    //-----
+    // wrapper to get the current mid for this sample
+    // returns '' is no mid set.
+    //
+    $query = "SELECT ctpcs.field_cs_mid_value, ctpm.field_454_mid_id_value FROM {content_type_pdb_client_sample} ctpcs 
+              LEFT JOIN {content_type_pyrotag_mid} ctpm ON ctpm.field_454_mid_sequence_value = ctpcs.field_cs_mid_value
+              WHERE ctpcs.nid='$samp_nid'";
+    $result = db_query($query);
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_mid_value)
+        {
+            return $row->field_454_mid_id_value;
+        }
+    }
+    return '';
+}
+
 function _pyro_db_sample_get_current_wl($samp_nid) {
     //-----
     // wrapper to get the current mid well location for this sample
@@ -773,22 +801,6 @@ function _pyro_db_sample_get_current_wl($samp_nid) {
     }
     
     return '';
-}
-
-function _pyro_db_sample_get_UID($samp_nid) {
-    //-----
-    // wrapper to get the current mid well location for this sample
-    // returns '' is no mid set.
-    //
-    $result = db_query("SELECT ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
-    while ($row = db_fetch_object($result)) 
-    {
-        if('' != $row->field_cs_id_value)
-        {
-            return $row->field_cs_id_value;
-        }
-    }
-    return 'X!X!X';
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -891,3 +903,53 @@ function _pyro_db_sample_gasket_is_locked($nid) {
     }
     return false;
 }
+
+function _pyro_db_sample_get_link($nid) {
+    //-----
+    // return the url of the given nid
+    //
+    $link_query = db_query("SELECT complete_menu.link_path AS path FROM {nodehierarchy_menu_links} nml LEFT JOIN {menu_links} complete_menu ON nml.mlid = complete_menu.mlid WHERE nml.nid = '$nid'");
+    while ($link_row = db_fetch_object($link_query)) 
+    {
+        return $link_row->path;
+    }
+    return '';
+}
+
+function _pyro_db_sample_get_UID($samp_nid) {
+    //-----
+    // wrapper to get the current mid well location for this sample
+    // returns '' is no mid set.
+    //
+    $result = db_query("SELECT ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_id_value)
+        {
+            return $row->field_cs_id_value;
+        }
+    }
+    return 'X!X!X';
+}
+
+function _pyro_db_sample_get_well_text($samp_nid) {
+    //-----
+    // Get the text which is placed in the grid table on the gasket view page
+    // returns '' is no mid set.
+    //
+    $query = "SELECT ctpm.field_454_mid_id_value, ctpp.field_pp_pri_name_value, ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs 
+              LEFT JOIN {content_type_pyrotag_primer} ctpp ON ctpcs.field_cs_forward_primer_nid = ctpp.nid 
+              LEFT JOIN {content_type_pyrotag_mid} ctpm ON ctpm.field_454_mid_sequence_value = ctpcs.field_cs_mid_value
+              where ctpcs.nid='$samp_nid'";
+    $result = db_query($query);
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_id_value)
+        {
+            $sample_link = _pyro_db_gasket_get_link($samp_nid);
+            return "<a href=\"?q=$sample_link\">".$row->field_cs_id_value."</a><br>".$row->field_454_mid_id_value."<br>".$row->field_pp_pri_name_value;
+        }
+    }
+    return 'X!X!X';
+}
+

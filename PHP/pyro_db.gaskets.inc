@@ -45,7 +45,7 @@ function _pyro_db_gasket_body($isSave, $nid) {
         
         // select all the jobs assigned to this gasket...
         echo "<br><h1>GASKET INFORMATION</h1><hr>";
-        $result = db_query("SELECT gas.field_gas_num_samps_value, gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
+        $result = db_query("SELECT gas.field_gas_desc_value, gas.field_gas_num_samps_value, gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
         $nun_dun = true;
         $header = array('Type', 'Count');
         $rows = array();
@@ -54,6 +54,10 @@ function _pyro_db_gasket_body($isSave, $nid) {
             $rows[] = array( array('data' => 'MAX', 'width' => '35%') , $row->field_gas_max_samples_value);
             $rows[] = array( array('data' => 'USED', 'width' => '35%') , $row->field_gas_num_samps_value);
         }
+        
+        echo "<h2>Description:</h2>";
+        echo "$row->field_gas_desc_value<br>";
+        
         echo theme_table($header, $rows);
         
         // get all the jobs which belong to this gasket
@@ -85,7 +89,7 @@ function _pyro_db_gasket_body($isSave, $nid) {
                 $sample_link = _pyro_db_gasket_get_link($current_sample);
                 $sample_well = _pyro_db_sample_get_current_wl($current_sample);
                 $sample_UID = _pyro_db_sample_get_UID($current_sample);
-                $ninny6_well_plate[$sample_well] = $sample_UID;
+                $ninny6_well_plate[$sample_well] = _pyro_db_sample_get_well_text($current_sample);
                 $tmp_sample_node = node_load($current_sample);
                 $samp_str .= "<a href=\"?q=$sample_link\">".$tmp_sample_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$sample_well."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$sample_UID."<br>";
                 $num_samples++;
@@ -110,7 +114,7 @@ function _pyro_db_gasket_body($isSave, $nid) {
         
             # make a pretty 96 well view
             echo "<br><h1>WELL LAYOUT</h1><hr>";
-            $well_view = "<table border=\"1\" cellpadding=\"6\" cellspacing=\"6\">".
+            $well_view = "<table border=\"solid black 1px\" cellpadding=\"6\" cellspacing=\"6\">".
                                 "<tr><td></td><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td><td><b>4</b></td><td><b>5</b></td><td><b>6</b></td><td><b>7</b></td><td><b>8</b></td><td><b>9</b></td><td><b>10</b></td><td><b>11</b></td><td><b>12</b></td></tr>".
                                 "<tr><td><b>A</b></td><td>".$ninny6_well_plate['A1']."</td><td>".$ninny6_well_plate['A2']."</td><td>".$ninny6_well_plate['A3']."</td><td>".$ninny6_well_plate['A4']."</td><td>".$ninny6_well_plate['A5']."</td><td>".$ninny6_well_plate['A6']."</td><td>".$ninny6_well_plate['A7']."</td><td>".$ninny6_well_plate['A8']."</td><td>".$ninny6_well_plate['A9']."</td><td>".$ninny6_well_plate['A10']."</td><td>".$ninny6_well_plate['A11']."</td><td>".$ninny6_well_plate['A12']."</td></tr>".
                                 "<tr><td><b>B</b></td><td>".$ninny6_well_plate['B1']."</td><td>".$ninny6_well_plate['B2']."</td><td>".$ninny6_well_plate['B3']."</td><td>".$ninny6_well_plate['B4']."</td><td>".$ninny6_well_plate['B5']."</td><td>".$ninny6_well_plate['B6']."</td><td>".$ninny6_well_plate['B7']."</td><td>".$ninny6_well_plate['B8']."</td><td>".$ninny6_well_plate['B9']."</td><td>".$ninny6_well_plate['B10']."</td><td>".$ninny6_well_plate['B11']."</td><td>".$ninny6_well_plate['B12']."</td></tr>".
@@ -121,9 +125,27 @@ function _pyro_db_gasket_body($isSave, $nid) {
                                 "<tr><td><b>G</b></td><td>".$ninny6_well_plate['G1']."</td><td>".$ninny6_well_plate['G2']."</td><td>".$ninny6_well_plate['G3']."</td><td>".$ninny6_well_plate['G4']."</td><td>".$ninny6_well_plate['G5']."</td><td>".$ninny6_well_plate['G6']."</td><td>".$ninny6_well_plate['G7']."</td><td>".$ninny6_well_plate['G8']."</td><td>".$ninny6_well_plate['G9']."</td><td>".$ninny6_well_plate['G10']."</td><td>".$ninny6_well_plate['G11']."</td><td>".$ninny6_well_plate['G12']."</td></tr>".
                                 "<tr><td><b>H</b></td><td>".$ninny6_well_plate['H1']."</td><td>".$ninny6_well_plate['H2']."</td><td>".$ninny6_well_plate['H3']."</td><td>".$ninny6_well_plate['H4']."</td><td>".$ninny6_well_plate['H5']."</td><td>".$ninny6_well_plate['H6']."</td><td>".$ninny6_well_plate['H7']."</td><td>".$ninny6_well_plate['H8']."</td><td>".$ninny6_well_plate['H9']."</td><td>".$ninny6_well_plate['H10']."</td><td>".$ninny6_well_plate['H11']."</td><td>".$ninny6_well_plate['H12']."</td></tr></table>";
             echo $well_view;
+            
+            # make a print version
+            $sing_line_table = "bpob";
+            echo "
+                <SCRIPT TYPE='text/javascript'>
+                <!--
+                    function printVersion()
+                    {           
+                        var w = window.open(\"Surprise\", \"#\");
+                        var d = w.document.open();
+                        d.write('<!DOCTYPE html><html><head><link type=\"text/css\" rel=\"stylesheet\" media=\"print\" href=\"/sites/all/themes/ace/css/print.css?E\" /></head>');
+                        d.write('<body>$well_view');
+                        d.write('<h1><span style=\"font-size: 24px;\">Notes:</span><h1>');
+                        d.write('</body></html>');
+                        d.close();
+                    }
+                //-->
+                </SCRIPT>";
+            echo "<a href=\"#\" onClick=\"return printVersion()\">Printer friendly version</a>";
             echo "<br><h1>ASSIGNED JOBS</h1><hr>";
             echo theme_table($header, $rows);
-
         }
     }
 }
@@ -178,17 +200,22 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
             $first_run = false;
             $found_some_jobs = true;
         }
+        
         // get the number of samples that this guy has
-        $nid = $row->nid;
+        $job_nid = $row->nid;
         $this_user=user_load($row->user);
         $username=$this_user->name;
         $format = 'D - d M Y';
         $time = date($format, $row->created);
-        $num_samples = count(_pyro_db_job_get_all_samples($nid));
-        $title = "$username :: $time :: $row->node_title (job UID: $row->JUID) --  $num_samples sample(s)";
+        $num_samples = _pyro_db_job_get_num_of_samples($job_nid);
+        
+        $simple_path = "node/".$job_nid;
+        $simple_path =drupal_get_path_alias($simple_path);       
+        
+        $title = "$username :: $time :: $row->node_title (job UID: $row->JUID) --  $num_samples sample(s) -- ".l("LINK",t($simple_path));
         $form['pdb_non_assigned_jobs'][$row->node_title] = array(
             '#type' => 'checkbox',
-            '#id' => t($nid),
+            '#id' => t($job_nid),
             '#title' => $title,
             '#default_value' => 0,
             '#num_samples' => $num_samples,
@@ -457,7 +484,7 @@ function _pyro_db_gasket_do_add($max, $used, $gs_nid, $job_nid) {
     {
         drupal_set_message("Could NOT add: ".$tmp_job_node->title." to ".$tmp_gs_node->title, 'error', TRUE);
     }
-    return -1;
+    return 0;
 }
 
 function _pyro_db_gasket_do_remove($gs_nid, $job_nid) {

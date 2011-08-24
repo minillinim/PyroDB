@@ -28,6 +28,12 @@
 // Displaying jobs
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+function _pyro_db_display_myunassignedjobs() {
+    echo "<div id=\"pdb_wrapper_div\" style=\"visibility:visible; position:relative;\" >\n";
+    echo _pyro_db_myUnassignedJobsPage();
+    echo "</div><!-- pdb_wrapper_div -->\n";
+}
+
 function _pyro_db_display_myjobs() {
     echo "<div id=\"pdb_wrapper_div\" style=\"visibility:visible; position:relative;\" >\n";
     echo drupal_get_form('_pyro_db_myjobs_form');
@@ -54,21 +60,14 @@ function _pyro_db_myjobs_form($form_state) {
     else
     {
         // is this guy an admin?
-        global $user;
-        $is_admin = false;
-        $result = db_query('SELECT r.name FROM {users_roles} ur LEFT JOIN {role} r ON r.rid=ur.rid WHERE ur.uid=%d', $user->uid);
+        $is_admin =  _pyro_db_is_admin();
         $css_string = "";
-        while ($row = db_fetch_object($result)) 
+        if($is_admin)
         {
-            if("PyroDB_admin" == $row->name)
-            {
-                $is_admin = true;
-                $css_string = "position: absolute; top: 130px;";
-                break;
-            }
+            $css_string = "position: absolute; top: 130px;";
         }
         echo "<div id=\"pdb_unfiltered\" style=\"visibility: visible; $css_string\">\n";
-        echo _pyro_db_myJobsPage('');
+        #echo _pyro_db_myJobsPage('');
         echo "</div><!-- pdb_unfiltered -->\n";
         if($is_admin)
         {
@@ -80,6 +79,10 @@ function _pyro_db_myjobs_form($form_state) {
                 '#description' => t('Choose the gasket to display jobs for'),
             );
             $form['submit'] = array('#type' => 'submit', '#value' => t('Filter...'));
+        }
+        else
+        {
+            echo _pyro_db_myJobsPage('');
         }
     }
 
@@ -106,27 +109,77 @@ function _pyro_db_myjobs_submit($form, &$form_state) {
     }
 }
 
-function _pyro_db_myJobsPage($gasket) {
+function _pyro_db_get_created($nid)
+{
     //-----
-    // the "MyJobs" page
+    // When was the node created
     //
+    $result = db_query("SELECT n.created FROM {node} n WHERE n.nid ='$nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        return $row->created;
+    }
+    return 0;
+}
+
+function _pyro_db_is_admin()
+{
+    //----
+    // is the global user an admin?
+    // 
     global $user;
-    // is this guy an admin?
-    $is_admin = false;
     $result = db_query('SELECT r.name FROM {users_roles} ur LEFT JOIN {role} r ON r.rid=ur.rid WHERE ur.uid=%d', $user->uid);
     while ($row = db_fetch_object($result)) 
     {
         if("PyroDB_admin" == $row->name)
         {
-            $is_admin = true;
-            break;
+            return true;
         }
     }
+    return false;
+}
 
-    $query = "SELECT ctpcj.field_cj_uid_value AS UNID, n.created, n.nid FROM {node} n INNER JOIN {users} u ON n.uid = u.uid INNER JOIN {content_type_pdb_client_job} ctpcj ON n.nid = ctpcj.nid WHERE (n.type in ('pdb_client_job'))";
+function _pyro_db_myUnassignedJobsPage() {
+    //-----
+    // the "MyJobs" page
+    //
+    // is this guy an admin?
+    global $user;
+    $is_admin = _pyro_db_is_admin();
+    $query = "SELECT ctpcj.field_cj_uid_value AS UNID, ctpcj.nid AS nid FROM {content_type_pdb_client_job} ctpcj
+    LEFT JOIN {node} n ON n.nid = ctpcj.nid
+    LEFT JOIN {users} u ON n.uid = u.uid
+    WHERE (
+        ( (ctpcj.field_cj_gasket_nid is NULL) 
+                OR 
+            (ctpcj.field_cj_gasket_nid = '0') )
+    ";
+    
+    if(!$is_admin) { $query .= " AND (u.uid = ".$user->uid.")"; }
+    $query .= ") ORDER BY n.changed DESC";
+
+    return _pyro_db_myJobsPage_render($query, $is_admin);
+}
+
+function _pyro_db_myJobsPage($gasket) {
+    //-----
+    // the "MyJobs" page
+    //
+    // is this guy an admin?
+    global $user;
+    $is_admin  = _pyro_db_is_admin();
+    $query = "SELECT ctpcj.field_cj_uid_value AS UNID, ctpcj.nid AS nid FROM {content_type_pdb_client_job} ctpcj
+    LEFT JOIN {node} n ON n.nid = ctpcj.nid
+    LEFT JOIN {users} u ON n.uid = u.uid
+    WHERE (
+        ( (ctpcj.field_cj_gasket_nid is not NULL) 
+                AND 
+            (ctpcj.field_cj_gasket_nid != '0') )
+    ";
+    
     if(!$is_admin) { $query .= " AND (u.uid = ".$user->uid.")"; }
     if('' != $gasket) { $query .= " AND (ctpcj.field_cj_gasket_nid = '$gasket')"; }
-    $query .= " ORDER BY n.changed DESC";
+    $query .= ") ORDER BY n.changed DESC";
 
     return _pyro_db_myJobsPage_render($query, $is_admin);
 }
@@ -150,7 +203,7 @@ function _pyro_db_myJobsPage_render($query, $isAdmin) {
         $job_header = "Job: <a href=\"?q=$path\">".$tmp_job_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp; UID: ".$row->UNID."&nbsp;&nbsp;&nbsp;&nbsp;";
         
         $format = 'D - d M Y';
-        $time = date($format, $row->created);
+        $time = date($format, _pyro_db_get_created($current_job_id));
         
         if($isAdmin)
         {
@@ -170,6 +223,7 @@ function _pyro_db_myJobsPage_render($query, $isAdmin) {
             $job_header .= $usr_str.$gas_str;
             
         }
+        $job_header .= "&nbsp;&nbsp;&nbsp;&nbsp;Total samples: "._pyro_db_job_get_num_of_samples($current_job_id);
         $header = array($job_header);
         $rows = array();
         $view = views_get_view('job_sample_table');
@@ -190,12 +244,12 @@ function _pyro_db_get_gaskets() {
     // return nids for all gaskets
     //
     $ret_array = array();
-    $query = "SELECT ctpg.nid as nid, n.title as title from {content_type_pdb_gasket} ctpg LEFT JOIN {node} n ON n.nid = ctpg.nid";
+    $query = "SELECT ctpg.nid as nid, ctpg.field_gas_desc_value as descr, n.title as title from {content_type_pdb_gasket} ctpg LEFT JOIN {node} n ON n.nid = ctpg.nid";
     $result = db_query($query);
     $counter = 0;
     while ($row = db_fetch_object($result)) 
     {
-        $ret_array[$row->nid] = $row->title;
+        $ret_array[$row->nid] = $row->title."     ".$row->descr;
         $counter++;
     }
     return $ret_array;

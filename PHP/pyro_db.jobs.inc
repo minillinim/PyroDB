@@ -472,6 +472,20 @@ function _pyro_db_job_get_all_samples($nid) {
     return $ret_array;
 }
 
+function _pyro_db_job_get_num_of_samples($nid) {
+    //----
+    // get all the samples for this job
+    //
+    $ret_array = array();
+    $query = "SELECT COUNT(*)
+     FROM {node} node 
+     LEFT JOIN nodehierarchy_menu_links nodehierarchy_menu_links ON node.nid = nodehierarchy_menu_links.nid 
+     LEFT JOIN menu_links nh_menu_links ON nodehierarchy_menu_links.mlid = nh_menu_links.mlid 
+     LEFT JOIN nodehierarchy_menu_links nh_parent ON nh_menu_links.plid = nh_parent.mlid 
+     WHERE (node.status <> 0) AND (nh_parent.nid = ".$nid.")";
+    return db_result(db_query($query));
+}
+
 function _pyro_db_job_get_gasket($nid) {
     //-----
     // return the gasket for this job 
