@@ -918,10 +918,26 @@ function _pyro_db_sample_get_link($nid) {
 
 function _pyro_db_sample_get_UID($samp_nid) {
     //-----
-    // wrapper to get the current mid well location for this sample
-    // returns '' is no mid set.
+    // wrapper to get the sample UID
+    // returns 'X!X!X' is not set.
     //
     $result = db_query("SELECT ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_id_value)
+        {
+            return $row->field_cs_id_value;
+        }
+    }
+    return 'X!X!X';
+}
+
+function _pyro_db_sample_get_desc($samp_nid) {
+    //-----
+    // wrapper to get the sample description text
+    // returns 'X!X!X' is not set.=
+    //
+    $result = db_query("SELECT ctpcs.field_cs_description_value FROM {content_type_pdb_client_sample} ctpcs where nid='$samp_nid'");
     while ($row = db_fetch_object($result)) 
     {
         if('' != $row->field_cs_id_value)
@@ -953,3 +969,21 @@ function _pyro_db_sample_get_well_text($samp_nid) {
     return 'X!X!X';
 }
 
+function _pyro_db_sample_get_epi_text($samp_nid) {
+    //-----
+    // Get the text which is placed in the grid table on the gasket view page
+    // returns '' is no mid set.
+    //
+    $query = "SELECT ctpp.field_pp_pri_name_value, ctpcs.field_cs_mid_value, ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs 
+              LEFT JOIN {content_type_pyrotag_primer} ctpp ON ctpcs.field_cs_forward_primer_nid = ctpp.nid 
+              where ctpcs.nid='$samp_nid'";
+    $result = db_query($query);
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cs_id_value)
+        {
+            return _pyro_db_get_wl_from_mid_value($row->field_cs_mid_value).",".$row->field_pp_pri_name_value."<br>";
+        }
+    }
+    return 'X!X!X';
+}

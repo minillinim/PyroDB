@@ -199,5 +199,5 @@ function pyro_db_views_query_alter(&$view, &$query) {
         }
         $query->where[0]['args'][3] = _pyro_db_get_parent_job_chem($this_nid);
     }
-}
 
+}

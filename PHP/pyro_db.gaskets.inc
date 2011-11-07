@@ -126,25 +126,54 @@ function _pyro_db_gasket_body($isSave, $nid) {
                                 "<tr><td><b>H</b></td><td>".$ninny6_well_plate['H1']."</td><td>".$ninny6_well_plate['H2']."</td><td>".$ninny6_well_plate['H3']."</td><td>".$ninny6_well_plate['H4']."</td><td>".$ninny6_well_plate['H5']."</td><td>".$ninny6_well_plate['H6']."</td><td>".$ninny6_well_plate['H7']."</td><td>".$ninny6_well_plate['H8']."</td><td>".$ninny6_well_plate['H9']."</td><td>".$ninny6_well_plate['H10']."</td><td>".$ninny6_well_plate['H11']."</td><td>".$ninny6_well_plate['H12']."</td></tr></table>";
             echo $well_view;
             
-            # make a print version
-            $sing_line_table = "bpob";
+            echo "<br><h1>TEXT FILES</h1><hr>";
+
+            # make a print version and a mapping file for the app
+            $app_mapping_file = _pyro_db_gasket_app_mapping_file($nid);
+            
+            # make a conversion file for use with the epi robot
+            $app_epi_file = _pyro_db_gasket_app_conversion_file($nid);
+            
             echo "
                 <SCRIPT TYPE='text/javascript'>
                 <!--
-                    function printVersion()
+                    function printWellSheet()
                     {           
-                        var w = window.open(\"Surprise\", \"#\");
+                        var w = window.open(\"Well_sheet\", \"#\");
                         var d = w.document.open();
                         d.write('<!DOCTYPE html><html><head><link type=\"text/css\" rel=\"stylesheet\" media=\"print\" href=\"/sites/all/themes/ace/css/print.css?E\" /></head>');
                         d.write('<body>$well_view');
                         d.write('<h1><span style=\"font-size: 24px;\">Notes:</span><h1>');
                         d.write('</body></html>');
                         d.close();
+                    }                    
+                    function printMapping()
+                    {           
+                        var w = window.open(\"Mapping_file\", \"#\");
+                        var d = w.document.open();
+                        d.write('<!DOCTYPE html><html><head><link type=\"text/css\" rel=\"stylesheet\" media=\"print\" href=\"/sites/all/themes/ace/css/print.css?E\" /></head>');
+                        d.write('<body>$app_mapping_file');
+                        d.write('</body></html>');
+                        d.close();
+                    }
+                    function printEpi()
+                    {           
+                        var w = window.open(\"Conversion_file\", \"#\");
+                        var d = w.document.open();
+                        d.write('<!DOCTYPE html><html><head><link type=\"text/css\" rel=\"stylesheet\" media=\"print\" href=\"/sites/all/themes/ace/css/print.css?E\" /></head>');
+                        d.write('<body>$app_epi_file');
+                        d.write('</body></html>');
+                        d.close();
                     }
                 //-->
                 </SCRIPT>";
-            echo "<a href=\"#\" onClick=\"return printVersion()\">Printer friendly version</a>";
+
+            echo "<a href=\"#\" onClick=\"return printWellSheet()\">Printer friendly version of well layouts</a><br>";
+            echo "<a href=\"#\" onClick=\"return printMapping()\">APP mapping file</a><br>";
+            echo "<a href=\"#\" onClick=\"return printEpi()\">EPI conversion file</a><br>";
+            
             echo "<br><h1>ASSIGNED JOBS</h1><hr>";
+            
             echo theme_table($header, $rows);
         }
     }
@@ -160,6 +189,62 @@ function _pyro_db_gasket_get_link($nid) {
         return $link_row->path;
     }
     return '';
+}
+
+function _pyro_db_gasket_app_mapping_file($gas_nid) {
+    //-----
+    // Make the ampping file for the app
+    //
+    // Looks like:
+    //
+    //    #SampleID	BarcodeSequence	LinkerPrimerSequence	Description
+    //    55.428	ACAGC	acgggcggtgtgtRc	Dana_MD162_Run_5.1_LibL
+    //    55.429	ACGAC	acgggcggtgtgtRc	Dana_MD1_Run_5.1_LibL
+    //    55.430	ACTAT	acgggcggtgtgtRc	Dana_MD164_Run_5.1_LibL
+    //
+    
+    $ret_str = "#SampleID_TAB_BarcodeSequence_TAB_LinkerPrimerSequence_TAB_Description<br>";
+    $result = db_query("SELECT ctpcj.field_cj_uid_value as J_uid, ctpcj.nid as J_nid FROM {content_type_pdb_client_job} ctpcj WHERE ctpcj.field_cj_gasket_nid ='$gas_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        $num_samples = 0;
+        $samples = _pyro_db_job_get_all_samples($row->J_nid);
+        foreach ($samples as $current_sample)
+        {
+            $result2 = db_query("SELECT ctpcs.field_cs_id_value, ctpcs.field_cs_mid_value, ctpcs.field_cs_description_value, ctpp.field_pp_template_value, node.title as title FROM {content_type_pdb_client_sample} ctpcs LEFT JOIN {content_type_pyrotag_primer} ctpp ON ctpp.nid = ctpcs.field_cs_reverse_primer_nid LEFT JOIN {node} node ON ctpcs.nid = node.nid where ctpcs.nid='$current_sample'");
+            while ($row2 = db_fetch_object($result2)) 
+            {
+                $desc = $row2->title;
+                $order   = array("\r\n", "\n", "\r");
+                $desc = str_replace($order, "", $desc);
+                $desc = str_replace("'", "\\'", $desc);
+                $ret_str .= $row->J_uid.".".$row2->field_cs_id_value."_TAB_".$row2->field_cs_mid_value."_TAB_".$row2->field_pp_template_value."_TAB_".$desc."<br>"; 
+            }
+        }
+    }
+    return $ret_str;
+}
+
+function _pyro_db_gasket_app_conversion_file($gas_nid) {
+    //-----
+    // Make a text file for use with the epi robot
+    //
+    // get all the jobs which belong to this gasket
+    $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n LEFT JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='$gas_nid'");
+    $samp_str = "";
+    while ($row = db_fetch_object($result)) 
+    {
+        $num_samples = 0;
+        $samples = _pyro_db_job_get_all_samples($row->nid);
+        foreach ($samples as $current_sample)
+        {
+            $samp_str .= _pyro_db_sample_get_epi_text($current_sample);
+            $num_samples++;
+        }
+        $nun_dun = false;
+    }
+    
+    return $samp_str;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
