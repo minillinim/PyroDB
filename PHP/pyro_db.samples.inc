@@ -316,7 +316,7 @@ function _pyro_db_sample_form_alter(&$form, $form_state, $form_id) {
         $form['field_cs_forward_primer']['#access'] = false;
         $form['field_cs_reverse_primer']['#access'] = false;
     }
-    
+
     // restrict MID changes when Gasket is locked.
     if(_pyro_db_sample_gasket_is_locked($nid))
     {

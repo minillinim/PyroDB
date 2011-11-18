@@ -502,6 +502,21 @@ function _pyro_db_job_get_gasket($nid) {
     return $ret_array;
 }
 
+function _pyro_db_job_get_UID($job_nid) {
+    //-----
+    // wrapper to get the sample UID
+    // returns 'X!X!X' is not set.
+    //
+    $result = db_query("SELECT ctpcj.field_cj_uid_value FROM {content_type_pdb_client_job} ctpcj where nid='$job_nid'");
+    while ($row = db_fetch_object($result)) 
+    {
+        if('' != $row->field_cj_uid_value)
+        {
+            return $row->field_cj_uid_value;
+        }
+    }
+    return 'X!X!X';
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 //////////////////////////////////////////////////////////////////////////////////////////////////

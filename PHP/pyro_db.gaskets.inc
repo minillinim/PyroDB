@@ -45,26 +45,23 @@ function _pyro_db_gasket_body($isSave, $nid) {
         
         // select all the jobs assigned to this gasket...
         echo "<br><h1>GASKET INFORMATION</h1><hr>";
-        $result = db_query("SELECT gas.field_gas_desc_value, gas.field_gas_num_samps_value, gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
+        $result = db_query("SELECT gas.field_gas_desc_value, gas.field_gas_mid_set_value, gas.field_gas_num_samps_value, gas.field_gas_max_samples_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
         $nun_dun = true;
-        $header = array('Type', 'Count');
+        $header = array('', '');
         $rows = array();
         if($row = db_fetch_object($result)) 
         {
-            $rows[] = array( array('data' => 'MAX', 'width' => '35%') , $row->field_gas_max_samples_value);
-            $rows[] = array( array('data' => 'USED', 'width' => '35%') , $row->field_gas_num_samps_value);
+            $rows[] = array( array('data' => '<strong>Description:</strong>', 'width' => '35%') , $row->field_gas_desc_value);
+            $rows[] = array( array('data' => '<strong>MID set:</strong>', 'width' => '35%') , $row->field_gas_mid_set_value);
+            $rows[] = array( array('data' => '<strong>Max samples allowed:</strong>', 'width' => '35%') , $row->field_gas_max_samples_value);
+            $rows[] = array( array('data' => '<strong>Sample spots used:</strong>', 'width' => '35%') , $row->field_gas_num_samps_value);
         }
-        
-        echo "<h2>Description:</h2>";
-        echo "$row->field_gas_desc_value<br>";
         
         echo theme_table($header, $rows);
         
         // get all the jobs which belong to this gasket
         $result = db_query("SELECT n.title AS node_title, n.nid AS nid FROM {node} n LEFT JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='$nid'");
         $nun_dun = true;
-        $header = array('Job', 'Samples');
-        $rows = array();
         
         $ninny6_well_plate = array('A1' => 'EMPTY', 'B1' => 'EMPTY', 'C1' => 'EMPTY', 'D1' => 'EMPTY', 'E1' => 'EMPTY', 'F1' => 'EMPTY', 'G1' => 'EMPTY', 'H1' => 'EMPTY',
                               'A2' => 'EMPTY', 'B2' => 'EMPTY', 'C2' => 'EMPTY', 'D2' => 'EMPTY', 'E2' => 'EMPTY', 'F2' => 'EMPTY', 'G2' => 'EMPTY', 'H2' => 'EMPTY',
@@ -79,11 +76,13 @@ function _pyro_db_gasket_body($isSave, $nid) {
                               'A11' => 'EMPTY', 'B11' => 'EMPTY', 'C11' => 'EMPTY', 'D11' => 'EMPTY', 'E11' => 'EMPTY', 'F11' => 'EMPTY', 'G11' => 'EMPTY', 'H11' => 'EMPTY',
                               'A12' => 'EMPTY', 'B12' => 'EMPTY', 'C12' => 'EMPTY', 'D12' => 'EMPTY', 'E12' => 'EMPTY', 'F12' => 'EMPTY', 'G12' => 'EMPTY', 'H12' => 'EMPTY',);
         
+        $header = array('Job', 'Samples');
+        $rows = array();
         while ($row = db_fetch_object($result)) 
         {
             $num_samples = 0;
             $samples = _pyro_db_job_get_all_samples($row->nid);
-            $samp_str = "";
+            $samp_str = "<table cellpadding=\"2\">";
             foreach ($samples as $current_sample)
             {
                 $sample_link = _pyro_db_gasket_get_link($current_sample);
@@ -91,16 +90,21 @@ function _pyro_db_gasket_body($isSave, $nid) {
                 $sample_UID = _pyro_db_sample_get_UID($current_sample);
                 $ninny6_well_plate[$sample_well] = _pyro_db_sample_get_well_text($current_sample);
                 $tmp_sample_node = node_load($current_sample);
-                $samp_str .= "<a href=\"?q=$sample_link\">".$tmp_sample_node->title."</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$sample_well."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$sample_UID."<br>";
+                $samp_str .= "<tr><td><a href=\"?q=$sample_link\">".$tmp_sample_node->title."</a></td><td>$sample_well</td><td>$sample_UID</td></tr>";
                 $num_samples++;
             }
+            $samp_str .= "</table>";
             
             $job_link = _pyro_db_gasket_get_link($row->nid);
-            $job_string = "<strong>Title:</strong>&nbsp;&nbsp;&nbsp;<a href=\"?q=$job_link\">".$row->node_title."</a><br>";
-
-            $job_string .= "<strong># Samples:</strong>&nbsp;&nbsp;&nbsp;$num_samples";
+            $user_link = _pyro_db_gasket_get_user_link($row->nid);
+            $job_string = "<table cellpadding=\"2\">";
+            $job_string .= "<tr><td><strong>User:</strong></td><td>$user_link</td></tr>";
+            $job_string .= "<tr><td><strong>Job UID:</strong></td><td>"._pyro_db_job_get_UID($row->nid)."</td></tr>";
+            $job_string .= "<tr><td><strong>Title:</strong></td><td><a href=\"?q=$job_link\">".$row->node_title."</a></td></tr>";
+            $job_string .= "<tr><td><strong>#Samples:</strong></td><td>$num_samples</td></tr>";
+            $job_string .= "</table>";
             
-            $rows[] = array( array('data' => $job_string, 'width' => '35%') , $samp_str);
+            $rows[] = array( array('data' => $job_string, 'width' => '40%') , $samp_str);
             $nun_dun = false;
         }
         
@@ -111,7 +115,10 @@ function _pyro_db_gasket_body($isSave, $nid) {
         }
         else
         {
-        
+            // long form layout
+            $tmp_long_layout = theme_table($header, $rows);
+            $long_layout = str_replace("\n", "", $tmp_long_layout);
+            
             # make a pretty 96 well view
             echo "<br><h1>WELL LAYOUT</h1><hr>";
             $well_view = "<table border=\"solid black 1px\" cellpadding=\"6\" cellspacing=\"6\">".
@@ -137,6 +144,16 @@ function _pyro_db_gasket_body($isSave, $nid) {
             echo "
                 <SCRIPT TYPE='text/javascript'>
                 <!--
+                    function printLongLayout()
+                    {           
+                        var w = window.open(\"Long_layout\", \"#\");
+                        var d = w.document.open();
+                        d.write('<!DOCTYPE html><html><head><link type=\"text/css\" rel=\"stylesheet\" media=\"print\" href=\"/sites/all/themes/ace/css/print.css?E\" /></head>');
+                        d.write('<body>$long_layout');
+                        d.write('</body></html>');
+                        d.close();
+                    }
+
                     function printWellSheet()
                     {           
                         var w = window.open(\"Well_sheet\", \"#\");
@@ -168,15 +185,29 @@ function _pyro_db_gasket_body($isSave, $nid) {
                 //-->
                 </SCRIPT>";
 
+            echo "<a href=\"#\" onClick=\"return printLongLayout()\">Printer friendly version of long layout</a><br>";
             echo "<a href=\"#\" onClick=\"return printWellSheet()\">Printer friendly version of well layouts</a><br>";
             echo "<a href=\"#\" onClick=\"return printMapping()\">APP mapping file</a><br>";
             echo "<a href=\"#\" onClick=\"return printEpi()\">EPI conversion file</a><br>";
             
             echo "<br><h1>ASSIGNED JOBS</h1><hr>";
             
-            echo theme_table($header, $rows);
+            echo $long_layout;
         }
     }
+}
+
+function _pyro_db_gasket_get_user_link($nid) {
+    //-----
+    // given a node nid, return the url of the tack page for the author
+    //
+    global $base_url;
+    $link_query = db_query("SELECT node.uid AS uid, users.name AS name FROM {node} LEFT JOIN {users} ON node.uid = users.uid WHERE node.nid = '$nid'");
+    while ($link_row = db_fetch_object($link_query)) 
+    {
+        return "<a href=\"".$base_url."/user/".$link_row->uid."/track\">".$link_row->name."</a>";
+    }
+    return '';
 }
 
 function _pyro_db_gasket_get_link($nid) {
@@ -426,12 +457,29 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
 // MID lists
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+function _pyro_db_gasket_get_MID_set_type($nid) {
+    //-----
+    // get the MID set type descriptor for this gasket
+    // returns 'LEGACY' by default
+    //
+    $result = db_query("SELECT gas.field_gas_mid_set_value FROM {content_type_pdb_gasket} gas WHERE gas.nid ='$nid'");
+    if($row = db_fetch_object($result)) 
+    {
+        return $row->field_gas_mid_set_value;
+    }
+     return 'LEGACY';   
+}
+
 function _pyro_db_gasket_available_MIDS($mid_length, $nid) {
     //-----
     // return all the available mids...
     // 
     // set length to -1 to get all lengths
     //
+    
+    // Get the MID set type for this gasket
+    $MID_set_type = _pyro_db_gasket_get_MID_set_type($nid);
+    
     $query = "";
     $ret_array = array();
     
@@ -440,11 +488,11 @@ function _pyro_db_gasket_available_MIDS($mid_length, $nid) {
     // get all mids of the specified length
     if($mid_length == -1)
     {
-        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' ORDER BY ctpm.field_454_mid_id_value ASC";
+        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND field_454_mid_set_name_value = '$MID_set_type' ORDER BY ctpm.field_454_mid_id_value ASC";
     }
     else
     {
-        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND ctpm.field_454_mid_length_value = '$mid_length' ORDER BY ctpm.field_454_mid_id_value ASC";
+        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND ctpm.field_454_mid_length_value = '$mid_length' AND field_454_mid_set_name_value = '$MID_set_type' ORDER BY ctpm.field_454_mid_id_value ASC";
     }
     $all_result = db_query($query);
     while ($valid_mid = db_fetch_object($all_result)) 
