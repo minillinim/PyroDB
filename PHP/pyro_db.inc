@@ -255,12 +255,12 @@ function _pyro_db_get_gaskets() {
     return $ret_array;
 }
 
-function _pyro_db_get_wl_from_mid_value($mid_value) {
+function _pyro_db_get_wl_from_mid_value($mid_type, $mid_value) {
     //-----
     // wrapper to get the current well location for a given MID this sample
     // returns '' if no wl set.
     //
-    $result = db_query("SELECT ctpm.field_454_mid_wl_value FROM {content_type_pyrotag_mid} ctpm where ctpm.field_454_mid_sequence_value='$mid_value'");
+    $result = db_query("SELECT ctpm.field_454_mid_wl_value FROM {content_type_pyrotag_mid} ctpm where ctpm.field_454_mid_sequence_value='$mid_value' AND field_454_mid_set_name_value='$mid_type'");
     while ($row = db_fetch_object($result)) 
     {
         if('' != $row->field_454_mid_wl_value)

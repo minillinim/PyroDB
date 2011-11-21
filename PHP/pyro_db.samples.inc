@@ -410,7 +410,8 @@ function _pyro_db_sample_submit($form, &$form_state) {
     $form_mid = $form_state['values']['field_cs_mid'][0]['value'];
     if(!($form_mid === $current_mid))
     {
-        _pyro_db_sample_update_mid($form_mid, $nid);
+        $mid_type = _pyro_db_get_mid_type($nid);
+        _pyro_db_sample_update_mid($mid_type, $form_mid, $nid);
     }
     
     // metadata
@@ -430,6 +431,19 @@ function _pyro_db_sample_submit($form, &$form_state) {
     }
 }
 
+function _pyro_db_get_mid_type($nid) {
+    #-----
+    # Get the MID type for the gasket this sample is part of
+    #
+    $query = "SELECT ctpg.field_gas_mid_set_value FROM {content_type_pdb_gasket} ctpg
+                  LEFT JOIN {pdb_gasket_mids} pgm ON pgm.gasket_id = ctpg.nid
+                  WHERE pgm.sample_id = '$nid'";
+    $result = db_query($query);
+    while ($row = db_fetch_object($result)) {
+        return $row->field_gas_mid_set_value;
+    }
+    return "LEGACY";
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // job values
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -691,8 +705,8 @@ function _pyro_db_get_location_by_sample_nid($nid) {
 // MIDs
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-function _pyro_db_sample_set_mid($gs_nid, $mid, $samp_nid) {
-    $mid_well = _pyro_db_get_wl_from_mid_value($mid);
+function _pyro_db_sample_set_mid($mid_type, $gs_nid, $mid, $samp_nid) {
+    $mid_well = _pyro_db_get_wl_from_mid_value($mid_type, $mid);
     if('' != $mid_well)
     {
         db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid', ctpcs.field_cs_wl_value = '$mid_well' WHERE nid = '$samp_nid'");
@@ -706,8 +720,8 @@ function _pyro_db_sample_set_mid($gs_nid, $mid, $samp_nid) {
     drupal_set_message("Sample: " . $tmp_sample_node->title . " assigned MID: '$mid'", 'status', true );
 }
 
-function _pyro_db_sample_update_mid($mid, $samp_nid) {
-    $mid_well = _pyro_db_get_wl_from_mid_value($mid);
+function _pyro_db_sample_update_mid($mid_type, $mid, $samp_nid) {
+    $mid_well = _pyro_db_get_wl_from_mid_value($mid_type, $mid);
     if('' != $mid_well)
     {
         db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '$mid', ctpcs.field_cs_wl_value = '$mid_well'  WHERE nid = '$samp_nid'");
@@ -786,7 +800,7 @@ function _pyro_db_sample_get_current_mid_id($samp_nid) {
     return '';
 }
 
-function _pyro_db_sample_get_current_wl($samp_nid) {
+function _pyro_db_sample_get_current_wl($mid_type, $samp_nid) {
     //-----
     // wrapper to get the current mid well location for this sample
     // returns '' is no mid set.
@@ -796,7 +810,7 @@ function _pyro_db_sample_get_current_wl($samp_nid) {
     {
         if('' != $row->field_cs_mid_value)
         {
-            return _pyro_db_get_wl_from_mid_value($row->field_cs_mid_value);
+            return _pyro_db_get_wl_from_mid_value($mid_type, $row->field_cs_mid_value);
         }
     }
     
@@ -948,20 +962,20 @@ function _pyro_db_sample_get_desc($samp_nid) {
     return 'X!X!X';
 }
 
-function _pyro_db_sample_get_well_text($samp_nid) {
+function _pyro_db_sample_get_well_text($mid_set, $samp_nid) {
     //-----
     // Get the text which is placed in the grid table on the gasket view page
     // returns '' is no mid set.
     //
-    $query = "SELECT ctpm.field_454_mid_id_value, ctpp.field_pp_pri_name_value, ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs 
+    $query = "SELECT ctpm.field_454_mid_set_name_value, ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value, ctpp.field_pp_pri_name_value, ctpcs.field_cs_id_value FROM {content_type_pdb_client_sample} ctpcs 
               LEFT JOIN {content_type_pyrotag_primer} ctpp ON ctpcs.field_cs_forward_primer_nid = ctpp.nid 
               LEFT JOIN {content_type_pyrotag_mid} ctpm ON ctpm.field_454_mid_sequence_value = ctpcs.field_cs_mid_value
-              where ctpcs.nid='$samp_nid'";
+              where ctpcs.nid='$samp_nid' AND ctpm.field_454_mid_set_name_value='$mid_set'";
     $result = db_query($query);
     while ($row = db_fetch_object($result)) 
     {
         if('' != $row->field_cs_id_value)
-        {
+        {   ;
             $sample_link = _pyro_db_gasket_get_link($samp_nid);
             return "<a href=\"?q=$sample_link\">".$row->field_cs_id_value."</a><br>".$row->field_454_mid_id_value."<br>".$row->field_pp_pri_name_value;
         }
@@ -969,7 +983,7 @@ function _pyro_db_sample_get_well_text($samp_nid) {
     return 'X!X!X';
 }
 
-function _pyro_db_sample_get_epi_text($samp_nid) {
+function _pyro_db_sample_get_epi_text($mid_type, $samp_nid) {
     //-----
     // Get the text which is placed in the grid table on the gasket view page
     // returns '' is no mid set.
@@ -982,7 +996,7 @@ function _pyro_db_sample_get_epi_text($samp_nid) {
     {
         if('' != $row->field_cs_id_value)
         {
-            return _pyro_db_get_wl_from_mid_value($row->field_cs_mid_value).",".$row->field_pp_pri_name_value."<br>";
+            return _pyro_db_get_wl_from_mid_value($mid_type, $row->field_cs_mid_value).",".$row->field_pp_pri_name_value."<br>";
         }
     }
     return 'X!X!X';

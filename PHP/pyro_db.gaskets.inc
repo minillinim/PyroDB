@@ -77,6 +77,7 @@ function _pyro_db_gasket_body($isSave, $nid) {
                               'A12' => 'EMPTY', 'B12' => 'EMPTY', 'C12' => 'EMPTY', 'D12' => 'EMPTY', 'E12' => 'EMPTY', 'F12' => 'EMPTY', 'G12' => 'EMPTY', 'H12' => 'EMPTY',);
         
         $header = array('Job', 'Samples');
+        $mid_set = _pyro_db_gasket_get_MID_set_type($nid);
         $rows = array();
         while ($row = db_fetch_object($result)) 
         {
@@ -86,9 +87,9 @@ function _pyro_db_gasket_body($isSave, $nid) {
             foreach ($samples as $current_sample)
             {
                 $sample_link = _pyro_db_gasket_get_link($current_sample);
-                $sample_well = _pyro_db_sample_get_current_wl($current_sample);
+                $sample_well = _pyro_db_sample_get_current_wl($mid_set, $current_sample);
                 $sample_UID = _pyro_db_sample_get_UID($current_sample);
-                $ninny6_well_plate[$sample_well] = _pyro_db_sample_get_well_text($current_sample);
+                $ninny6_well_plate[$sample_well] = _pyro_db_sample_get_well_text($mid_set,$current_sample);
                 $tmp_sample_node = node_load($current_sample);
                 $samp_str .= "<tr><td><a href=\"?q=$sample_link\">".$tmp_sample_node->title."</a></td><td>$sample_well</td><td>$sample_UID</td></tr>";
                 $num_samples++;
@@ -139,7 +140,7 @@ function _pyro_db_gasket_body($isSave, $nid) {
             $app_mapping_file = _pyro_db_gasket_app_mapping_file($nid);
             
             # make a conversion file for use with the epi robot
-            $app_epi_file = _pyro_db_gasket_app_conversion_file($nid);
+            $app_epi_file = _pyro_db_gasket_app_conversion_file($mid_set, $nid);
             
             echo "
                 <SCRIPT TYPE='text/javascript'>
@@ -256,7 +257,7 @@ function _pyro_db_gasket_app_mapping_file($gas_nid) {
     return $ret_str;
 }
 
-function _pyro_db_gasket_app_conversion_file($gas_nid) {
+function _pyro_db_gasket_app_conversion_file($mid_type, $gas_nid) {
     //-----
     // Make a text file for use with the epi robot
     //
@@ -269,7 +270,7 @@ function _pyro_db_gasket_app_conversion_file($gas_nid) {
         $samples = _pyro_db_job_get_all_samples($row->nid);
         foreach ($samples as $current_sample)
         {
-            $samp_str .= _pyro_db_sample_get_epi_text($current_sample);
+            $samp_str .= _pyro_db_sample_get_epi_text($mid_type, $current_sample);
             $num_samples++;
         }
         $nun_dun = false;
@@ -518,7 +519,7 @@ function _pyro_db_gasket_used_MIDS($nid) {
     return $used_array;
 }
 
-function _pyro_db_gasket_set_mids($job_nid, $mid_length, $nid) {
+function _pyro_db_gasket_set_mids($mid_type, $job_nid, $mid_length, $nid) {
     //-----
     // assign MIDs for all the jobs in the given array...
     //
@@ -541,7 +542,7 @@ function _pyro_db_gasket_set_mids($job_nid, $mid_length, $nid) {
     $current_mid_id_ref = 0;
     foreach ($sample_list as $current_sample)
     {
-        _pyro_db_sample_set_mid($nid, $free_mids[$current_mid_id_ref], $current_sample);
+        _pyro_db_sample_set_mid($mid_type, $nid, $free_mids[$current_mid_id_ref], $current_sample);
         $current_mid_id_ref++;
     }
     return true;
@@ -599,8 +600,8 @@ function _pyro_db_gasket_do_add($max, $used, $gs_nid, $job_nid) {
     if($num_samples > ($max - $used)) {
         drupal_set_message("Adding $job_title to gasket may make gasket too dense. There is a limit of $max samples per gasket and adding this job would mean that this gasket has ".($used + $num_samples)." samples", 'warning', TRUE);
     }
-    
-    if(_pyro_db_gasket_set_mids($job_nid, -1, $gs_nid))
+    $mid_set = _pyro_db_gasket_get_MID_set_type($nid);
+    if(_pyro_db_gasket_set_mids($mid_set, $job_nid, -1, $gs_nid))
     {
         // add the job to the gasket
         drupal_set_message("Added: $job_title to ".$tmp_gs_node->title, 'status', TRUE);
