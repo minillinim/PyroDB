@@ -458,6 +458,43 @@ function _pyro_db_gasket_form_submit($form, &$form_state) {
 // MID lists
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+function _pyro_db_clean_dead_gaskets()
+{
+    //-----
+    // This function cleans up debri left behind when a Gasket with assigned jobs s deleted from 
+    // the site
+    //
+    $result = db_query("SELECT DISTINCT pgm.gasket_id FROM {pdb_gasket_mids} pgm");
+    while($row = db_fetch_object($result)) 
+    {
+        // see if this guy is in the data base
+        $exists_result = db_query("SELECT ctpg.nid FROM {content_type_pdb_gasket} ctpg WHERE ctpg.nid='$row->gasket_id'");
+        if(!($exists_row = db_fetch_object($exists_result)))
+        {
+            // this is a rogue guy!
+            _pyro_db_drupe_alert($row->gasket_id);
+            db_query("DELETE FROM {pdb_gasket_mids} WHERE gasket_id='$row->gasket_id'");
+            
+            // get all jobs assigned to this gasket
+            $jobs_result = db_query("SELECT ctpcj.nid FROM {content_type_pdb_client_job} ctpcj WHERE ctpcj.field_cj_gasket_nid='$row->gasket_id'");
+            while($jobs_row = db_fetch_object($jobs_result)) 
+            {
+                # unassign this job from the gasket
+                _pyro_db_drupe_alert("Removing gasket ID from job: ".$jobs_row->nid);
+                db_query("UPDATE {content_type_pdb_client_job} ctpcj SET ctpcj.field_cj_gasket_nid = '0' WHERE nid = '$jobs_row->nid'");
+               
+                $rogue_samples = _pyro_db_job_get_all_samples($jobs_row->nid);
+                foreach ($rogue_samples as $samp_nid)
+                {
+                    # wipe the MID for these samples
+                    _pyro_db_drupe_alert("Removing MID string for sample: ".$samp_nid);
+                    db_query("UPDATE {content_type_pdb_client_sample} ctpcs SET ctpcs.field_cs_mid_value = '', ctpcs.field_cs_wl_value='' WHERE nid = '$samp_nid'");
+                }
+            }
+        }
+    }
+}
+
 function _pyro_db_gasket_get_MID_set_type($nid) {
     //-----
     // get the MID set type descriptor for this gasket
