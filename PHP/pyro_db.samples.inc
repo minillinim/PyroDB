@@ -136,9 +136,9 @@ function _pyro_db_fields_as_table($nid) {
     $rows = array();
     foreach($nn_fields as $key => $value) {
         if($key == 'field_cs_coll_date_value') { $value = format_date(strtotime($value), 'large'); }
-        elseif($key == 'field_cs_forward_primer_nid') { $value = _pyro_db_sample_get_primer_string($chem, '454', 'forward', $nn_fields['field_cs_mid_value'], $nid, $value, 'sample page'); }
-        elseif($key == 'field_cs_reverse_primer_nid') { $value = _pyro_db_sample_get_primer_string($chem, '454', 'reverse', $nn_fields['field_cs_mid_value'], $nid, $value, 'sample page'); }
-        elseif($key == 'field_cs_mid_value') { if('' == $value or $value == NULL) { $value = " MID UNSET"; } }
+        elseif($key == 'field_cs_forward_primer_nid') { $value = _pyro_db_sample_get_primer_string($chem, '454', $nn_fields['field_cs_mid_value'], $nid, $value, 'sample page'); }
+        elseif($key == 'field_cs_reverse_primer_nid') { $value = _pyro_db_sample_get_primer_string($chem, '454', $nn_fields['field_cs_mid_value'], $nid, $value, 'sample page'); }
+        elseif($key == 'field_cs_mid_value') { if('' == $value or $value == NULL) { $value = " MID UNSET"; } $value = '<span style="color: blue">' . $value . '<span style="color: blue">'; }
         elseif($key == 'field_cs_wl_value') { if('' == $value or $value == NULL) { $value = " UNSET"; } }
         $rows[] = array( array('data' => '<B>'.$fancy_names[$key]['name'].'</B>', 'width' => '35%') , $value);
     }
@@ -150,14 +150,14 @@ function _pyro_db_fields_as_table($nid) {
     return;
 }
 
-function _pyro_db_sample_get_primer_string($chem_type, $machine_type, $pri_dir, $mid, $nid, $pri_nid, $view_type) {
+function _pyro_db_sample_get_primer_string($chem_type, $machine_type, $mid, $nid, $pri_nid, $view_type) {
     //-----
     // format the display string of the pyrotag primer
     //
     $ret_str = "ERROR: NOT FOUND";
     if('' == $mid or $mid == NULL)
     {
-        $mid = "-MIDXX-";
+        $mid = "XXXXX";
     }
     $result = db_query("SELECT ctpp.field_pp_pri_name_value, ctpp.field_pp_adaptor_value, ctpp.field_pp_key_value, ctpp.field_pp_template_value FROM {content_type_pyrotag_primer} ctpp WHERE nid ='$pri_nid'");
     if($view_type == 'sample page')
@@ -168,24 +168,35 @@ function _pyro_db_sample_get_primer_string($chem_type, $machine_type, $pri_dir, 
             {
                 if($chem_type == 'L')
                 {
-                    if($pri_dir == 'reverse')
+                    if($row->field_pp_adaptor_value == 'CCATCTCATCCCTGCGTGTCTCCGAC') #If it is the A adaptor
                     {
-                        $ret_str = $row->field_pp_pri_name_value . " -- " . $row->field_pp_adaptor_value.ctpp.$row->field_pp_key_value.$mid.$row->field_pp_template_value;
+                        $ret_str =  $row->field_pp_pri_name_value . " -- " .
+                                    '<span style="color: green">'.$row->field_pp_adaptor_value.'</span>'.
+                                    '<span style="color: red">'.$row->field_pp_key_value.'</span>'.
+                                    '<span style="color: blue">'.$mid.'</span>'.
+                                    $row->field_pp_template_value;
                     }
                     else
                     {
-                        $ret_str = $row->field_pp_pri_name_value . " -- " . $row->field_pp_adaptor_value.ctpp.$row->field_pp_key_value.$row->field_pp_template_value;
+                        $ret_str =  $row->field_pp_pri_name_value . " -- " .
+                                    '<span style="color: green">'.$row->field_pp_adaptor_value.'</span>'.
+                                    '<span style="color: red">'.$row->field_pp_key_value.'</span>'.
+                                    $row->field_pp_template_value;
                     }
                 }
                 else // $chem_type == 'A'
                 {
                     if($pri_dir == 'reverse')
                     {
-                        $ret_str = $row->field_pp_pri_name_value . " -- " . $row->field_pp_adaptor_value.ctpp.$row->field_pp_key_value.$row->field_pp_template_value;
+                        $ret_str = $row->field_pp_pri_name_value . " -- " .
+                        '<span style="color: red">'.$row->field_pp_adaptor_value.'</span>'.
+                        $row->field_pp_key_value.$row->field_pp_template_value;
                     }
                     else
                     {
-                        $ret_str = $row->field_pp_pri_name_value . " -- " . $row->field_pp_adaptor_value.ctpp.$row->field_pp_key_value.$row->field_pp_template_value;
+                        $ret_str = $row->field_pp_pri_name_value . " -- " .
+                        '<span style="color: red">'.$row->field_pp_adaptor_value.'</span>'.
+                        $row->field_pp_key_value.$row->field_pp_template_value;
                     }
                 }
             } 
