@@ -512,7 +512,6 @@ function _pyro_db_cloneform($form_state, $nid) {
   $job_nid = _pyro_db_get_parent_job_nid($nid);
   $num_samples = _pyro_db_job_get_num_of_samples($job_nid);
   $remaining_samples = get_max_gasket_samples() - $num_samples;
-  _pyro_db_drupe_alert($remaining_samples);
   
   if($remaining_samples > 0)
   {  
