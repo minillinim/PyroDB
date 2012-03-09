@@ -25,6 +25,8 @@
 
 putenv("TZ=Australia/Brisbane");
 
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.conf.inc');
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Includes for each table
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,13 +45,11 @@ include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_wastewater_sludge.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/autocode/pdb_metadata_water.inc');
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Body
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 function _pyro_db_sample_body($isSave, $nid) {
-    global $MAX_GASKET_SAMPLES;
     if($isSave)
     {
         // called when the node is being saved or updated...
@@ -93,7 +93,8 @@ function _pyro_db_sample_body($isSave, $nid) {
             if($row->sid == 5)
             {
                 echo "<br><h1>CLONE SAMPLE</h1><hr>";
-                echo "Note: There are only $MAX_GASKET_SAMPLES samples on each gasket. If your job requires more samples than this, you'll need to make 2 (or more) jobs.<br>";
+                echo "Note: There are only " . get_max_gasket_samples() .
+                    " samples on each gasket. If your job requires more samples than this, you'll need to make 2 (or more) jobs.<br>";
                 print drupal_get_form('_pyro_db_cloneform', $nid);      
             }
         }
@@ -508,10 +509,10 @@ function _pyro_db_get_parent_job_chem($nid) {
 
 function _pyro_db_cloneform($form_state, $nid) {
   // Access log settings:
-  global $MAX_GASKET_SAMPLES;
   $job_nid = _pyro_db_get_parent_job_nid($nid);
   $num_samples = _pyro_db_job_get_num_of_samples($job_nid);
-  $remaining_samples = $MAX_GASKET_SAMPLES - $num_samples;
+  $remaining_samples = get_max_gasket_samples() - $num_samples;
+  _pyro_db_drupe_alert($remaining_samples);
   
   if($remaining_samples > 0)
   {  

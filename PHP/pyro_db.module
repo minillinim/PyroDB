@@ -28,6 +28,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // inc files!
 //////////////////////////////////////////////////////////////////////////////////////////////////
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.conf.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.samples.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.gaskets.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.jobs.inc');
