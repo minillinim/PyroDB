@@ -244,7 +244,13 @@ function _pyro_db_gasket_app_mapping_file($gas_nid) {
         $samples = _pyro_db_job_get_all_samples($row->J_nid);
         foreach ($samples as $current_sample)
         {
-            $result2 = db_query("SELECT ctpcs.field_cs_id_value, ctpcs.field_cs_mid_value, ctpcs.field_cs_description_value, ctpp.field_pp_template_value, node.title as title FROM {content_type_pdb_client_sample} ctpcs LEFT JOIN {content_type_pyrotag_primer} ctpp ON ctpp.nid = ctpcs.field_cs_reverse_primer_nid LEFT JOIN {node} node ON ctpcs.nid = node.nid where ctpcs.nid='$current_sample'");
+            $result2 = db_query("SELECT ctpcs.field_cs_id_value, ctpcs.field_cs_mid_value, ctpcs.field_cs_description_value, ctpp.field_pp_template_value, node.title as title
+                                FROM {content_type_pdb_client_sample} ctpcs, {content_type_pyrotag_primer} ctpp, {node} node
+                                WHERE (ctpp.nid = ctpcs.field_cs_reverse_primer_nid
+                                    OR ctpp.nid = ctpcs.field_cs_forward_primer_nid)
+                                AND ctpp.field_pp_adaptor_value = 'CCATCTCATCCCTGCGTGTCTCCGAC'
+                                AND ctpcs.nid = node.nid
+                                AND ctpcs.nid='$current_sample'");
             while ($row2 = db_fetch_object($result2)) 
             {
                 $desc = $row2->title;
