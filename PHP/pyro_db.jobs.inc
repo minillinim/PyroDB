@@ -99,9 +99,7 @@ function _pyro_db_job_body($isSave, $nid) {
     }
     else
     {
-        // called when a node is being viewed
-        $view = views_get_view('job_sample_table');
-        print $view->execute_display('default', array($nid));
+        print drupal_get_form('_pyro_db_job_clone_form', $nid);
     }
 }
 
@@ -519,6 +517,233 @@ function _pyro_db_job_get_UID($job_nid) {
     }
     return 'X!X!X';
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Job Cloning
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+function _pyro_db_job_clone_form($form_state, $nid) {
+    $form = array();
+    $form['#submit'][] = '_pyro_db_clone_job_submit';
+    $form['#validate'][] = '_pyro_db_clone_job_validate';
+    
+    if(isset($form_state['storage']['values'])) {  
+        $query = "SELECT DISTINCT(node.nid) AS nid,
+            node.title AS node_title,
+            node_data_field_cs_id.field_cs_id_value AS node_data_field_cs_id_field_cs_id_value,
+            node.type AS node_type,
+            node.vid AS node_vid,
+            node_data_field_cs_id.field_cs_forward_primer_nid AS node_data_field_cs_id_field_cs_forward_primer_nid,
+            node_data_field_cs_id.field_cs_reverse_primer_nid AS node_data_field_cs_id_field_cs_reverse_primer_nid,
+            node_data_field_cs_id.field_cs_mid_value AS node_data_field_cs_id_field_cs_mid_value,
+            node.uid AS node_uid,
+            node_revisions.format AS node_revisions_format,
+            node_data_field_cs_id.field_cs_wl_value AS node_data_field_cs_id_field_cs_wl_value
+            FROM node node 
+            LEFT JOIN nodehierarchy_menu_links nodehierarchy_menu_links ON node.nid = nodehierarchy_menu_links.nid
+            LEFT JOIN menu_links nh_menu_links ON nodehierarchy_menu_links.mlid = nh_menu_links.mlid
+            LEFT JOIN nodehierarchy_menu_links nh_parent ON nh_menu_links.plid = nh_parent.mlid
+            LEFT JOIN content_type_pdb_client_sample node_data_field_cs_id ON node.vid = node_data_field_cs_id.vid
+            LEFT JOIN node_revisions node_revisions ON node.vid = node_revisions.vid
+            WHERE (node.status = 1) AND (nh_parent.nid = $nid )
+            ORDER BY node_data_field_cs_id_field_cs_id_value ASC";
+            
+            
+        $javascript = '<script language="JavaScript">
+        function checkAll(form) {
+            var elements = form.elements;
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "checkbox") {
+                    elements[i].checked = true ;
+                }
+            }
+        }        
+        function uncheckAll(form) {
+            var elements = form.elements;
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "checkbox") {
+                    elements[i].checked = false ;
+                }
+            }
+        }
+        </script>
+        ';
+                
+        $samples = array();
+        $result = db_query($query);
+        
+        while ($row = db_fetch_object($result)) {
+            $samples[$row->nid] = t($row->node_title . " (UID:" . $row->node_data_field_cs_id_field_cs_id_value. ")");
+        }     
+
+        $form['samples'] = array('#type' => 'checkboxes',
+                                 '#options' => $samples,
+                                 '#title' => t("Select samples to clone"),
+                                 '#prefix' => t($javascript));
+        $form['newtitle'] = array('#type' => 'textfield',
+                                 '#title' => t('Cloned Job Title'));
+        $form['checkall'] = array('#type' => 'button',
+                                  '#attributes' => array('onclick' => t('checkAll(this.form); return false;')),
+                                  '#value' => t('Select all'));
+        
+        $form['uncheckall'] = array('#type' => 'button',
+                                    '#attributes' => array('onclick' => t('uncheckAll(this.form); return false;')),
+                                    '#value' => t('Unselect all'));
+        
+        $form['cancel'] = array('#type' => 'submit', '#value' => t('Cancel'));
+        $form['submit'] = array('#type' => 'submit', '#value' => t('Clone!'));
+    } else {
+        $view = views_get_view('job_sample_table');
+        $view_html = $view->execute_display('default', array($nid));
+      
+        $form['htmldummy'] = array('#type' => 'hidden',
+                                   '#value' => 'dummy',
+                                   '#prefix' => t($view_html));
+
+        $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
+        while ($row = db_fetch_object($result)) {
+        if ($row->sid == 2 and _pyro_db_is_admin()) // State for unlocked job 
+            {
+                $form['submit'] = array('#type' => 'submit',
+                                        '#value' => t('Clone Job!'),
+                                        '#prefix' => "<br><h1>CLONE JOB</h1>");
+            }
+        }
+    }
+    $form['nid'] = array(
+        '#type' => 'hidden',
+        '#value' => $nid,
+    );
+    return $form;
+}
+
+function _pyro_db_clone_job_submit($form, &$form_state) {
+    if($form_state['storage']['values'] != NULL) {
+        if ($form_state['values']['op'] == "Clone!") {
+            $new_job_nid = _pyro_db_clone_job($form_state['clicked_button']['#post']['nid'],
+                                              $form_state['clicked_button']['#post']['samples'],
+                                              $form_state['clicked_button']['#post']['newtitle']);
+            $form_state['storage']['values'] = NULL;
+            #header("Location: /content/node/$new_job_nid");
+        } else {
+            $form_state['storage']['values'] = NULL;
+        };
+    } elseif ($form_state['values']['op'] == "Cancel") {
+        $form_state['storage']['values'] = NULL;
+    } else {
+        $form_state['storage']['values'] = $form_state['values'];
+    }
+}
+
+function _pyro_db_clone_job($job_nid, $sample_nids, $new_job_title) {
+
+    $result = db_query("SELECT n.title, n.uid, u.name
+                       FROM {node} n
+                       LEFT JOIN {users} u
+                       ON n.uid = u.uid
+                       WHERE n.nid = '$job_nid'");
+    $row = db_fetch_object($result);
+    
+    $job_owner = new stdClass();
+    $job_owner->name = $row->name;
+    $job_owner->uid = $row->uid;
+    
+    // Create a new sample node
+    $std_node = new stdClass();
+    $std_node->type = 'pdb_client_job';
+    $std_node->title =  $new_job_title;
+    $std_node->created = time();
+    $std_node->changed = $std_node->created;
+    $std_node->format = 3;              // PHP
+    $std_node->name = $job_owner->name;      // <----- use $user->name otherwise you get 'Anonymous'
+    $std_node->uid = $job_owner->uid;
+    node_save($std_node); // <--- Save the node now
+    #auto_nodetitle_operations_update(array($std_node->nid));            // <---- fix the title
+    
+    $nodehierarchy_menu_links = _nodehierarchy_default_menu_link(0, _nodehierarchy_get_node_mlid($job_nid,true));
+    $nodehierarchy_menu_links['hidden'] = TRUE;
+    $nodehierarchy_menu_links['enabled'] = FALSE; //  <------ Make sure the menu link is enabled
+    $std_node->nodehierarchy_menu_links[] = $nodehierarchy_menu_links;
+    _nodehierarchy_save_node($std_node); // <---- Let nodeheirarchy do it's thing
+    
+    $new_job_nid = $std_node->nid;
+    
+    # Creation of a job will have created a default sample, this needs to be identified (so it can be deleted later).
+    $default_samples = _pyro_db_job_get_all_samples($new_job_nid);
+    
+    foreach ($sample_nids as $sample_nid) {
+            $new_sample_nid = _pyro_db_make_next_sample($job_owner, $new_job_nid);
+            _pyro_db_clone_sample_guts($sample_nid, $new_sample_nid);
+            
+            # Fix the node title
+            $original_node = node_load($sample_nid);
+            $query = "UPDATE {node} n SET n.title='".$original_node->title."' WHERE nid='".$new_sample_nid."'";
+            db_query($query);
+            
+            # Fix the node revision title
+            $query = "UPDATE {node_revisions} nr SET nr.title='".$original_node->title."' WHERE nid='".$new_sample_nid."'";
+            db_query($query);
+           
+            # Fix the menu links...
+            # Firstly find the menu link ID for the new sample node
+            $query = "SELECT ml.mlid
+                      FROM {menu_links} ml
+                      LEFT JOIN {nodehierarchy_menu_links} nhml
+                      ON nhml.mlid = ml.mlid
+                      WHERE nhml.nid = '$new_sample_nid'";
+            $result = db_query($query);
+            $row = db_fetch_object($result);
+            
+            # Then, update the menu link table.
+            $query = "UPDATE {menu_links} ml SET ml.link_title='".$original_node->title."' WHERE mlid='".$row->mlid."'";
+            db_query($query);
+            
+    }
+    
+    foreach ($default_samples as $sample_nid) {
+        node_delete($sample_nid);
+    }
+    
+    #Fix the job info.
+    $query = "SELECT cj.field_cj_description_value,
+                     cj.field_cj_chem_value,
+                     cj.field_cj_affiliation_nid,
+                     cj.field_cj_full_name_value,
+                     cj.field_cj_lead_invest_uid
+              FROM {content_type_pdb_client_job} cj
+              WHERE cj.nid = '$job_nid'";
+    $result = db_query($query);
+    $row = db_fetch_object($result);
+    
+
+    $query = "UPDATE {content_type_pdb_client_job} SET " .
+             "field_cj_description_value = '" . $row->field_cj_description_value . "'," .
+             "field_cj_chem_value = '" . $row->field_cj_chem_value . "'," .
+             "field_cj_samp_num_value = '" . count($sample_nids) . "'," .
+             "field_cj_affiliation_nid = '" . $row->field_cj_affiliation_nid . "'," .
+             "field_cj_full_name_value = '" . $row->field_cj_full_name_value . "'," .
+             "field_cj_lead_invest_uid = '" . $row->field_cj_lead_invest_uid . "'," .
+             "field_cj_gasket_nid='NULL'," .
+             "field_cj_samples_arrived_value='Awaiting arrival' " .
+             "WHERE nid = '$new_job_nid'";
+    
+    db_query($query);
+
+    return $std_node->nid;       
+} 
+
+
+function _pyro_db_clone_job_validate($form, &$form_state) {    
+    if(isset($form_state['storage']['values']) and ($form_state['values']['op'] == "Clone!")) {
+        if (count($form_state['clicked_button']['#post']['samples']) == 0) {
+            form_set_error('', t('You must select at least one sample to clone.'));
+        }
+        if (! $form_state['clicked_button']['#post']['newtitle']) {
+            form_set_error('', t('You must specify a title for the cloned job.'));
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -95,7 +95,9 @@ function _pyro_db_myjobs_form($form_state) {
     return $form;
 }
 
-function _pyro_db_myjobs_validate($form, &$form_state) {}
+function _pyro_db_myjobs_validate($form, &$form_state) {
+    // Nothing to do here.
+}
 
 function _pyro_db_myjobs_submit($form, &$form_state) {
     //-----

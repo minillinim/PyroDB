@@ -245,6 +245,7 @@ function _pyro_db_set_non_null_cck_fields($update_values, $nid) {
     $db_vars = array();
     $first = true;
     
+    $count = 0;
     foreach($update_values as $key => $value) 
     {
         if($active_fields[$key]['active'])
@@ -255,11 +256,14 @@ function _pyro_db_set_non_null_cck_fields($update_values, $nid) {
                 $first = false;
                 $ins_query .= $key."='".$active_fields[$key]['type']."'";
                 $db_vars[] = $update_values[$key];
+                $count++;
             }
         }
     }
     $ins_query .= " where nid='$nid'";
-    db_query($ins_query, $db_vars);
+    if ($count) {
+         db_query($ins_query, $db_vars);
+    }
     return $ins_query;
 }
 
