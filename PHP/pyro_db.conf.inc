@@ -29,5 +29,3 @@
 function get_max_gasket_samples() {
     return 75;
 }
-?> 
-
