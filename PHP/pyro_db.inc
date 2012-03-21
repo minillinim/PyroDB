@@ -280,7 +280,7 @@ function _pyro_db_get_wl_from_mid_id($mid_id) {
     // wrapper to get the current well location for a given MID this sample
     // returns '' if no wl set.
     //
-    $result = db_query("SELECT ctpm.field_454_mid_wl_value FROM {content_type_pyrotag_mid} ctpm where ctpm.nid='$mid_id'");
+    $result = db_query("SELECT ctpm.field_454_mid_wl_value FROM {content_type_pyrotag_mid} ctpm where ctpm.field_454_mid_id_value='$mid_id'");
     while ($row = db_fetch_object($result)) 
     {
         if('' != $row->field_454_mid_wl_value)

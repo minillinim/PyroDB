@@ -527,27 +527,57 @@ function _pyro_db_gasket_available_MIDS($mid_length, $nid) {
     
     $query = "";
     $ret_array = array();
+    $mid_array = array();
     
     // get all the mids currently assigned to this gasket
     $used_array = _pyro_db_gasket_used_MIDS($nid);
     // get all mids of the specified length
     if($mid_length == -1)
     {
-        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND field_454_mid_set_name_value = '$MID_set_type' ORDER BY ctpm.field_454_mid_id_value ASC";
+        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value
+                  FROM {content_type_pyrotag_mid} ctpm
+                  WHERE ctpm.field_454_mid_state_value ='active'
+                  AND field_454_mid_set_name_value = '$MID_set_type'
+                  ORDER BY ctpm.field_454_mid_id_value ASC";
     }
     else
     {
-        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value FROM {content_type_pyrotag_mid} ctpm WHERE ctpm.field_454_mid_state_value ='active' AND ctpm.field_454_mid_length_value = '$mid_length' AND field_454_mid_set_name_value = '$MID_set_type' ORDER BY ctpm.field_454_mid_id_value ASC";
+        $query = "SELECT ctpm.field_454_mid_sequence_value, ctpm.field_454_mid_id_value
+                  FROM {content_type_pyrotag_mid} ctpm
+                  WHERE ctpm.field_454_mid_state_value ='active'
+                  AND ctpm.field_454_mid_length_value = '$mid_length'
+                  AND field_454_mid_set_name_value = '$MID_set_type'
+                  ORDER BY ctpm.field_454_mid_id_value ASC";
     }
     $all_result = db_query($query);
     while ($valid_mid = db_fetch_object($all_result)) 
     {
         if(! in_array($valid_mid->field_454_mid_sequence_value, $used_array))
         {
-            $ret_array[] = $valid_mid->field_454_mid_sequence_value;
+            $mid_array[$valid_mid->field_454_mid_id_value] = $valid_mid->field_454_mid_sequence_value;
         }
     }
+    uksort($mid_array, '_pyro_db_cmp_mid_ids');
+    foreach ($mid_array as $mid_id => $seq) {
+        array_push($ret_array, $seq);
+    }
     return $ret_array;
+}
+
+function _pyro_db_cmp_mid_ids($a, $b) {
+    $split_a = preg_split("/_/", $a);
+    $split_b = preg_split("/_/", $b);
+    if (intval($split_a[0]) < intval($split_b[0])) {
+        return -1;
+    } elseif (intval($split_a[0]) > intval($split_b[0])) {
+        return 1;
+    } elseif (intval($split_a[1]) < intval($split_b[1])) {
+        return -1;
+    } elseif (intval($split_a[1]) > intval($split_b[1])) {
+        return 1;
+    } else { 
+        return 0;
+    }
 }
 
 function _pyro_db_gasket_used_MIDS($nid) {
