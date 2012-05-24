@@ -1,10 +1,11 @@
 <?php
 // $Id$
+
 /*#############################################################################
 #
-#    pyro_db_conf.inc
+#    pyro_db.clients.inc
 #    
-#    Code which contains global configurations for PyroDB
+#    Code which implements functionality for client based objects.
 #
 #    Copyright (C) 2011 Michael Imelfort
 #
@@ -22,10 +23,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################*/
-////////////////////////////////////////////////////////////////////////////////
-// GLOBALS
-////////////////////////////////////////////////////////////////////////////////
 
-function get_max_gasket_samples() {
-    return 96;
+function get_max_client_group_billing_id_cck_form() {
+    return array(
+      0 => array('value' => get_max_client_group_billing_id() + 1)
+    );
+};
+
+
+function get_max_client_group_billing_id() {
+    $max = 1;
+    $result = db_query("SELECT field_cg_bill_id_value FROM {content_type_pdb_client_group}");
+    while ($row = db_fetch_object($result)) {
+        if (! is_numeric($row->field_cg_bill_id_value)) {
+            return -1;
+        }
+        if ($max < $row->field_cg_bill_id_value) {
+            $max = $row->field_cg_bill_id_value;
+        }
+    }
+    return $max;
 }

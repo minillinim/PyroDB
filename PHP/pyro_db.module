@@ -33,6 +33,7 @@ include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.samples.inc')
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.gaskets.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.jobs.inc');
 include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.inc');
+include_once('./'. drupal_get_path('module', 'pyro_db') .'/pyro_db.clients.inc');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Module shite
