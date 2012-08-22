@@ -100,6 +100,15 @@ function _pyro_db_job_body($isSave, $nid) {
     else
     {
         print drupal_get_form('_pyro_db_job_clone_form', $nid);
+        $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
+        $wf_row = db_fetch_object($result);
+        $result = db_query("SELECT n.uid FROM {node} n WHERE n.nid = '$nid'");
+        $row = db_fetch_object($result);
+        
+        global $user;
+        if ($wf_row->sid == 2 and (_pyro_db_is_admin() or ($user->uid == $row->uid))) {
+             print drupal_get_form('_pyro_db_job_mass_sample_rename_form', $nid);
+        }
     }
 }
 
@@ -518,6 +527,78 @@ function _pyro_db_job_get_UID($job_nid) {
     return 'X!X!X';
 }
 
+function _pyro_db_job_mass_sample_rename_form($form_state, $nid) {
+    $form = array();
+    $form['#submit'][] = '_pyro_db_job_mass_sample_rename_submit';
+    
+    $form['#attributes'] = array('enctype' => "multipart/form-data");
+    
+    $form['file_upload'] = array('#type' => 'file',
+                          '#value' => t('Sample name list:'),
+                          '#prefix' => "<br><h1>Mass Sample Rename</h1>" .
+                          "Select a file containing a list of sample names to rename samples contained within this job en masse.");
+    
+    $form['submit'] = array('#type' => 'submit',
+                            '#value' => t('Rename Samples!'),
+                            '#prefix' => "");
+    $form['nid'] = array(
+        '#type' => 'hidden',
+        '#value' => $nid,
+    ); 
+    return $form;
+}
+
+
+function _pyro_db_job_mass_sample_rename_submit($form, &$form_state) {    
+    $validators = array();
+    #$dest_path = tempnam('/tmp' , 'PYRODB');
+    $file = file_save_upload('file_upload', $validators, $dest_path);
+    if ($file != 0) {
+        $fh = fopen($file->filepath, 'rb');
+        $rename_array = array();
+        while ($line = fgets($fh)) {
+            $line = rtrim($line);
+            if ($line != '') {
+                $rename_array[] = $line;
+            }
+        }
+        fclose($fh);
+        $samples = _pyro_db_job_get_all_samples($form_state['clicked_button']['#post']['nid']);
+        file_delete($file->filepath);
+        if (count($samples) != count($rename_array)) {
+            form_set_error('', t("Counting mismatch. There are " . count($samples) .
+                                 " samples to rename and " . count($rename_array) ." lines in the file."));
+        } else {
+            for ($i = 0; $i < count($samples); $i++) {
+                # Fix the node title
+                $original_node = node_load($samples[$i]);
+                $query = "UPDATE {node} n SET n.title='".$rename_array[$i]."' WHERE nid='".$samples[$i]."'";
+                db_query($query);
+                
+                # Fix the node revision title
+                $query = "UPDATE {node_revisions} nr SET nr.title='".$rename_array[$i]."' WHERE nid='".$samples[$i]."'";
+                db_query($query);
+               
+                # Fix the menu links...
+                # Firstly find the menu link ID for the new sample node
+                $query = "SELECT ml.mlid
+                          FROM {menu_links} ml
+                          LEFT JOIN {nodehierarchy_menu_links} nhml
+                          ON nhml.mlid = ml.mlid
+                          WHERE nhml.nid = '" . $samples[$i] . "'";
+                $result = db_query($query);
+                $row = db_fetch_object($result);
+                
+                # Then, update the menu link table.
+                $query = "UPDATE {menu_links} ml SET ml.link_title='".$rename_array[$i]."' WHERE mlid='".$row->mlid."'";
+                db_query($query); 
+            }
+        }
+    } else {
+        form_set_error('', t("Failed to retrieve file."));
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Job Cloning
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,14 +680,14 @@ function _pyro_db_job_clone_form($form_state, $nid) {
         $form['htmldummy'] = array('#type' => 'hidden',
                                    '#value' => 'dummy',
                                    '#prefix' => t($view_html));
-
+                                   
         $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
         while ($row = db_fetch_object($result)) {
         if ($row->sid == 2 and _pyro_db_is_admin()) // State for unlocked job 
             {
                 $form['submit'] = array('#type' => 'submit',
                                         '#value' => t('Clone Job!'),
-                                        '#prefix' => "<br><h1>CLONE JOB</h1>");
+                                        '#prefix' => "<br><h1>Clone Job</h1>");
             }
         }
     }
