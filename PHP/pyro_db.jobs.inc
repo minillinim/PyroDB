@@ -796,19 +796,24 @@ function _pyro_db_clone_job($job_nid, $sample_nids, $new_job_title) {
     $result = db_query($query);
     $row = db_fetch_object($result);
     
-
     $query = "UPDATE {content_type_pdb_client_job} SET " .
-             "field_cj_description_value = '" . $row->field_cj_description_value . "'," .
-             "field_cj_chem_value = '" . $row->field_cj_chem_value . "'," .
-             "field_cj_samp_num_value = '" . count($sample_nids) . "'," .
-             "field_cj_affiliation_nid = '" . $row->field_cj_affiliation_nid . "'," .
-             "field_cj_full_name_value = '" . $row->field_cj_full_name_value . "'," .
-             "field_cj_lead_invest_uid = '" . $row->field_cj_lead_invest_uid . "'," .
+             "field_cj_description_value = '%s'," . # $row->field_cj_description_value . "'," .
+             "field_cj_chem_value = '%s',"  . # $row->field_cj_chem_value . "'," .
+             "field_cj_samp_num_value = '%s',"  . #count($sample_nids) . "'," .
+             "field_cj_affiliation_nid = '%s',"  . #$row->field_cj_affiliation_nid . "'," .
+             "field_cj_full_name_value = '%s',"  . #$row->field_cj_full_name_value . "'," .
+             "field_cj_lead_invest_uid = '%s'," . #$row->field_cj_lead_invest_uid . "'," .
              "field_cj_gasket_nid='NULL'," .
              "field_cj_samples_arrived_value='Awaiting arrival' " .
-             "WHERE nid = '$new_job_nid'";
+             "WHERE nid = '%s'"; #$new_job_nid'";
     
-    db_query($query);
+    db_query($query, array($row->field_cj_description_value,
+                           $row->field_cj_chem_value,
+                           count($sample_nids),
+                           $row->field_cj_affiliation_nid,
+                           $row->field_cj_full_name_value,
+                           $row->field_cj_lead_invest_uid,
+                           $new_job_nid));
 
     return $std_node->nid;       
 } 
