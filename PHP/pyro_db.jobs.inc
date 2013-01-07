@@ -674,12 +674,15 @@ function _pyro_db_job_clone_form($form_state, $nid) {
         $form['cancel'] = array('#type' => 'submit', '#value' => t('Cancel'));
         $form['submit'] = array('#type' => 'submit', '#value' => t('Clone!'));
     } else {
+        
+        $download_sample_submission_html = "<br>Download this sample submission.\n</br>";
+        
         $view = views_get_view('job_sample_table');
         $view_html = $view->execute_display('default', array($nid));
-      
+              
         $form['htmldummy'] = array('#type' => 'hidden',
                                    '#value' => 'dummy',
-                                   '#prefix' => t($view_html));
+                                   '#prefix' => t($download_sample_submission_html . $view_html));
                                    
         $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
         while ($row = db_fetch_object($result)) {
