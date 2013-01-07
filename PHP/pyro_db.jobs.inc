@@ -674,19 +674,16 @@ function _pyro_db_job_clone_form($form_state, $nid) {
         $form['cancel'] = array('#type' => 'submit', '#value' => t('Cancel'));
         $form['submit'] = array('#type' => 'submit', '#value' => t('Clone!'));
     } else {
-        
-        $download_sample_submission_html = "<br>Download this sample submission.\n</br>";
-        
         $view = views_get_view('job_sample_table');
         $view_html = $view->execute_display('default', array($nid));
-              
+      
         $form['htmldummy'] = array('#type' => 'hidden',
                                    '#value' => 'dummy',
-                                   '#prefix' => t($download_sample_submission_html . $view_html));
+                                   '#prefix' => t($view_html));
                                    
         $result = db_query("SELECT wn.sid FROM {workflow_node} wn WHERE wn.nid = '$nid'");
         while ($row = db_fetch_object($result)) {
-        if ($row->sid == 2 and _pyro_db_is_admin()) // State for unlocked job 
+        if (_pyro_db_is_admin()) // State for unlocked job 
             {
                 $form['submit'] = array('#type' => 'submit',
                                         '#value' => t('Clone Job!'),
@@ -798,7 +795,7 @@ function _pyro_db_clone_job($job_nid, $sample_nids, $new_job_title) {
               WHERE cj.nid = '$job_nid'";
     $result = db_query($query);
     $row = db_fetch_object($result);
-    
+   
     $query = "UPDATE {content_type_pdb_client_job} SET " .
              "field_cj_description_value = '%s'," . # $row->field_cj_description_value . "'," .
              "field_cj_chem_value = '%s',"  . # $row->field_cj_chem_value . "'," .
@@ -816,7 +813,7 @@ function _pyro_db_clone_job($job_nid, $sample_nids, $new_job_title) {
                            $row->field_cj_affiliation_nid,
                            $row->field_cj_full_name_value,
                            $row->field_cj_lead_invest_uid,
-                           $new_job_nid));
+                           $new_job_nid)); 
 
     return $std_node->nid;       
 } 

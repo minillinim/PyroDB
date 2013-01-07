@@ -305,17 +305,7 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
     }
     
     // get all the jobs which belong to no gasket
-    $result = db_query("SELECT cj_plus_node.field_cj_samples_arrived_value AS arrived,
-                       cj_plus_node.field_cj_uid_value AS JUID,
-                       n.created AS created,
-                       n.uid AS user,
-                       n.title AS node_title,
-                       n.nid AS nid
-                       FROM {node} n
-                       INNER JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid
-                       WHERE cj_plus_node.field_cj_gasket_nid ='0'
-                       OR cj_plus_node.field_cj_gasket_nid is NULL
-                       ORDER BY JUID ASC");
+    $result = db_query("SELECT cj_plus_node.field_cj_samples_arrived_value AS arrived, cj_plus_node.field_cj_uid_value AS JUID, n.created AS created, n.uid AS user, n.title AS node_title, n.nid AS nid FROM {node} n INNER JOIN {content_type_pdb_client_job} cj_plus_node ON n.vid = cj_plus_node.vid WHERE cj_plus_node.field_cj_gasket_nid ='0' OR cj_plus_node.field_cj_gasket_nid is NULL");
     $first_run = true;
     $found_some_jobs = false;
     while ($row = db_fetch_object($result)) 
@@ -334,6 +324,7 @@ function _pyro_db_gasket_add_form(&$form, $form_state, $form_id) {
             $first_run = false;
             $found_some_jobs = true;
         }
+        
         // get the number of samples that this guy has
         $job_nid = $row->nid;
         $this_user=user_load($row->user);
